@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "906508848480",
+    "project_id": "mathosproject-f2a53",
+    "storage_bucket": "mathosproject-f2a53.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906508848480:android:4d2d6fde8c0ac329562205",
+        "android_client_info": {
+          "package_name": "com.example.mathosproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "906508848480-4k22a4ci1n4ji2fqqki0kh8vsr1kcibc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mathosproject",
+            "certificate_hash": "48439bafccbebdb5f70e644c33542b9542b2cf00"
+          }
+        },
+        {
+          "client_id": "906508848480-ovls1rf3cba6r6o44rm91cjop7jig3vh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtqwvZEv5K_wq7xf7iGdHAdd-iJxs7omY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "906508848480-ovls1rf3cba6r6o44rm91cjop7jig3vh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

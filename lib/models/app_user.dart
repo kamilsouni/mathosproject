@@ -1,0 +1,241 @@
+import 'package:hive/hive.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:mathosproject/user_preferences.dart';
+
+part 'app_user.g.dart';
+
+@HiveType(typeId: 0)
+class AppUser extends HiveObject {
+  @HiveField(0)
+  String id;
+
+  @HiveField(1)
+  String name;
+
+  @HiveField(2)
+  int age;
+
+  @HiveField(3)
+  String gender;
+
+  @HiveField(4)
+  String email;
+
+  @HiveField(5)
+  int points;
+
+  @HiveField(6)
+  String flag;
+
+  @HiveField(7)
+  Map<int, Map<String, Map<String, int>>> progression;
+
+  @HiveField(8)
+  int rapidTestRecord;
+
+  @HiveField(9)
+  int precisionTestRecord;
+
+  AppUser({
+    required this.id,
+    required this.name,
+    required this.age,
+    required this.gender,
+    required this.email,
+    this.points = 0,
+    required this.flag,
+    this.rapidTestRecord = 0,
+    this.precisionTestRecord = 0,
+    Map<int, Map<String, Map<String, int>>>? progression,
+  }) : this.progression = progression ?? initializeProgression();
+
+  // Initialisation de la progression par défaut
+  static Map<int, Map<String, Map<String, int>>> initializeProgression() {
+    Map<int, Map<String, Map<String, int>>> progression = {};
+    for (int level = 1; level <= 10; level++) {
+      progression[level] = {
+        'Addition': {'accessibility': level == 1 ? 1 : 0, 'validation': 0},
+        'Soustraction': {'accessibility': level == 1 ? 1 : 0, 'validation': 0},
+        'Multiplication': {'accessibility': level == 1 ? 1 : 0, 'validation': 0},
+        'Division': {'accessibility': level == 1 ? 1 : 0, 'validation': 0},
+        'Mixte': {'accessibility': 0, 'validation': 0},
+      };
+    }
+    return progression;
+  }
+
+  // Mise à jour de l'accessibilité des niveaux et des opérations
+  void updateAccessibility() {
+    for (int level = 1; level <= 10; level++) {
+      bool allOperatorsValidated = true;
+      for (String op in ['Addition', 'Soustraction', 'Multiplication', 'Division']) {
+        if (progression[level]?[op]?['validation'] != 1) {
+          allOperatorsValidated = false;
+          break;
+        }
+      }
+      if (allOperatorsValidated) {
+        progression[level]!['Mixte']!['accessibility'] = 1;
+      }
+    }
+  }
+
+  // Validation des opérateurs pour un niveau donné
+  bool validateOperator(int level, String operator) {
+    if (progression[level]?[operator]?['accessibility'] == 1) {
+      progression[level]?[operator]?['validation'] = 1;
+
+      bool allOperatorsValidated = true;
+      for (String op in ['Addition', 'Soustraction', 'Multiplication', 'Division']) {
+        if (progression[level]?[op]?['validation'] != 1) {
+          allOperatorsValidated = false;
+          break;
+        }
+      }
+
+      if (allOperatorsValidated) {
+        progression[level]!['Mixte']!['accessibility'] = 1;
+      }
+
+      bool allValidated = true;
+      for (String op in ['Addition', 'Soustraction', 'Multiplication', 'Division', 'Mixte']) {
+        if (progression[level]?[op]?['validation'] != 1) {
+          allValidated = false;
+          break;
+        }
+      }
+
+      if (allValidated && level < 10) {
+        progression[level + 1]!['Addition']!['accessibility'] = 1;
+        progression[level + 1]!['Soustraction']!['accessibility'] = 1;
+        progression[level + 1]!['Multiplication']!['accessibility'] = 1;
+        progression[level + 1]!['Division']!['accessibility'] = 1;
+      }
+
+      return allValidated;
+    }
+    return false;
+  }
+
+  // Mise à jour des records de rapidité et de précision
+  void updateRecords({required int newRapidPoints, required int newPrecisionPoints}) async {
+    if (newRapidPoints > rapidTestRecord) {
+      rapidTestRecord = newRapidPoints;
+    }
+    if (newPrecisionPoints > precisionTestRecord) {
+      precisionTestRecord = newPrecisionPoints;
+    }
+
+    if (await isOnline()) {
+      // Si en ligne, mettre à jour dans Firebase
+      await UserPreferences.updateProfileInFirestore(this);
+    } else {
+      // Sinon, sauvegarder localement
+      await saveToLocalStorage();
+    }
+  }
+
+  // Sauvegarde des données localement
+  Future<void> saveToLocalStorage() async {
+    var box = await Hive.openBox('userBox');
+    await box.put('userData', this.toJson()); // Sauvegarder les données utilisateur
+  }
+
+  // Chargement des données utilisateur à partir du stockage local
+  static Future<AppUser?> loadFromLocalStorage() async {
+    var box = await Hive.openBox('userBox');
+    var userData = box.get('userData');
+    if (userData != null) {
+      return AppUser.fromJson(Map<String, dynamic>.from(userData));
+    }
+    return null;
+  }
+
+  // Effacement des données locales après synchronisation
+  Future<void> clearLocalStorage() async {
+    var box = await Hive.openBox('userBox');
+    await box.delete('userData');
+  }
+
+  // Vérification de la connectivité
+  Future<bool> isOnline() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult != ConnectivityResult.none;
+  }
+
+  // Synchronisation des données locales avec Firebase
+  Future<void> syncWithFirebase() async {
+    if (await isOnline()) {
+      // Charger les données locales
+      AppUser? localUser = await loadFromLocalStorage();
+      if (localUser != null) {
+        // Mettre à jour Firebase avec les données locales
+        await UserPreferences.updateProfileInFirestore(localUser);
+        // Effacer les données locales après synchronisation
+        await clearLocalStorage();
+      }
+    }
+  }
+
+  // Conversion des données en JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'age': age,
+      'gender': gender,
+      'email': email,
+      'points': points,
+      'flag': flag,
+      'rapidTestRecord': rapidTestRecord,
+      'precisionTestRecord': precisionTestRecord,
+      'progression': progression.map((key, value) => MapEntry(key.toString(), value.map((k, v) => MapEntry(k, v)))),
+    };
+  }
+
+  // Création d'un utilisateur à partir d'un snapshot Firebase
+  factory AppUser.fromSnapshot(DocumentSnapshot snapshot) {
+    final data = snapshot.data() as Map<String, dynamic>;
+    return AppUser.fromJson(data);
+  }
+
+  // Création d'un utilisateur à partir d'un utilisateur Firebase
+  static Future<AppUser> fromFirebaseUser(auth.User user,
+      {required int age,
+        required String name,
+        required String gender,
+        required String flag}) async {
+    return AppUser(
+      id: user.uid,
+      name: name,
+      email: user.email ?? '',
+      age: age,
+      gender: gender,
+      flag: flag,
+      progression: initializeProgression(),
+      points: 0,
+    );
+  }
+
+  // Création d'un utilisateur à partir d'un JSON
+  factory AppUser.fromJson(Map<String, dynamic> json) {
+    return AppUser(
+      id: json['id'],
+      name: json['name'],
+      age: json['age'],
+      gender: json['gender'],
+      email: json['email'],
+      points: json['points'] ?? 0,
+      flag: json['flag'],
+      rapidTestRecord: json['rapidTestRecord'] ?? 0,
+      precisionTestRecord: json['precisionTestRecord'] ?? 0,
+      progression: json['progression'] != null
+          ? (json['progression'] as Map).map((key, value) => MapEntry(
+          int.parse(key),
+          (value as Map).map((k, v) => MapEntry(k, Map<String, int>.from(v)))))
+          : initializeProgression(),
+    );
+  }
+}

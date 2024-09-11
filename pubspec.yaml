@@ -1,0 +1,58 @@
+name: mathosproject
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
+  universal_io: ^2.0.4
+  shared_preferences: ^2.0.5
+  cupertino_icons: ^1.0.6
+  flutter_countdown_timer: ^4.1.0
+  lottie: ^3.1.2
+  vibration: ^2.0.0
+  confetti: ^0.7.0
+  percent_indicator: ^4.2.3
+  audioplayers: ^6.0.0
+  fl_chart: ^0.68.0
+  auto_size_text: ^3.0.0
+  url_launcher: ^6.0.25
+  share_plus: ^10.0.0
+  google_sign_in: ^6.2.1
+  firebase_core: ^3.2.0
+  firebase_auth: ^5.1.2
+  cloud_firestore: ^5.1.0
+  connectivity_plus: ^6.0.5
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+
+dev_dependencies:
+  flutter_launcher_icons: "^0.13.1"
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  hive_generator: ^2.0.0
+  build_runner: ^2.3.3
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/fond_d_ecran.svg
+    - assets/logo.png
+    - assets/france.png
+    - assets/lgbt.png
+    - assets/maroc.png
+    - assets/pirate.png
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/logo.png"
