@@ -6,17 +6,20 @@ import 'package:mathosproject/widgets/level_indicator.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/math_test_utils.dart';
 import 'package:mathosproject/widgets/game_app_bar.dart';
-import 'package:mathosproject/user_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/utils/hive_data_manager.dart';
+import 'package:mathosproject/utils/connectivity_manager.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RapidityModeScreen extends StatefulWidget {
   final AppUser profile;
   final bool isCompetition;
   final String? competitionId;
 
-  RapidityModeScreen({required this.profile, this.isCompetition = false, this.competitionId});
+  RapidityModeScreen({
+    required this.profile,
+    this.isCompetition = false,
+    this.competitionId,
+  });
 
   @override
   _RapidityModeScreenState createState() => _RapidityModeScreenState();
@@ -31,8 +34,6 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
   late int _currentAnswer;
   late TextEditingController _answerController;
   late FocusNode _focusNode;
-
-  bool hasTestStarted = false;
 
   @override
   void initState() {
@@ -49,7 +50,6 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
     });
-    _showStartDialog(); // Affiche le dialogue de départ lorsque l'écran est ouvert
   }
 
   @override
@@ -59,21 +59,6 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     _focusNode.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      // L'application est en arrière-plan
-      _showExitDialog();
-    }
-  }
-
-  void _checkAnswer() {
-    if (_answerController.text.isNotEmpty &&
-        int.tryParse(_answerController.text) == _currentAnswer) {
-      submitAnswer(true);
-    }
   }
 
   void generateQuestion() {
@@ -95,13 +80,13 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
         if (_correctAnswersInRow >= 3) {
           _currentLevel++;
           _correctAnswersInRow = 0;
-          _pointsChange += 50; // Bonus de points pour chaque niveau atteint
+          _pointsChange += 50;
           _points += 50;
         }
       } else {
         _correctAnswersInRow = 0;
         _pointsChange = -5;
-        _points -= 5; // Déduire des points pour chaque réponse incorrecte
+        _points -= 5;
         if (_currentLevel > 1) {
           _currentLevel--;
         }
@@ -110,39 +95,66 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     generateQuestion();
   }
 
-  void _passQuestion() {
-    setState(() {
-      _correctAnswersInRow = 0;
-      _pointsChange = -5;
-      _points -= 5; // Déduire des points pour passer une question
-      if (_currentLevel > 1) {
-        _currentLevel--;
-      }
-    });
-    generateQuestion();
+  void _checkAnswer() {
+    if (_answerController.text.isNotEmpty &&
+        int.tryParse(_answerController.text) == _currentAnswer) {
+      submitAnswer(true);
+    }
   }
 
-  void _showEndGamePopup(int points) {
+  Future<void> _endTest() async {
+    if (widget.isCompetition && widget.competitionId != null) {
+      await _updateCompetitionData();
+    }
+
+    widget.profile.updateRecords(newRapidPoints: _points, newPrecisionPoints: 0);
+
+    _showEndGamePopup();
+  }
+
+  Future<void> _updateCompetitionData() async {
+    var localData = await HiveDataManager.getData<Map<String, dynamic>>(
+        'competitionParticipants_${widget.competitionId}', widget.profile.id) ?? {};
+
+    localData['name'] = widget.profile.name;
+    localData['rapidTests'] = (localData['rapidTests'] ?? 0) + 1;
+    localData['totalPoints'] = (localData['totalPoints'] ?? 0) + _points;
+    localData['flag'] = widget.profile.flag;
+
+    await HiveDataManager.saveData(
+        'competitionParticipants_${widget.competitionId}', widget.profile.id, localData);
+
+    if (await ConnectivityManager().isConnected()) {
+      await FirebaseFirestore.instance
+          .collection('competitions')
+          .doc(widget.competitionId)
+          .collection('participants')
+          .doc(widget.profile.id)
+          .set(localData, SetOptions(merge: true));
+    }
+  }
+
+  void _showEndGamePopup() {
     String message;
     String title;
 
-    if (points > 1500) {
+    if (_points > 1500) {
       title = "Félicitations !";
-      message = "Wow ! Vous avez obtenu $points points 🎉. Vous êtes un vrai champion ! Continuez comme ça !";
-    } else if (points > 1000) {
+      message = "Wow ! Vous avez obtenu $_points points 🎉. Vous êtes un vrai champion ! Continuez comme ça !";
+    } else if (_points > 1000) {
       title = "Excellent travail !";
-      message = "Bravo, vous avez obtenu $points points 👍. Vous progressez très bien !";
-    } else if (points > 500) {
+      message = "Bravo, vous avez obtenu $_points points 👍. Vous progressez très bien !";
+    } else if (_points > 500) {
       title = "Bien joué !";
-      message = "Bon travail ! Vous avez obtenu $points points. Continuez à vous améliorer !";
+      message = "Bon travail ! Vous avez obtenu $_points points. Continuez à vous améliorer !";
     } else {
       title = "Continuez à essayer !";
-      message = "Vous avez obtenu $points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
+      message = "Vous avez obtenu $_points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
     }
 
     showDialog(
       context: context,
-      barrierDismissible: false, // Empêche de fermer le pop-up en appuyant ailleurs
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(title),
@@ -151,146 +163,8 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
             TextButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.of(context).pop(); // Ferme le pop-up
-                Navigator.pop(context); // Retour à l'écran précédent (ou à la compétition)
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void endTest() async {
-    try {
-      _showEndGamePopup(_points);
-
-      if (widget.isCompetition && widget.competitionId != null) {
-        var localData = await HiveDataManager.getData<Map<String, dynamic>>('competitionParticipants_${widget.competitionId}', widget.profile.id) ?? {};
-
-        localData['name'] = widget.profile.name;
-        localData['precisionTests'] = (localData['precisionTests'] ?? 0) + 1;
-        localData['totalPoints'] = (localData['totalPoints'] ?? 0) + _points;
-        localData['flag'] = widget.profile.flag;
-
-        await HiveDataManager.saveData('competitionParticipants_${widget.competitionId}', widget.profile.id, localData);
-
-        if (await ConnectivityManager().isConnected()) {
-          await FirebaseFirestore.instance
-              .collection('competitions')
-              .doc(widget.competitionId)
-              .collection('participants')
-              .doc(widget.profile.id)
-              .set(localData, SetOptions(merge: true));
-        }
-      }
-
-      widget.profile.points += _points;
-      widget.profile.updateRecords(newRapidPoints: 0, newPrecisionPoints: _points);
-
-      await UserPreferences.saveProfile(widget.profile);
-
-      // Forcer une mise à jour de l'écran de compétition
-      Navigator.pop(context, true);  // Retourner true pour indiquer que des changements ont eu lieu
-
-    } catch (e) {
-      print('Error updating participant data: $e');
-    }
-  }
-
-  Future<void> _showStartDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // L'utilisateur doit appuyer sur un bouton pour fermer le dialogue
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Prêt à commencer ?'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Lorsque vous commencerez, vous aurez 60 secondes pour répondre à un maximum de questions.'),
-                Text('Bonne chance !'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Commencer'),
-              onPressed: () {
                 Navigator.of(context).pop();
-                if (!hasTestStarted) {
-                  _incrementRapidTests(); // Incrémenter uniquement au début
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _incrementRapidTests() async {
-    if (widget.isCompetition && widget.competitionId != null) {
-      var localData = await HiveDataManager.getData<Map<String, dynamic>>('competitionParticipants_${widget.competitionId}', widget.profile.id) ?? {};
-
-      localData['precisionTests'] = (localData['precisionTests'] ?? 0) + 1;
-
-      await HiveDataManager.saveData('competitionParticipants_${widget.competitionId}', widget.profile.id, localData);
-
-      if (await ConnectivityManager().isConnected()) {
-        var participantRef = FirebaseFirestore.instance
-            .collection('competitions')
-            .doc(widget.competitionId)
-            .collection('participants')
-            .doc(widget.profile.id);
-
-        await FirebaseFirestore.instance.runTransaction((transaction) async {
-          var snapshot = await transaction.get(participantRef);
-          if (!snapshot.exists) {
-            throw Exception("Participant does not exist!");
-          }
-
-          int newPrecisionTests = (snapshot.data()!['precisionTests'] ?? 0) + 1;
-
-          transaction.update(participantRef, {
-            'precisionTests': newPrecisionTests,
-          });
-        });
-      }
-
-      // Marquer le test comme commencé
-      hasTestStarted = true;
-    }
-  }
-
-  Future<void> _showExitDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // L'utilisateur doit appuyer sur un bouton pour fermer le dialogue
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Quitter l\'épreuve'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Si vous quittez maintenant, vous obtiendrez 0 point et l\'épreuve sera considérée comme terminée.'),
-                Text('Voulez-vous vraiment quitter ?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Annuler'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Quitter'),
-              onPressed: () {
-                _points = 0;
-                endTest();
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],
@@ -307,7 +181,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     return WillPopScope(
       onWillPop: () async {
         _showExitDialog();
-        return false;  // Désactiver le bouton de retour
+        return false;
       },
       child: Scaffold(
         appBar: GameAppBar(points: _points, lastChange: _pointsChange),
@@ -328,7 +202,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
                 SizedBox(height: screenHeight * 0.02),
                 CountdownTimer(
                   duration: 60,
-                  onCountdownComplete: endTest,
+                  onCountdownComplete: _endTest,
                   progressColor: Colors.green,
                   height: screenHeight * 0.02,
                 ),
@@ -336,7 +210,9 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
                 Text(
                   _currentQuestion,
                   style: TextStyle(
-                      fontSize: screenHeight * 0.05, fontWeight: FontWeight.bold),
+                      fontSize: screenHeight * 0.05,
+                      fontWeight: FontWeight.bold
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: screenHeight * 0.02),
@@ -373,7 +249,8 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
                         borderRadius: BorderRadius.circular(10),
                         borderSide: BorderSide(
                             color: Colors.black,
-                            width: 2.0),
+                            width: 2.0
+                        ),
                       ),
                     ),
                     onSubmitted: (value) {
@@ -390,7 +267,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
               right: 0,
               child: CustomKeyboard(
                 controller: _answerController,
-                onSubmit: _passQuestion,
+                onSubmit: () => submitAnswer(false),
                 onDelete: () {
                   if (_answerController.text.isNotEmpty) {
                     setState(() {
@@ -404,6 +281,34 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
           ],
         ),
       ),
+    );
+  }
+
+  void _showExitDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Quitter l\'épreuve'),
+          content: Text('Êtes-vous sûr de vouloir quitter ? Votre progression ne sera pas sauvegardée.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Annuler'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Quitter'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.of(context).pop(false);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
