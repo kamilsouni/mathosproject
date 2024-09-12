@@ -331,52 +331,54 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
       ),
     );
   }
-
   Widget _buildParticipantsTable() {
     _participants.sort((a, b) => (b['totalPoints'] ?? 0).compareTo(a['totalPoints'] ?? 0));
 
-    return ListView(
+    return Column(
       children: [
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: 10,
-            headingTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-            dataTextStyle: TextStyle(color: Colors.black87),
-            columns: [
-              DataColumn(label: Text('#')),
-              DataColumn(label: Text('Joueur')),
-              DataColumn(label: Text('R')),
-              DataColumn(label: Text('P')),
-              DataColumn(label: Text('E')),
-              DataColumn(label: Text('Pts')),
-            ],
-            rows: _participants.asMap().entries.map((entry) {
-              int index = entry.key;
-              var participant = entry.value;
-              return DataRow(
-                cells: [
-                  DataCell(Text('${index + 1}')),
-                  DataCell(
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(participant['flag'] ?? 'assets/default_flag.png', width: 24, height: 24),
-                        SizedBox(width: 8),
-                        Text(participant['name'] ?? 'Inconnu', overflow: TextOverflow.ellipsis),
-                      ],
+        Expanded(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columnSpacing: 20, // Espace entre les colonnes pour remplir plus de largeur
+              headingTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+              dataTextStyle: TextStyle(color: Colors.black87),
+              columns: [
+                DataColumn(label: Expanded(child: Text('#'))),
+                DataColumn(label: Expanded(child: Text('Joueur'))),
+                DataColumn(label: Expanded(child: Text('R'))),
+                DataColumn(label: Expanded(child: Text('P'))),
+                DataColumn(label: Expanded(child: Text('E'))),
+                DataColumn(label: Expanded(child: Text('Pts'))),
+              ],
+              rows: _participants.asMap().entries.map((entry) {
+                int index = entry.key;
+                var participant = entry.value;
+                return DataRow(
+                  cells: [
+                    DataCell(Text('${index + 1}')),
+                    DataCell(
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Image.asset(participant['flag'] ?? 'assets/default_flag.png', width: 24, height: 24),
+                          SizedBox(width: 8),
+                          Text(participant['name'] ?? 'Inconnu', overflow: TextOverflow.ellipsis),
+                        ],
+                      ),
                     ),
-                  ),
-                  DataCell(Text('${participant['rapidTests'] ?? 0}')),
-                  DataCell(Text('${participant['precisionTests'] ?? 0}')),
-                  DataCell(Text('${participant['equationTests'] ?? 0}')),
-                  DataCell(Text('${participant['totalPoints'] ?? 0}')),
-                ],
-              );
-            }).toList(),
+                    DataCell(Text('${participant['rapidTests'] ?? 0}')),
+                    DataCell(Text('${participant['precisionTests'] ?? 0}')),
+                    DataCell(Text('${participant['equationTests'] ?? 0}')),
+                    DataCell(Text('${participant['totalPoints'] ?? 0}')),
+                  ],
+                );
+              }).toList(),
+            ),
           ),
         ),
       ],
     );
   }
+
 }
