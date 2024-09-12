@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/math_test_utils.dart';
+import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/widgets/game_app_bar.dart';
 import 'package:mathosproject/widgets/custom_keyboard.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
@@ -87,14 +88,37 @@ class _PrecisionModeScreenState extends State<PrecisionModeScreen> with WidgetsB
   }
 
   Future<void> _endTest() async {
+    // Vérifie si c'est une compétition et met à jour les données de la compétition
     if (widget.isCompetition && widget.competitionId != null) {
       await _updateCompetitionData();
     }
 
-    widget.profile.updateRecords(newRapidPoints: 0, newPrecisionPoints: _points,newEquationPoints: 0);
+    // Mise à jour des records locaux
+    widget.profile.updateRecords(
+        newRapidPoints: 0,
+        newPrecisionPoints: _points,
+        newEquationPoints: 0
+    );
 
+    // Incrémentation des points dans le profil utilisateur
+    widget.profile.points += _points;
+
+    // Affiche immédiatement la fenêtre de fin de partie
     _showEndGamePopup();
+
+    // Synchroniser les données en arrière-plan
+    Future.delayed(Duration.zero, () async {
+      if (await widget.profile.isOnline()) {
+        // Si l'utilisateur est en ligne, synchroniser avec Firebase
+        await UserPreferences.updateProfileInFirestore(widget.profile);
+      } else {
+        // Si l'utilisateur est hors ligne, sauvegarder localement
+        await widget.profile.saveToLocalStorage();
+      }
+    });
   }
+
+
 
   Future<void> _updateCompetitionData() async {
     var localData = await HiveDataManager.getData<Map<String, dynamic>>(
@@ -119,6 +143,7 @@ class _PrecisionModeScreenState extends State<PrecisionModeScreen> with WidgetsB
   }
 
   void _showEndGamePopup() {
+    print("Popup de fin de partie affiché");  // Log pour débogage
     String message;
     String title;
 

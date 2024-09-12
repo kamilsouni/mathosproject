@@ -194,14 +194,36 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   }
 
   Future<void> _endTest() async {
+    // Vérifie si c'est une compétition et met à jour les données de la compétition
     if (widget.isCompetition && widget.competitionId != null) {
       await _updateCompetitionData();
     }
 
-    widget.profile.updateRecords(newRapidPoints: 0, newPrecisionPoints: 0,newEquationPoints: _points);
+    // Mise à jour des records locaux
+    widget.profile.updateRecords(
+        newRapidPoints: 0,
+        newPrecisionPoints: 0,
+        newEquationPoints: _points
+    );
 
+    // Incrémentation des points dans le profil utilisateur
+    widget.profile.points += _points;
+
+    // Affiche immédiatement la fenêtre de fin de partie
     _showEndGamePopup();
+
+    // Synchroniser les données en arrière-plan
+    Future.delayed(Duration.zero, () async {
+      if (await widget.profile.isOnline()) {
+        // Si l'utilisateur est en ligne, synchroniser avec Firebase
+        await UserPreferences.updateProfileInFirestore(widget.profile);
+      } else {
+        // Si l'utilisateur est hors ligne, sauvegarder localement
+        await widget.profile.saveToLocalStorage();
+      }
+    });
   }
+
 
   Future<void> _updateCompetitionData() async {
     var localData = await HiveDataManager.getData<Map<String, dynamic>>(

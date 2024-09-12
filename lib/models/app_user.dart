@@ -125,7 +125,11 @@ class AppUser extends HiveObject {
 
 
 
-  void updateRecords({required int newRapidPoints, required int newPrecisionPoints,required int newEquationPoints}) async {
+  void updateRecords({
+    required int newRapidPoints,
+    required int newPrecisionPoints,
+    required int newEquationPoints
+  }) async {
     if (newRapidPoints > rapidTestRecord) {
       rapidTestRecord = newRapidPoints;
     }
@@ -135,7 +139,15 @@ class AppUser extends HiveObject {
     if (newEquationPoints > equationTestRecord) {
       equationTestRecord = newEquationPoints;
     }
+
+    // Synchroniser les records mis à jour avec Firebase
+    if (await isOnline()) {
+      await UserPreferences.updateProfileInFirestore(this); // Sync with Firebase
+    } else {
+      await saveToLocalStorage(); // Save locally if offline
+    }
   }
+
 
   // Sauvegarde des données localement
   Future<void> saveToLocalStorage() async {
@@ -159,10 +171,13 @@ class AppUser extends HiveObject {
     await box.delete('userData');
   }
 
-  // Vérification de la connectivité
   Future<bool> isOnline() async {
-    var connectivityResult = await Connectivity().checkConnectivity();
-    return connectivityResult != ConnectivityResult.none;
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity().timeout(Duration(seconds: 2));
+      return connectivityResult != ConnectivityResult.none;
+    } catch (e) {
+      return false; // Considérer comme hors ligne si un timeout ou une erreur survient
+    }
   }
 
   // Synchronisation des données locales avec Firebase
@@ -173,11 +188,16 @@ class AppUser extends HiveObject {
       if (localUser != null) {
         // Mettre à jour Firebase avec les données locales
         await UserPreferences.updateProfileInFirestore(localUser);
-        // Effacer les données locales après synchronisation
+
+        // Effacer les données locales après synchronisation réussie
         await clearLocalStorage();
       }
+    } else {
+      // Si la synchronisation échoue, garder les données locales et réessayer plus tard
+      print("Pas de connexion, synchronisation reportée.");
     }
   }
+
 
   // Conversion des données en JSON
   Map<String, dynamic> toJson() {

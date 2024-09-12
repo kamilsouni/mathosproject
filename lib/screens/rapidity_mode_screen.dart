@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/widgets/custom_keyboard.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/widgets/level_indicator.dart';
@@ -103,14 +104,38 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
   }
 
   Future<void> _endTest() async {
+    // Vérifie si c'est une compétition et met à jour les données de la compétition
     if (widget.isCompetition && widget.competitionId != null) {
       await _updateCompetitionData();
     }
 
-    widget.profile.updateRecords(newRapidPoints: _points, newPrecisionPoints: 0,newEquationPoints: 0);
+    // Mise à jour des records locaux
+    widget.profile.updateRecords(
+        newRapidPoints: _points,
+        newPrecisionPoints: 0,
+        newEquationPoints: 0
+    );
 
+    // Incrémentation des points dans le profil utilisateur
+    widget.profile.points += _points;
+
+    // Affiche immédiatement la fenêtre de fin de partie
     _showEndGamePopup();
+
+    // Synchroniser les données en arrière-plan
+    Future.delayed(Duration.zero, () async {
+      if (await widget.profile.isOnline()) {
+        // Si l'utilisateur est en ligne, synchroniser avec Firebase
+        await UserPreferences.updateProfileInFirestore(widget.profile);
+      } else {
+        // Si l'utilisateur est hors ligne, sauvegarder localement
+        await widget.profile.saveToLocalStorage();
+      }
+    });
   }
+
+
+
 
   Future<void> _updateCompetitionData() async {
     var localData = await HiveDataManager.getData<Map<String, dynamic>>(
