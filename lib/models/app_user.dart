@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:mathosproject/user_preferences.dart';
-
 part 'app_user.g.dart';
 
 @HiveType(typeId: 0)
@@ -38,6 +37,9 @@ class AppUser extends HiveObject {
   @HiveField(9)
   int precisionTestRecord;
 
+  @HiveField(10)
+  int equationTestRecord;
+
   AppUser({
     required this.id,
     required this.name,
@@ -48,6 +50,7 @@ class AppUser extends HiveObject {
     required this.flag,
     this.rapidTestRecord = 0,
     this.precisionTestRecord = 0,
+    this.equationTestRecord = 0,
     Map<int, Map<String, Map<String, int>>>? progression,
   }) : this.progression = progression ?? initializeProgression();
 
@@ -119,21 +122,18 @@ class AppUser extends HiveObject {
     return false;
   }
 
-  // Mise à jour des records de rapidité et de précision
-  void updateRecords({required int newRapidPoints, required int newPrecisionPoints}) async {
+
+
+
+  void updateRecords({required int newRapidPoints, required int newPrecisionPoints,required int newEquationPoints}) async {
     if (newRapidPoints > rapidTestRecord) {
       rapidTestRecord = newRapidPoints;
     }
     if (newPrecisionPoints > precisionTestRecord) {
       precisionTestRecord = newPrecisionPoints;
     }
-
-    if (await isOnline()) {
-      // Si en ligne, mettre à jour dans Firebase
-      await UserPreferences.updateProfileInFirestore(this);
-    } else {
-      // Sinon, sauvegarder localement
-      await saveToLocalStorage();
+    if (newEquationPoints > equationTestRecord) {
+      equationTestRecord = newEquationPoints;
     }
   }
 
@@ -191,6 +191,7 @@ class AppUser extends HiveObject {
       'flag': flag,
       'rapidTestRecord': rapidTestRecord,
       'precisionTestRecord': precisionTestRecord,
+      'equationTestRecord': equationTestRecord,
       'progression': progression.map((key, value) => MapEntry(key.toString(), value.map((k, v) => MapEntry(k, v)))),
     };
   }
@@ -231,6 +232,7 @@ class AppUser extends HiveObject {
       flag: json['flag'],
       rapidTestRecord: json['rapidTestRecord'] ?? 0,
       precisionTestRecord: json['precisionTestRecord'] ?? 0,
+      equationTestRecord: json['equationTestRecord'] ?? 0,
       progression: json['progression'] != null
           ? (json['progression'] as Map).map((key, value) => MapEntry(
           int.parse(key),

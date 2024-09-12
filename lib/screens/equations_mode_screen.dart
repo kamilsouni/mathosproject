@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mathosproject/screens/precision_mode_screen.dart';
+import 'package:mathosproject/screens/rapidity_mode_screen.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/widgets/level_indicator.dart';
 import 'package:mathosproject/models/app_user.dart';
@@ -8,6 +10,7 @@ import 'package:mathosproject/widgets/game_app_bar.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
+import 'package:mathosproject/utils/hive_data_manager.dart';
 import 'dart:math';
 
 class EquationsModeScreen extends StatefulWidget {
@@ -190,22 +193,54 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     generateQuestion();
   }
 
-  void _showEndGamePopup(int points) {
+  Future<void> _endTest() async {
+    if (widget.isCompetition && widget.competitionId != null) {
+      await _updateCompetitionData();
+    }
+
+    widget.profile.updateRecords(newRapidPoints: 0, newPrecisionPoints: 0,newEquationPoints: _points);
+
+    _showEndGamePopup();
+  }
+
+  Future<void> _updateCompetitionData() async {
+    var localData = await HiveDataManager.getData<Map<String, dynamic>>(
+        'competitionParticipants_${widget.competitionId}', widget.profile.id) ?? {};
+
+    localData['name'] = widget.profile.name;
+    localData['equationTests'] = (localData['equationTests'] ?? 0) + 1;
+    localData['totalPoints'] = (localData['totalPoints'] ?? 0) + _points;
+    localData['flag'] = widget.profile.flag;
+
+    await HiveDataManager.saveData(
+        'competitionParticipants_${widget.competitionId}', widget.profile.id, localData);
+
+    if (await ConnectivityManager().isConnected()) {
+      await FirebaseFirestore.instance
+          .collection('competitions')
+          .doc(widget.competitionId)
+          .collection('participants')
+          .doc(widget.profile.id)
+          .set(localData, SetOptions(merge: true));
+    }
+  }
+
+  void _showEndGamePopup() {
     String message;
     String title;
 
-    if (points > 1500) {
+    if (_points > 1500) {
       title = "Félicitations !";
-      message = "Wow ! Vous avez obtenu $points points 🎉. Vous êtes un vrai champion ! Continuez comme ça !";
-    } else if (points > 1000) {
+      message = "Wow ! Vous avez obtenu $_points points 🎉. Vous êtes un vrai champion ! Continuez comme ça !";
+    } else if (_points > 1000) {
       title = "Excellent travail !";
-      message = "Bravo, vous avez obtenu $points points 👍. Vous progressez très bien !";
-    } else if (points > 500) {
+      message = "Bravo, vous avez obtenu $_points points 👍. Vous progressez très bien !";
+    } else if (_points > 500) {
       title = "Bien joué !";
-      message = "Bon travail ! Vous avez obtenu $points points. Continuez à vous améliorer !";
+      message = "Bon travail ! Vous avez obtenu $_points points. Continuez à vous améliorer !";
     } else {
       title = "Continuez à essayer !";
-      message = "Vous avez obtenu $points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
+      message = "Vous avez obtenu $_points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
     }
 
     showDialog(
@@ -220,49 +255,13 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
-                Navigator.pop(context);
+                Navigator.of(context).pop(true);
               },
             ),
           ],
         );
       },
     );
-  }
-
-  Future<void> endTest() async {
-    try {
-      _showEndGamePopup(_points);
-
-      if (widget.isCompetition && widget.competitionId != null) {
-        var participantRef = FirebaseFirestore.instance
-            .collection('competitions')
-            .doc(widget.competitionId)
-            .collection('participants')
-            .doc(widget.profile.id);
-
-        if (await ConnectivityManager().isConnected()) {
-          await FirebaseFirestore.instance.runTransaction((transaction) async {
-            var snapshot = await transaction.get(participantRef);
-            if (!snapshot.exists) {
-              throw Exception("Participant does not exist!");
-            }
-
-            int newTotalPoints = (snapshot.data()!['totalPoints'] ?? 0) + _points;
-
-            transaction.update(participantRef, {
-              'totalPoints': newTotalPoints,
-            });
-          });
-        } else {
-          await UserPreferences.saveProfileLocally(widget.profile);
-        }
-      }
-
-      widget.profile.points += _points;
-      await UserPreferences.updateProfilePoints(widget.profile.id, widget.profile.points);
-    } catch (e) {
-      print('Error updating participant data: $e');
-    }
   }
 
   Future<void> _showStartDialog() async {
@@ -351,7 +350,7 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
               child: Text('Quitter'),
               onPressed: () {
                 _points = 0;
-                endTest();
+                _endTest();
                 Navigator.of(context).pop();
               },
             ),
@@ -370,7 +369,7 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
           Text(
             splitQuestion[i],
             style: TextStyle(
-              fontSize: 48, // Taille de police augmentée
+              fontSize: 48,
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
@@ -396,8 +395,6 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     );
   }
 
-
-
   Widget _buildAnswerCard(String choice, int index) {
     return AnimatedBuilder(
       animation: _cardAnimations?[index] ?? AlwaysStoppedAnimation(1.0),
@@ -414,9 +411,9 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
               width: 120,
               height: 200,
               decoration: BoxDecoration(
-                color: Color(0xFFF0E6D2), // Couleur de fond crème
+                color: Color(0xFFF0E6D2),
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Color(0xFF8B0000), width: 3), // Bordure rouge foncé
+                border: Border.all(color: Color(0xFF8B0000), width: 3),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black45,
@@ -427,21 +424,18 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
               ),
               child: Stack(
                 children: [
-                  // Motif de fond
                   Positioned.fill(
                     child: CustomPaint(
                       painter: TarotBackgroundPainter(),
                     ),
                   ),
-                  // Contenu de la carte
                   Center(
                     child: Text(
                       choice,
                       style: TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF000000), // Texte en rouge foncé
-                        fontFamily: 'Serif',
+                        color: Color(0xFF000000),fontFamily: 'Serif',
                       ),
                     ),
                   ),
@@ -453,7 +447,6 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -484,7 +477,7 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
                 SizedBox(height: screenHeight * 0.02),
                 CountdownTimer(
                   duration: 60,
-                  onCountdownComplete: endTest,
+                  onCountdownComplete: _endTest,
                   progressColor: Colors.green,
                   height: screenHeight * 0.02,
                 ),
@@ -536,16 +529,15 @@ class DashedBorderPainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
-// Ajoutez cette classe en dehors de votre classe principale
+
 class TarotBackgroundPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Color(0xFF8B0000).withOpacity(0.3) // Rouge foncé
+      ..color = Color(0xFF8B0000).withOpacity(0.3)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
-    // Dessiner un motif simple
     for (int i = 0; i < size.width; i += 10) {
       canvas.drawLine(Offset(i.toDouble(), 0), Offset(i.toDouble(), size.height), paint);
     }
@@ -553,9 +545,8 @@ class TarotBackgroundPainter extends CustomPainter {
       canvas.drawLine(Offset(0, i.toDouble()), Offset(size.width, i.toDouble()), paint);
     }
 
-    // Ajouter quelques détails décoratifs
     final decorPaint = Paint()
-      ..color = Color(0xFF8B0000).withOpacity(0.5) // Rouge foncé
+      ..color = Color(0xFF8B0000).withOpacity(0.5)
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(Offset(size.width / 2, size.height / 2), 30, decorPaint);
@@ -571,7 +562,7 @@ class CrystalPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Color(0xFF8B0000) // Rouge foncé pour correspondre aux cartes
+      ..color = Color(0xFF8B0000)
       ..style = PaintingStyle.fill;
 
     final path = Path();
@@ -584,7 +575,6 @@ class CrystalPainter extends CustomPainter {
 
     canvas.drawPath(path, paint);
 
-    // Ajouter un effet de brillance
     final highlightPaint = Paint()
       ..color = Colors.white.withOpacity(0.5)
       ..style = PaintingStyle.fill;

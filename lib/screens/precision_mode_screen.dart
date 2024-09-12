@@ -91,7 +91,7 @@ class _PrecisionModeScreenState extends State<PrecisionModeScreen> with WidgetsB
       await _updateCompetitionData();
     }
 
-    widget.profile.updateRecords(newRapidPoints: 0, newPrecisionPoints: _points);
+    widget.profile.updateRecords(newRapidPoints: 0, newPrecisionPoints: _points,newEquationPoints: 0);
 
     _showEndGamePopup();
   }

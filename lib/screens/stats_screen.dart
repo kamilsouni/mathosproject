@@ -370,4 +370,38 @@ class _StatsScreenState extends State<StatsScreen> {
         return 0;
     }
   }
+
+  Widget _buildEquationRecordsTab() {
+    return FutureBuilder(
+      future: FirebaseFirestore.instance
+          .collection('profiles')
+          .orderBy('equationTestRecord', descending: true)
+          .limit(10)
+          .get(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
+
+        return ListView.builder(
+          itemCount: docs.length,
+          itemBuilder: (context, index) {
+            var data = docs[index].data() as Map<String, dynamic>;
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage(data['flag'] ?? 'assets/default_flag.png'),
+              ),
+              title: Text('#${index + 1} ${data['name']}'),
+              trailing: Text('${data['equationTestRecord'] ?? 'N/A'} points'),
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+
 }

@@ -20,6 +20,8 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
   String _competitionName = '';
   int _numRapidTests = 0;
   int _numPrecisionTests = 0;
+  int _numEquationTests = 0;  // Nouveau champ pour les tests d'équations
+
 
   void _createCompetition() async {
     if (_formKey.currentState!.validate()) {
@@ -32,6 +34,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
             'name': _competitionName,
             'numRapidTests': _numRapidTests,
             'numPrecisionTests': _numPrecisionTests,
+            'numEquationTests': _numEquationTests,  // Ajout du nombre de tests d'équations
             'createdBy': widget.profile.id,
           });
 
@@ -59,12 +62,14 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
             'name': _competitionName,
             'numRapidTests': _numRapidTests,
             'numPrecisionTests': _numPrecisionTests,
+            'numEquationTests': _numEquationTests,  // Ajout du nombre de tests d'équations
             'createdBy': widget.profile.id,
             'participants': {
               widget.profile.id: {
                 'name': widget.profile.name,
                 'rapidTests': 0,
                 'precisionTests': 0,
+                'equationTests': 0,  // Ajout du compteur de tests d'équations
                 'totalPoints': 0,
               }
             },
@@ -180,6 +185,22 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                       },
                       onSaved: (value) {
                         _numPrecisionTests = int.parse(value!);
+                      },
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(labelText: 'Nombre de tests d\'équations'),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer un nombre';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'Veuillez entrer un nombre valide';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        _numEquationTests = int.parse(value!);
                       },
                     ),
                     SizedBox(height: 16.0),
