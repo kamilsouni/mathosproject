@@ -57,7 +57,7 @@ class _StatsScreenState extends State<StatsScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 4, // Quatre onglets : Progression, Points, Rapidité, Précision
+      length: 5, // Cinq onglets : Progression, Points, Rapidité, Précision, Équation
       child: Scaffold(
         appBar: CustomAppBar(
           title: 'Statistiques',
@@ -66,13 +66,29 @@ class _StatsScreenState extends State<StatsScreen> {
         body: Column(
           children: [
             TabBar(
-              tabs: [
-                Tab(text: 'Progression'),
-                Tab(text: 'Points'),
-                Tab(text: 'Rapidité'),
-                Tab(text: 'Précision'),
-              ],
-            ),
+
+                indicatorColor: Colors.black,  // Couleur de l'indicateur sous l'onglet sélectionné
+                labelStyle: TextStyle(
+                  fontWeight: FontWeight.bold, // Mettre le texte de l'onglet sélectionné en gras
+                ),
+                unselectedLabelStyle: TextStyle(
+                  fontWeight: FontWeight.normal, // Texte normal pour les onglets non sélectionnés
+                ),
+                labelColor: Colors.black,  // Couleur du texte des onglets sélectionnés
+                unselectedLabelColor: Colors.black54,  // Texte grisé pour les onglets non sélectionnés
+                tabs: [
+                  Tab(text: 'Progression'),
+                  Tab(text: 'Points'),
+                  Tab(text: 'Rapidité'),
+                  Tab(text: 'Précision'),
+                  Tab(text: 'Équation'),
+                ],
+              ),
+
+
+
+
+
             Expanded(
               child: TabBarView(
                 children: [
@@ -80,6 +96,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   _buildRankingTab(),
                   _buildRapidityRecordsTab(),
                   _buildPrecisionRecordsTab(),
+                  _buildEquationRecordsTab(), // Ajout de l'onglet Équation
                 ],
               ),
             ),
@@ -298,7 +315,6 @@ class _StatsScreenState extends State<StatsScreen> {
     );
   }
 
-
   // Onglet Records pour Précision
   Widget _buildPrecisionRecordsTab() {
     return FutureBuilder(
@@ -331,6 +347,37 @@ class _StatsScreenState extends State<StatsScreen> {
     );
   }
 
+  // Onglet Records pour Équation
+  Widget _buildEquationRecordsTab() {
+    return FutureBuilder(
+      future: FirebaseFirestore.instance
+          .collection('profiles')
+          .orderBy('equationTestRecord', descending: true) // Trie par le record d'équation
+          .limit(10) // Limite à 10 participants
+          .get(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
+
+        return ListView.builder(
+          itemCount: docs.length,
+          itemBuilder: (context, index) {
+            var data = docs[index].data() as Map<String, dynamic>;
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage(data['flag'] ?? 'assets/default_flag.png'),
+              ),
+              title: Text('#${index + 1} ${data['name']}'),
+              trailing: Text('${data['equationTestRecord'] ?? 'N/A'} points'),
+            );
+          },
+        );
+      },
+    );
+  }
 
   // Méthode pour obtenir le niveau actuel de l'utilisateur
   int getCurrentLevel(AppUser profile) {
@@ -370,38 +417,4 @@ class _StatsScreenState extends State<StatsScreen> {
         return 0;
     }
   }
-
-  Widget _buildEquationRecordsTab() {
-    return FutureBuilder(
-      future: FirebaseFirestore.instance
-          .collection('profiles')
-          .orderBy('equationTestRecord', descending: true)
-          .limit(10)
-          .get(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
-        }
-
-        List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
-
-        return ListView.builder(
-          itemCount: docs.length,
-          itemBuilder: (context, index) {
-            var data = docs[index].data() as Map<String, dynamic>;
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage(data['flag'] ?? 'assets/default_flag.png'),
-              ),
-              title: Text('#${index + 1} ${data['name']}'),
-              trailing: Text('${data['equationTestRecord'] ?? 'N/A'} points'),
-            );
-          },
-        );
-      },
-    );
-  }
-
-
-
 }
