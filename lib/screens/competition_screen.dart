@@ -247,7 +247,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
-        appBar: CustomAppBar(title: 'Chargement...', showBackButton: true),
+        appBar: TopAppBar(title: 'Chargement...', showBackButton: true),
         body: Center(child: CircularProgressIndicator()),
       );
     }
@@ -258,7 +258,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
     int completedEquationTests = currentParticipant['equationTests'] ?? 0;
 
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: TopAppBar(
         title: _competitionData['name'] ?? 'Compétition',
         showBackButton: true,
       ),

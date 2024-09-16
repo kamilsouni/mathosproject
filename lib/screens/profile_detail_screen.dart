@@ -223,7 +223,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     double containerSize = screenWidth * 0.4;
 
     return Scaffold(
-      appBar: CustomAppBar(
+      appBar: TopAppBar(
         title: 'Profil',
         showBackButton: true,
       ),

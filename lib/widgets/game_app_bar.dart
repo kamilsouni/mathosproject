@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class GameAppBar extends StatefulWidget implements PreferredSizeWidget {
   final int points;
@@ -57,64 +56,81 @@ class _GameAppBarState extends State<GameAppBar>
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenSize = MediaQuery.of(context).size;
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+    final appBarHeight = screenSize.height * 0.10;
+    final fontSize = screenSize.width * 0.045; // Taille légèrement réduite
+    final pointsFontSize = screenSize.width * 0.04; // Taille plus grande pour les points
+    final iconSize = screenSize.width * 0.08;
 
-    return AppBar(
-      backgroundColor: Colors.black.withOpacity(0.7), // Fond semi-transparent
-      elevation: 0, // Enlever l'ombre de l'AppBar
-      leading: IconButton(
-        icon: Icon(Icons.arrow_back,
-            size: screenWidth * 0.09, color: Colors.white),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          if (_showChange && widget.lastChange != 0)
-            FadeTransition(
-              opacity: _fadeAnimation,
-              child: Text(
-                '${widget.lastChange > 0 ? "+" : ""}${widget.lastChange}',
-                style: GoogleFonts.roboto(
-                  textStyle: TextStyle(
-                    fontSize: screenWidth * 0.05,
-                    fontWeight: FontWeight.bold,
-                    color: widget.lastChange > 0 ? Colors.green : Colors.red,
+    return PreferredSize(
+      preferredSize: Size.fromHeight(appBarHeight + statusBarHeight),
+      child: Container(
+        color: Colors.yellow, // Jaune Pac-Man pour le fond
+        child: SafeArea(
+          child: Container(
+            height: appBarHeight,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: Icon(
+                    Icons.arrow_left,
+                    color: Colors.black,
+                    size: iconSize,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (_showChange && widget.lastChange != 0)
+                        FadeTransition(
+                          opacity: _fadeAnimation,
+                          child: Text(
+                            '${widget.lastChange > 0 ? "+" : ""}${widget.lastChange}',
+                            style: TextStyle(
+                              fontFamily: 'PixelFont',
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.bold,
+                              color: widget.lastChange > 0
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                        ),
+                      SizedBox(width: screenSize.width * 0.02),
+                      Text(
+                        'Points:',
+                        style: TextStyle(
+                          fontFamily: 'PixelFont',
+                          fontSize: fontSize, // Taille de texte réduite
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(width: screenSize.width * 0.02),
+                      Text(
+                        '${widget.points}',
+                        style: TextStyle(
+                          fontFamily: 'PixelFont',
+                          fontSize: pointsFontSize, // Taille de texte des points
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(width: screenSize.width * 0.02),
+                    ],
                   ),
                 ),
-              ),
-            ),
-          SizedBox(
-              width: screenWidth *
-                  0.02), // Espace entre le changement de points et "Points:"
-          Text(
-            'Points:',
-            style: GoogleFonts.roboto(
-              textStyle: TextStyle(
-                fontSize: screenWidth * 0.06,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+              ],
             ),
           ),
-          SizedBox(
-              width: screenWidth *
-                  0.02), // Espace entre "Points:" et le nombre de points
-          Text(
-            '${widget.points}',
-            style: GoogleFonts.roboto(
-              textStyle: TextStyle(
-                fontSize: screenWidth * 0.07,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
-      centerTitle: false,
     );
   }
 }

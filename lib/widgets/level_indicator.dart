@@ -55,9 +55,9 @@ class _LevelIndicatorState extends State<LevelIndicator>
     bool? hasVibrator = await Vibration.hasVibrator();
     if (hasVibrator == true) {
       if (weak) {
-        Vibration.vibrate(duration: 100); // Vibration légère
+        Vibration.vibrate(duration: 100);
       } else {
-        Vibration.vibrate(pattern: [0, 500, 200, 500]); // Vibration plus forte
+        Vibration.vibrate(pattern: [0, 500, 200, 500]);
       }
     }
   }
@@ -65,7 +65,9 @@ class _LevelIndicatorState extends State<LevelIndicator>
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double boxSize = screenWidth * 0.08;
+    double totalWidth = screenWidth - 32; // Subtracting some padding
+    double boxSize = (totalWidth - (widget.maxLevel - 1) * 4) / widget.maxLevel;
+    double fontSize = boxSize * 0.5;
 
     List<Widget> levelBlocks = [];
 
@@ -83,26 +85,22 @@ class _LevelIndicatorState extends State<LevelIndicator>
                 height: boxSize,
                 margin: EdgeInsets.symmetric(horizontal: 2.0),
                 decoration: BoxDecoration(
-                  color: i == widget.currentLevel
-                      ? Colors.orange
-                      : Colors.black.withOpacity(0.7),
-                  border: Border.all(color: Colors.black),
-                  boxShadow: [
-                    if (i == widget.currentLevel)
-                      BoxShadow(
-                        color: Colors.orange.withOpacity(0.5),
-                        spreadRadius: 5,
-                        blurRadius: 10,
-                      ),
-                  ],
+                  color: i <= widget.currentLevel ? Colors.yellow : Colors.grey[800],
+                  border: Border.all(color: Colors.white, width: 2),
                 ),
                 child: Center(
-                  child: Text(
-                    '$i',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: boxSize * 0.5,
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Text(
+                        '$i',
+                        style: TextStyle(
+                          fontFamily: 'PixelFont',
+                          color: i <= widget.currentLevel ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -113,11 +111,24 @@ class _LevelIndicatorState extends State<LevelIndicator>
       );
     }
 
-    return Center(
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        children: levelBlocks,
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'NIVEAU ${widget.currentLevel}',
+          style: TextStyle(
+            fontFamily: 'PixelFont',
+            color: Colors.white,
+            fontSize: 20, // Reduced font size
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: levelBlocks,
+        ),
+      ],
     );
   }
 }

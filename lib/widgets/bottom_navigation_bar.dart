@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/profile_detail_screen.dart';
@@ -19,63 +18,63 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      backgroundColor: Colors.black.withOpacity(0.7),
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.play_arrow),
-          label: 'Jouer',
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.black,
+        border: Border(
+          top: BorderSide(
+            color: Color(0xFFFFFF00),
+            width: 3,
+          ),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.bar_chart),
-          label: 'Stats',
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: Colors.transparent,
+        items: [
+          _buildNavItem('Jouer'),
+          _buildNavItem('Stats'),
+          _buildNavItem('Profil'),
+          _buildNavItem('Options'),
+        ],
+        currentIndex: selectedIndex,
+        selectedItemColor: Color(0xFFFFFF00),
+        unselectedItemColor: Colors.white.withOpacity(0.6),
+        selectedLabelStyle: TextStyle(
+          fontFamily: 'PixelFont',
+          fontSize: 16,
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Profil',
+        unselectedLabelStyle: TextStyle(
+          fontFamily: 'PixelFont',
+          fontSize: 14,
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: 'Paramètres',
-        ),
-      ],
-      currentIndex: selectedIndex,
-      selectedItemColor: Colors.white,
-      unselectedItemColor: Colors.white.withOpacity(0.6),
-      onTap: (index) {
-        switch (index) {
-          case 0:
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ModeSelectionScreen(profile: profile)),
-            );
-            break;
-          case 1:
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => StatsScreen(profile: profile)),
-            );
-            break;
-          case 2:
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ProfileDetailScreen(profile: profile)),
-            );
-            break;
-          case 3:
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SettingsScreen(profile: profile)),
-            );
-            break;
-        }
-        onTap(index);
-      },
-      type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ModeSelectionScreen(profile: profile)));
+              break;
+            case 1:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StatsScreen(profile: profile)));
+              break;
+            case 2:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileDetailScreen(profile: profile)));
+              break;
+            case 3:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SettingsScreen(profile: profile)));
+              break;
+          }
+          onTap(index);
+        },
+        type: BottomNavigationBarType.fixed,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+      ),
+    );
+  }
+
+  BottomNavigationBarItem _buildNavItem(String label) {
+    return BottomNavigationBarItem(
+      icon: SizedBox.shrink(), // Pas d'icône
+      label: label,
     );
   }
 }

@@ -40,7 +40,7 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: CustomAppBar(title: 'Créer un Profil'),
+      appBar: TopAppBar(title: 'Créer un Profil'),
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () {

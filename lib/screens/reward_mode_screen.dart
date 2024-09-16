@@ -15,7 +15,7 @@ class RewardModeScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: CustomAppBar(title: 'Récompenses et Astuces', showBackButton: true ),
+      appBar: TopAppBar(title: 'Récompenses et Astuces', showBackButton: true ),
       body: Stack(
         children: [
           Positioned.fill(
@@ -163,7 +163,7 @@ class TipDetailScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: CustomAppBar(title: 'Astuce pour $operation - Niveau $level'),
+      appBar: TopAppBar(title: 'Astuce pour $operation - Niveau $level'),
       body: Stack(
         children: [
           Positioned.fill(

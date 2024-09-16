@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/mode_selection_screen.dart';
 import 'package:mathosproject/screens/profile_creation_screen.dart';
+import 'package:mathosproject/widgets/PacManButton.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 
 class SignInUpScreen extends StatefulWidget {
@@ -30,15 +31,33 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
     setState(() {});
   }
 
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: TextStyle(fontFamily: 'PixelFont')),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
   Future<void> _signInWithEmail() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    // Vérification locale avant de lancer la requête
+    if (email.isEmpty || password.isEmpty) {
+      _showErrorSnackBar('Veuillez entrer votre e-mail et mot de passe.');
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
 
     try {
       auth.UserCredential userCredential = await auth.FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: email,
+        password: password,
       );
 
       DocumentSnapshot userProfile = await FirebaseFirestore.instance.collection('profiles').doc(userCredential.user!.uid).get();
@@ -64,14 +83,14 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
       if (e.code == 'user-not-found') {
         message = 'Utilisateur non trouvé. Veuillez vérifier vos informations de connexion.';
       } else if (e.code == 'wrong-password') {
-        message = 'Mot de passe incorrect.';
+        message = 'Mot de passe incorrect. Veuillez réessayer.';
       } else if (e.code == 'invalid-email') {
-        message = 'L\'email est invalide.';
+        message = 'L\'email est invalide. Veuillez vérifier votre adresse e-mail.';
       } else {
         message = e.message ?? 'Une erreur s\'est produite.';
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      _showErrorSnackBar(message);
     } finally {
       setState(() {
         _isLoading = false;
@@ -80,14 +99,22 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
   }
 
   Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      _showErrorSnackBar('Veuillez entrer votre e-mail et mot de passe.');
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
 
     try {
       auth.UserCredential userCredential = await auth.FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: email,
+        password: password,
       );
 
       Navigator.pushReplacement(
@@ -100,16 +127,16 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
     } on auth.FirebaseAuthException catch (e) {
       String message = 'Une erreur s\'est produite.';
       if (e.code == 'email-already-in-use') {
-        message = 'L\'email est déjà utilisé.';
+        message = 'Cet e-mail est déjà utilisé.';
       } else if (e.code == 'weak-password') {
-        message = 'Le mot de passe est trop faible.';
+        message = 'Le mot de passe est trop faible. Choisissez un mot de passe plus sécurisé.';
       } else if (e.code == 'invalid-email') {
-        message = 'L\'email est invalide.';
+        message = 'L\'email est invalide. Veuillez vérifier votre adresse e-mail.';
       } else {
         message = e.message ?? 'Une erreur s\'est produite.';
       }
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      _showErrorSnackBar(message);
     } finally {
       setState(() {
         _isLoading = false;
@@ -161,7 +188,7 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
         MaterialPageRoute(builder: (context) => ModeSelectionScreen(profile: appUser)),
       );
     } on auth.FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Une erreur s\'est produite. ${e.message}')));
+      _showErrorSnackBar('Une erreur s\'est produite. ${e.message}');
     } finally {
       setState(() {
         _isLoading = false;
@@ -176,33 +203,6 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
     _checkCurrentUser();
   }
 
-  Widget _buildButton(String text, VoidCallback onPressed) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
-
-    return ElevatedButton(
-      onPressed: onPressed,
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: screenWidth * 0.05,
-          color: Colors.white,
-        ),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black.withOpacity(0.7),
-        padding: EdgeInsets.symmetric(
-          horizontal: screenWidth * 0.1,
-          vertical: screenHeight * 0.015,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        fixedSize: Size(screenWidth * 0.95, screenHeight * 0.08),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -211,17 +211,12 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
     double verticalPadding = cmToPixels * 1; // 1 cm en pixels
 
     return Scaffold(
-      appBar: CustomAppBar(title: 'Inscription / Connexion'),
+      appBar: TopAppBar(title: 'Inscription / Connexion', showBackButton: true), // Ajouter la flèche de retour
       body: Stack(
         children: [
           Positioned.fill(
-            child: Opacity(
-              opacity: 0.15,
-              child: SvgPicture.asset(
-                'assets/fond_d_ecran.svg',
-                fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
-              ),
+            child: Container(
+              color: Color(0xFF564560), // Couleur de fond pour un effet rétro
             ),
           ),
           Padding(
@@ -237,33 +232,47 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
                           controller: _emailController,
                           decoration: InputDecoration(
                             labelText: 'Email',
+                            labelStyle: TextStyle(fontFamily: 'PixelFont'),
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(),
                           ),
                         ),
-                        SizedBox(height: screenHeight * 0.03),
+                        SizedBox(height: screenHeight * 0.05),
                         TextFormField(
                           controller: _passwordController,
                           decoration: InputDecoration(
                             labelText: 'Mot de passe',
+                            labelStyle: TextStyle(fontFamily: 'PixelFont'),
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(),
                           ),
                           obscureText: true,
                         ),
-                        SizedBox(height: screenHeight * 0.02),
+                        SizedBox(height: screenHeight * 0.07),
                         if (_isLoading)
                           CircularProgressIndicator()
                         else
                           Column(
                             children: [
-                              _buildButton('Connexion', _signInWithEmail),
+                              PacManButton(
+                                text: 'Connexion',
+                                onPressed: _signInWithEmail,
+                                isLoading: _isLoading,
+                              ),
                               SizedBox(height: screenHeight * 0.02),
-                              _buildButton('Inscription', _signUp),
+                              PacManButton(
+                                text: 'Inscription',
+                                onPressed: _signUp,
+                                isLoading: _isLoading,
+                              ),
                               SizedBox(height: screenHeight * 0.02),
-                              _buildButton('Connexion avec Google', _signInWithGoogle),
+                              PacManButton(
+                                text: 'Connexion avec Google',
+                                onPressed: _signInWithGoogle,
+                                isLoading: _isLoading,
+                              ),
                             ],
                           ),
                       ],

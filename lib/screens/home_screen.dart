@@ -11,14 +11,38 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   double _opacity = 0.0;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+
+  bool _buttonPressed = false; // Pour gérer l'état du bouton lors du clic
+  bool _isAnimationInitialized = false; // Nouveau flag pour s'assurer de l'initialisation
 
   @override
   void initState() {
     super.initState();
     _fadeIn();
+
+    // Initialiser l'animation pour faire clignoter le bouton
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeAnimation();
+    });
+
     _checkCurrentUser();
+  }
+
+  void _initializeAnimation() {
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 1), // Durée du cycle de clignotement
+      vsync: this,
+    )..repeat(reverse: true); // Répéter l'animation
+
+    _animation = Tween<double>(begin: 0.3, end: 1.0).animate(_animationController);
+
+    setState(() {
+      _isAnimationInitialized = true; // Marquer comme initialisé
+    });
   }
 
   void _fadeIn() {
@@ -57,6 +81,32 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _onButtonPressed() {
+    setState(() {
+      _buttonPressed = true; // Le bouton est pressé et brille
+    });
+
+    // Revenir à l'état initial après un court délai (signal lumineux)
+    Future.delayed(Duration(milliseconds: 300), () {
+      setState(() {
+        _buttonPressed = false; // Fin de la brillance
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => SignInUpScreen()),
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    if (_isAnimationInitialized) {
+      _animationController.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -67,12 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Opacity(
-              opacity: 0.15,
-              child: SvgPicture.asset(
-                'assets/fond_d_ecran.svg',
-                fit: BoxFit.cover,
-              ),
+            child: Container(
+              color: Color(0xFF564560), // Couleur de fond pour un effet rétro
             ),
           ),
           Center(
@@ -83,39 +129,84 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/logo.png', // Remplacez par le chemin de votre logo
-                    width: screenWidth * 0.8,
+                    'assets/logov2.png', // Chemin vers le logo en style pixel art
+                    width: screenWidth * 0.9,
                   ),
                   SizedBox(height: screenHeight * 0.03),
-                  Text(
-                    'Progressez en jouant, calculez en vous amusant.',
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.07,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: screenHeight * 0.1),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignInUpScreen()),
+
+                  SizedBox(height: screenHeight * 0.15),
+
+                  // Bouton style Pac-Man avec clignotement et brillance au clic
+                  _isAnimationInitialized
+                      ? AnimatedBuilder(
+                    animation: _animationController,
+                    builder: (context, child) {
+                      return Opacity(
+                        opacity: _animation.value, // Appliquer l'effet de clignotement
+                        child: ElevatedButton(
+                          onPressed: _onButtonPressed, // Appel à la fonction lors du clic
+                          child: Text(
+                            'Commencer',
+                            style: TextStyle(
+                              fontFamily: 'PixelFont', // Utiliser une police pixel art
+                              fontSize: screenWidth * 0.06, // Taille adaptée au style rétro
+                              color: Colors.black, // Contraste avec le jaune
+                            ),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _buttonPressed
+                                ? Colors.yellowAccent // Effet lumineux (jaune) lorsqu'on clique
+                                : Colors.yellow, // Couleur de Pac-Man (jaune vif)
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenWidth * 0.12,
+                              vertical: screenHeight * 0.03,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(100), // Forme Pac-Man
+                                topRight: Radius.circular(0), // Pas de bordure arrondie ici
+                                bottomLeft: Radius.circular(100), // Forme Pac-Man
+                                bottomRight: Radius.circular(100),
+                              ),
+                            ),
+                            side: BorderSide(
+                              color: Colors.black, // Bordure noire rétro
+                              width: 3, // Bordure épaisse pour un effet rétro
+                            ),
+                          ),
+                        ),
                       );
                     },
+                  )
+                      : ElevatedButton(
+                    onPressed: _onButtonPressed, // Appel à la fonction lors du clic
                     child: Text(
                       'Commencer',
                       style: TextStyle(
-                          fontSize: screenWidth * 0.08, color: Colors.white),
+                        fontFamily: 'PixelFont', // Utiliser une police pixel art
+                        fontSize: screenWidth * 0.06, // Taille adaptée au style rétro
+                        color: Colors.black, // Contraste avec le jaune
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black.withOpacity(0.7),
+                      backgroundColor: _buttonPressed
+                          ? Colors.yellowAccent // Effet lumineux (jaune) lorsqu'on clique
+                          : Colors.yellow, // Couleur de Pac-Man (jaune vif)
                       padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * 0.15,
-                          vertical: screenHeight * 0.02),
+                        horizontal: screenWidth * 0.12,
+                        vertical: screenHeight * 0.03,
+                      ),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(100), // Forme Pac-Man
+                          topRight: Radius.circular(0), // Pas de bordure arrondie ici
+                          bottomLeft: Radius.circular(100), // Forme Pac-Man
+                          bottomRight: Radius.circular(100),
+                        ),
+                      ),
+                      side: BorderSide(
+                        color: Colors.black, // Bordure noire rétro
+                        width: 3, // Bordure épaisse pour un effet rétro
                       ),
                     ),
                   ),

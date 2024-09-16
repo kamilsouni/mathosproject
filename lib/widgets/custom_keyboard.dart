@@ -33,7 +33,11 @@ class CustomKeyboard extends StatelessWidget {
           child: Center(
             child: Text(
               label,
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: TextStyle(
+                fontFamily: 'digital',
+                fontSize: 54, // Taille de police augmentée
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -64,7 +68,11 @@ class CustomKeyboard extends StatelessWidget {
           child: Center(
             child: Text(
               label,
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: TextStyle(
+                fontFamily: 'digital',
+                fontSize: 48, // Taille de police augmentée
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -72,8 +80,7 @@ class CustomKeyboard extends StatelessWidget {
     );
   }
 
-  Widget _buildVerticalActionKey(
-      String label, VoidCallback onTap, Color color) {
+  Widget _buildVerticalActionKey(String label, VoidCallback onTap, Color color) {
     return Expanded(
       flex: 2,
       child: InkWell(
@@ -87,7 +94,11 @@ class CustomKeyboard extends StatelessWidget {
           child: Center(
             child: Text(
               label,
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              style: TextStyle(
+                fontFamily: 'digital',
+                fontSize: 18,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -147,30 +158,15 @@ class CustomKeyboard extends StatelessWidget {
           // Partie droite avec Corriger et Valider
           Expanded(
             flex: 1,
-            child: Center(
-                child: Column(
+            child: Column(
               children: [
                 _buildVerticalActionKey('Corriger', onDelete, Colors.orange),
                 _buildVerticalActionKey('Passer', onSubmit, Colors.red),
               ],
-            )),
+            ),
           ),
         ],
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: Scaffold(
-      body: Center(
-        child: CustomKeyboard(
-          controller: TextEditingController(),
-          onSubmit: () => print("Submitted"),
-          onDelete: () => print("Deleted"),
-        ),
-      ),
-    ),
-  ));
 }

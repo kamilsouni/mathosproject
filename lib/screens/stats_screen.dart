@@ -59,7 +59,7 @@ class _StatsScreenState extends State<StatsScreen> {
     return DefaultTabController(
       length: 5, // Cinq onglets : Progression, Points, Rapidité, Précision, Équation
       child: Scaffold(
-        appBar: CustomAppBar(
+        appBar: TopAppBar(
           title: 'Statistiques',
           showBackButton: false,
         ),

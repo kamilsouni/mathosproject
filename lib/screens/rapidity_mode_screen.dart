@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mathosproject/widgets/retro_question_answer_frame.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/widgets/custom_keyboard.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
@@ -200,97 +200,41 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    return WillPopScope(
-      onWillPop: () async {
-        _showExitDialog();
-        return false;
-      },
-      child: Scaffold(
-        appBar: GameAppBar(points: _points, lastChange: _pointsChange),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: SvgPicture.asset(
-                'assets/fond_d_ecran.svg',
-                fit: BoxFit.cover,
-                color: Colors.white.withOpacity(0.15),
-                colorBlendMode: BlendMode.modulate,
+    return Scaffold(
+      appBar: GameAppBar(points: _points, lastChange: _pointsChange),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              color: Color(0xFF564560),
+            ),
+          ),
+          Column(
+            children: [
+              SizedBox(height: 20),
+              LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
+              SizedBox(height: 20),
+              CountdownTimer(
+                duration: 60,
+                onCountdownComplete: _endTest,
+                progressColor: Colors.green,
+                height: 20,
               ),
-            ),
-            Column(
-              children: [
-                SizedBox(height: screenHeight * 0.05),
-                LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
-                SizedBox(height: screenHeight * 0.02),
-                CountdownTimer(
-                  duration: 60,
-                  onCountdownComplete: _endTest,
-                  progressColor: Colors.green,
-                  height: screenHeight * 0.02,
+              SizedBox(height: 20),
+              // Nouveau composant RetroQuestionAnswerFrame
+              Center(
+                child: RetroQuestionAnswerFrame(
+                  question: _currentQuestion,
+                  controller: _answerController,
+                  focusNode: _focusNode,
+                  onSubmitted: (value) {
+                    submitAnswer(int.tryParse(value) == _currentAnswer);
+                    _focusNode.requestFocus();
+                  },
                 ),
-                SizedBox(height: screenHeight * 0.05),
-                Text(
-                  _currentQuestion,
-                  style: TextStyle(
-                      fontSize: screenHeight * 0.05,
-                      fontWeight: FontWeight.bold
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: screenHeight * 0.02),
-                Container(
-                  width: screenWidth * 0.6,
-                  child: TextField(
-                    focusNode: _focusNode,
-                    controller: _answerController,
-                    keyboardType: TextInputType.none,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: screenHeight * 0.05,
-                      color: Colors.black,
-                    ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.grey.shade200,
-                      contentPadding: EdgeInsets.symmetric(vertical: 10),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 2.0,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 2.0,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                            color: Colors.black,
-                            width: 2.0
-                        ),
-                      ),
-                    ),
-                    onSubmitted: (value) {
-                      submitAnswer(int.tryParse(value) == _currentAnswer);
-                      _focusNode.requestFocus();
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: CustomKeyboard(
+              ),
+              Spacer(), // Ceci poussera le clavier vers le bas
+              CustomKeyboard(
                 controller: _answerController,
                 onSubmit: () => submitAnswer(false),
                 onDelete: () {
@@ -302,38 +246,12 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
                   }
                 },
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  void _showExitDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Quitter l\'épreuve'),
-          content: Text('Êtes-vous sûr de vouloir quitter ? Votre progression ne sera pas sauvegardée.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Annuler'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Quitter'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(false);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 }

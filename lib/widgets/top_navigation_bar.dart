@@ -1,41 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBackButton;
 
-  CustomAppBar({required this.title, this.showBackButton = false});
+  TopAppBar({required this.title, this.showBackButton = false});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final screenSize = MediaQuery.of(context).size;
+    final statusBarHeight = MediaQuery.of(context).padding.top;
+    final appBarHeight = screenSize.height * 0.10;
+    final fontSize = screenSize.width * 0.05;
+    final iconSize = screenSize.width * 0.08;
 
-    return AppBar(
-      backgroundColor: Colors.black.withOpacity(0.7), // Fond semi-transparent
-      elevation: 0, // Enlever l'ombre de l'AppBar
-      automaticallyImplyLeading:
-          false, // Désactive l'implémentation automatique du bouton de retour
-      leading: showBackButton
-          ? IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          : null,
-      title: Text(
-        title,
-        style: GoogleFonts.roboto(
-          textStyle: TextStyle(
-            fontSize: screenWidth * 0.07,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+    return PreferredSize(
+      preferredSize: Size.fromHeight(appBarHeight + statusBarHeight),
+      child: Container(
+        color: Colors.yellow,
+        child: SafeArea(
+          child: Container(
+            height: appBarHeight,
+            child: Row(
+              children: [
+                if (showBackButton)
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_left,
+                      color: Colors.black,
+                      size: iconSize,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                Expanded(
+                  child: Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          fontFamily: 'PixelFont',
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                if (showBackButton)
+                  SizedBox(width: iconSize),
+              ],
+            ),
           ),
         ),
       ),
-      centerTitle: true,
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(75); // Hauteur de l'AppBar
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
