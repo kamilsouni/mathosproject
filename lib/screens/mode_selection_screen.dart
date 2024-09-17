@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mathosproject/models/app_user.dart';
-import 'package:mathosproject/screens/precision_mode_screen.dart';
-import 'package:mathosproject/screens/progression_mode_screen.dart';
-import 'package:mathosproject/screens/rapidity_mode_screen.dart';
-import 'package:mathosproject/screens/equations_mode_screen.dart';
 import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
+import 'package:mathosproject/screens/progression_mode_screen.dart';
 import 'package:mathosproject/screens/reward_mode_screen.dart';
-import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
-import 'package:mathosproject/widgets/top_navigation_bar.dart';
+import 'package:mathosproject/screens/rapidity_mode_screen.dart';
+import 'package:mathosproject/screens/precision_mode_screen.dart';
+import 'package:mathosproject/screens/equations_mode_screen.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
+import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class ModeSelectionScreen extends StatefulWidget {
   final AppUser profile;
@@ -19,7 +19,9 @@ class ModeSelectionScreen extends StatefulWidget {
   _ModeSelectionScreenState createState() => _ModeSelectionScreenState();
 }
 
-class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
+class _ModeSelectionScreenState extends State<ModeSelectionScreen> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller; // Initialise directement à la déclaration
+
   int _selectedIndex = 0;
 
   final Map<String, String> modeDescriptions = {
@@ -32,18 +34,37 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
   };
 
   @override
+  void initState() {
+    super.initState();
+
+    // Initialisation de l'AnimationController dans initState
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2), // Durée de l'animation
+      vsync: this, // Nécessaire pour l'AnimationController
+    )..repeat(reverse: true); // Animation en boucle
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose(); // Dispose pour éviter les fuites de mémoire
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: TopAppBar(title: 'Sélection du mode', showBackButton: true),
       body: Container(
-        // Remplacement par le fond uni rétro
         decoration: BoxDecoration(
-          color: Color(0xFF564560), // Couleur de fond rétro
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF2E0854), Color(0xFF000000)],
+          ),
         ),
         child: SafeArea(
           child: Column(
             children: [
+              _buildLogo(),
               Expanded(
                 child: GridView.count(
                   crossAxisCount: 2,
@@ -52,32 +73,38 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
                   mainAxisSpacing: 16,
                   children: [
                     _buildModeButton(
-                      title: 'Mode Progression',
+                      title: 'Progression',
+                      color: Colors.red,
                       icon: 'assets/icons/progression_icon.png',
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProgressionModeScreen(profile: widget.profile))),
                     ),
                     _buildModeButton(
                       title: 'Astuces',
+                      color: Colors.blue,
                       icon: 'assets/icons/tips_icon.png',
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => RewardModeScreen(profile: widget.profile))),
                     ),
                     _buildModeButton(
-                      title: 'Mode Rapidité',
-                      icon: 'assets/icons/speed_icon.png',
+                      title: 'Rapidité',
+                      color: Colors.green,
+                      icon: 'assets/chrono.png',
                       onPressed: () => _showStartConfirmation(context, 'Mode Rapidité', () => Navigator.push(context, MaterialPageRoute(builder: (context) => RapidityModeScreen(profile: widget.profile)))),
                     ),
                     _buildModeButton(
-                      title: 'Mode Précision',
+                      title: 'Précision',
+                      color: Colors.orange,
                       icon: 'assets/icons/precision_icon.png',
                       onPressed: () => _showStartConfirmation(context, 'Mode Précision', () => Navigator.push(context, MaterialPageRoute(builder: (context) => PrecisionModeScreen(profile: widget.profile)))),
                     ),
                     _buildModeButton(
-                      title: 'Mode Équations',
+                      title: 'Équations',
+                      color: Colors.purple,
                       icon: 'assets/icons/equations_icon.png',
                       onPressed: () => _showStartConfirmation(context, 'Mode Équations', () => Navigator.push(context, MaterialPageRoute(builder: (context) => EquationsModeScreen(profile: widget.profile)))),
                     ),
                     _buildModeButton(
                       title: 'Competition',
+                      color: Colors.teal,
                       icon: 'assets/icons/competition_icon.png',
                       onPressed: () async {
                         bool isConnected = await ConnectivityManager().isConnected();
@@ -107,132 +134,111 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> {
     );
   }
 
-  Widget _buildModeButton({
-    required String title,
-    required String icon,
-    required VoidCallback onPressed,
-  }) {
-    return GestureDetector(
-      onTap: onPressed,
-      onLongPress: () => _showDescriptionDialog(context, title),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black,
-          border: Border.all(
-            color: Color(0xFFFFFF00),
-            width: 3,
-          ),
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Color(0xFFFFFF00).withOpacity(0.5),
-              spreadRadius: 2,
-              blurRadius: 4,
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              icon,
-              width: 64,
-              height: 64,
-            ),
-            SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'PixelFont',
-                fontSize: 16,
-                color: Color(0xFFFFFF00),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
+  Widget _buildLogo() {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 0),
+      child: Image.asset(
+        'assets/logov3.png', // Remplace le texte par l'image
+        width: 300,
+        height: 150,
       ),
     );
   }
 
-  void _showDescriptionDialog(BuildContext context, String title) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFF000000),
-          title: Text(
-            title,
-            style: TextStyle(color: Color(0xFFFFFF00), fontFamily: 'PixelFont'),
-          ),
-          content: Text(
-            modeDescriptions[title] ?? 'Description non disponible.',
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
-          ),
-          actions: [
-            TextButton(
-              child: Text(
-                'Fermer',
-                style: TextStyle(color: Color(0xFFFFFF00), fontFamily: 'PixelFont'),
+  Widget _buildModeButton({
+    required String title,
+    required Color color,
+    required String icon,
+    required VoidCallback onPressed,
+  }) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: 1 + 0.05 * _controller.value,
+          child: GestureDetector(
+            onTap: onPressed,
+            child: Container(
+              decoration: BoxDecoration(
+                color: color,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withOpacity(0.5),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ],
               ),
-              onPressed: () => Navigator.of(context).pop(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(icon, width: 64, height: 64),
+                  SizedBox(height: 8),
+                  AutoSizeText(
+                    title,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontFamily: 'PixelFont',
+                      fontSize: 18,
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black,
+                          offset: Offset(1, 1),
+                          blurRadius: 2,
+                        ),
+                      ],
+                    ),
+                    minFontSize: 10,
+                    stepGranularity: 1,
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         );
       },
     );
   }
 
-  void _showStartConfirmation(
-      BuildContext context, String mode, VoidCallback onConfirm) {
+  void _showStartConfirmation(BuildContext context, String mode, VoidCallback onConfirm) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('La partie va commencer'),
-          content: Text(
-            "Installe-toi confortablement... La partie ne dure qu'une minute, on y va?",
-            style: TextStyle(fontSize: 16.0),
+      builder: (context) => AlertDialog(
+        title: Text('Commencer $mode?'),
+        content: Text(modeDescriptions[mode] ?? ''),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler'),
           ),
-          actions: [
-            TextButton(
-              child: Text('Annuler'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Commencer'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                onConfirm();
-              },
-            ),
-          ],
-        );
-      },
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              onConfirm();
+            },
+            child: Text('Commencer'),
+          ),
+        ],
+      ),
     );
   }
 
   void _showNoConnectionDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Pas de connexion Internet'),
-          content: Text(
-              'Vous devez être connecté à Internet pour accéder à ce mode.'),
-          actions: [
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
+      builder: (context) => AlertDialog(
+        title: Text('Pas de connexion'),
+        content: Text('Vous devez être connecté à internet pour participer à la compétition.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -53,6 +53,8 @@ flutter:
     - assets/maroc.png
     - assets/pirate.png
     - assets/logov2.png
+    - assets/logov3.png
+    - assets/chrono.png
 
   fonts:
     - family: 'PixelFont'

@@ -23,7 +23,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         color: Colors.black,
         border: Border(
           top: BorderSide(
-            color: Color(0xFFFFFF00),
+            color: Color(0xFFFFFF00), // Bordure jaune pixelisée
             width: 3,
           ),
         ),
@@ -42,10 +42,24 @@ class CustomBottomNavigationBar extends StatelessWidget {
         selectedLabelStyle: TextStyle(
           fontFamily: 'PixelFont',
           fontSize: 16,
+          shadows: [
+            Shadow(
+              color: Colors.black,
+              offset: Offset(2, 2),
+              blurRadius: 1,
+            ),
+          ],
         ),
         unselectedLabelStyle: TextStyle(
           fontFamily: 'PixelFont',
           fontSize: 14,
+          shadows: [
+            Shadow(
+              color: Colors.black.withOpacity(0.3),
+              offset: Offset(1, 1),
+              blurRadius: 1,
+            ),
+          ],
         ),
         onTap: (index) {
           switch (index) {
@@ -73,7 +87,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   BottomNavigationBarItem _buildNavItem(String label) {
     return BottomNavigationBarItem(
-      icon: SizedBox.shrink(), // Pas d'icône
+      icon: SizedBox.shrink(), // Pas d'icône pour un look minimaliste pixel
       label: label,
     );
   }
