@@ -89,7 +89,7 @@ class _CountdownTimerState extends State<CountdownTimer>
                         Container(
                           width: segmentWidth,
                           height: segmentHeight,
-                          color: isRed ? Colors.red : Colors.green,
+                          color: isRed ? Colors.red : Color(0xFF02C200),
                         ),
                         if (index < 19) Container(
                           width: 1,

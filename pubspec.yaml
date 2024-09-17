@@ -61,6 +61,9 @@ flutter:
     - family: 'digital'
       fonts:
         - asset: assets/fonts/digital.ttf
+    - family: 'VT323'
+      fonts:
+        - asset: assets/fonts/VT323.ttf
 
 
 

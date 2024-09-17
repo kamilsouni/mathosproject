@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mathosproject/widgets/retro_question_answer_frame.dart';
 import 'package:mathosproject/user_preferences.dart';
-import 'package:mathosproject/widgets/custom_keyboard.dart';
+import 'package:mathosproject/widgets/RetroCalculator.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/widgets/level_indicator.dart';
 import 'package:mathosproject/models/app_user.dart';
@@ -34,7 +33,8 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
   late String _currentQuestion;
   late int _currentAnswer;
   late TextEditingController _answerController;
-  late FocusNode _focusNode;
+  bool _isAnswerCorrect = false;
+  bool _isSkipped = false;
 
   @override
   void initState() {
@@ -44,22 +44,64 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     _points = 0;
     _pointsChange = 0;
     _answerController = TextEditingController();
-    _focusNode = FocusNode();
-    generateQuestion();
     _answerController.addListener(_checkAnswer);
+    generateQuestion();
     WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-    });
   }
 
   @override
   void dispose() {
     _answerController.removeListener(_checkAnswer);
     _answerController.dispose();
-    _focusNode.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  void _checkAnswer() {
+    if (_answerController.text.isNotEmpty) {
+      int? userAnswer = int.tryParse(_answerController.text);
+      if (userAnswer != null && userAnswer == _currentAnswer) {
+        _validateCorrectAnswer();
+      }
+    }
+    setState(() {}); // Pour forcer la mise à jour de l'affichage
+  }
+
+  void _validateCorrectAnswer() {
+    setState(() {
+      _isAnswerCorrect = true;
+      _isSkipped = false;
+      _correctAnswersInRow++;
+      _pointsChange = 10 * _currentLevel;
+      _points += _pointsChange;
+      if (_correctAnswersInRow >= 3) {
+        _currentLevel++;
+        _correctAnswersInRow = 0;
+        _pointsChange += 50;
+        _points += 50;
+      }
+    });
+
+    Future.delayed(Duration(milliseconds: 300), () {
+      generateQuestion();
+    });
+  }
+
+  void skipQuestion() {
+    setState(() {
+      _isSkipped = true;
+      _isAnswerCorrect = false;
+      _correctAnswersInRow = 0;
+      _pointsChange = -5;
+      _points += _pointsChange;
+      if (_currentLevel > 1) {
+        _currentLevel--;
+      }
+    });
+
+    Future.delayed(Duration(milliseconds: 300), () {
+      generateQuestion();
+    });
   }
 
   void generateQuestion() {
@@ -67,75 +109,35 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     setState(() {
       _currentQuestion = result['question'];
       _currentAnswer = result['answer'];
+      _isAnswerCorrect = false;
+      _isSkipped = false;
       _answerController.text = "";
-      _focusNode.requestFocus();
     });
-  }
-
-  void submitAnswer(bool isCorrect) {
-    setState(() {
-      if (isCorrect) {
-        _correctAnswersInRow++;
-        _pointsChange = 10 * _currentLevel;
-        _points += _pointsChange;
-        if (_correctAnswersInRow >= 3) {
-          _currentLevel++;
-          _correctAnswersInRow = 0;
-          _pointsChange += 50;
-          _points += 50;
-        }
-      } else {
-        _correctAnswersInRow = 0;
-        _pointsChange = -5;
-        _points -= 5;
-        if (_currentLevel > 1) {
-          _currentLevel--;
-        }
-      }
-    });
-    generateQuestion();
-  }
-
-  void _checkAnswer() {
-    if (_answerController.text.isNotEmpty &&
-        int.tryParse(_answerController.text) == _currentAnswer) {
-      submitAnswer(true);
-    }
   }
 
   Future<void> _endTest() async {
-    // Vérifie si c'est une compétition et met à jour les données de la compétition
     if (widget.isCompetition && widget.competitionId != null) {
       await _updateCompetitionData();
     }
 
-    // Mise à jour des records locaux
     widget.profile.updateRecords(
         newRapidPoints: _points,
         newPrecisionPoints: 0,
         newEquationPoints: 0
     );
 
-    // Incrémentation des points dans le profil utilisateur
     widget.profile.points += _points;
 
-    // Affiche immédiatement la fenêtre de fin de partie
     _showEndGamePopup();
 
-    // Synchroniser les données en arrière-plan
     Future.delayed(Duration.zero, () async {
       if (await widget.profile.isOnline()) {
-        // Si l'utilisateur est en ligne, synchroniser avec Firebase
         await UserPreferences.updateProfileInFirestore(widget.profile);
       } else {
-        // Si l'utilisateur est hors ligne, sauvegarder localement
         await widget.profile.saveToLocalStorage();
       }
     });
   }
-
-
-
 
   Future<void> _updateCompetitionData() async {
     var localData = await HiveDataManager.getData<Map<String, dynamic>>(
@@ -220,31 +222,23 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
                 progressColor: Colors.green,
                 height: 20,
               ),
-              SizedBox(height: 20),
-              // Nouveau composant RetroQuestionAnswerFrame
-              Center(
-                child: RetroQuestionAnswerFrame(
+              SizedBox(height: 40),
+              Expanded(
+                child: RetroCalculator(
                   question: _currentQuestion,
+                  answer: _answerController.text,
                   controller: _answerController,
-                  focusNode: _focusNode,
-                  onSubmitted: (value) {
-                    submitAnswer(int.tryParse(value) == _currentAnswer);
-                    _focusNode.requestFocus();
+                  onSubmit: skipQuestion,
+                  onDelete: () {
+                    if (_answerController.text.isNotEmpty) {
+                      setState(() {
+                        _answerController.text = _answerController.text.substring(0, _answerController.text.length - 1);
+                      });
+                    }
                   },
+                  isCorrectAnswer: _isAnswerCorrect,
+                  isSkipped: _isSkipped,
                 ),
-              ),
-              Spacer(), // Ceci poussera le clavier vers le bas
-              CustomKeyboard(
-                controller: _answerController,
-                onSubmit: () => submitAnswer(false),
-                onDelete: () {
-                  if (_answerController.text.isNotEmpty) {
-                    setState(() {
-                      _answerController.text = _answerController.text
-                          .substring(0, _answerController.text.length - 1);
-                    });
-                  }
-                },
               ),
             ],
           ),
@@ -252,6 +246,4 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
       ),
     );
   }
-
-
 }
