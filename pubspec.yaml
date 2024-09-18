@@ -54,7 +54,6 @@ flutter:
     - assets/pirate.png
     - assets/logov2.png
     - assets/logov3.png
-    - assets/chrono.png
     - assets/progression.png
     - assets/astuce.png
     - assets/competition.png
@@ -65,6 +64,8 @@ flutter:
     - assets/stats.png
     - assets/target.png
     - assets/users.png
+    - assets/equation.png
+    - assets/jouer.png
 
   fonts:
     - family: 'PixelFont'

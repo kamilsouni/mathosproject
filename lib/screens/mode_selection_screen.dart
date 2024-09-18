@@ -18,17 +18,17 @@ class ModeSelectionScreen extends StatefulWidget {
   _ModeSelectionScreenState createState() => _ModeSelectionScreenState();
 }
 
-class _ModeSelectionScreenState extends State<ModeSelectionScreen> with SingleTickerProviderStateMixin {
+class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerProviderStateMixin {
   int _selectedIndex = 0;
   int _hoveredIndex = -1;
-  late AnimationController _controller;
-  late Animation<double> _animation;
+  late List<AnimationController> _controllers;
+  late List<Animation<double>> _animations;
 
   final List<Map<String, dynamic>> modes = [
     {
       'name': 'PROGRESSION',
       'color': Color(0xFFFF0000),
-      'icon':  'assets/progression.png', // Chemin vers votre icône
+      'icon': 'assets/progression.png',
       'description': 'Validez les opérations pour passer au niveau suivant.',
     },
     {
@@ -44,15 +44,15 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with SingleTi
       'description': 'Répondez rapidement en 1 minute.',
     },
     {
-      'name': 'PRECISION',
+      'name': 'PROBLEME',
       'color': Color(0xFF00FF00),
-      'icon': 'assets/target.png',
+      'icon': 'assets/probleme.png',
       'description': 'Soyez précis dans vos calculs.',
     },
     {
-      'name': 'EQUATIONS',
+      'name': 'EQUATION',
       'color': Color(0xFFEC003E),
-      'icon': 'assets/progression.png',
+      'icon': 'assets/equation.png',
       'description': 'Résolvez des équations à trou.',
     },
     {
@@ -66,17 +66,137 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with SingleTi
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 100),
-      vsync: this,
+    _controllers = List.generate(
+      modes.length,
+          (index) => AnimationController(
+        duration: Duration(milliseconds: 300),
+        vsync: this,
+      ),
     );
-    _animation = Tween<double>(begin: 1.0, end: 0.8).animate(_controller);
+    _animations = _controllers.map((controller) =>
+        Tween<double>(begin: 1.0, end: 1.1).animate(
+          CurvedAnimation(parent: controller, curve: Curves.easeInOut),
+        )
+    ).toList();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
+  }
+
+  void _onHover(int index, bool isHovered) {
+    setState(() {
+      _hoveredIndex = isHovered ? index : -1;
+    });
+    if (isHovered) {
+      _controllers[index].forward();
+    } else {
+      _controllers[index].reverse();
+    }
+  }
+
+  void _selectMode(int index) {
+    _showStartConfirmation(context, modes[index]['name'], () {
+      _showButtonAnimation(index);
+      Future.delayed(Duration(milliseconds: 500), () {
+        switch (index) {
+          case 0:
+            Navigator.push(context, _createRoute(ProgressionModeScreen(profile: widget.profile)));
+            break;
+          case 1:
+            Navigator.push(context, _createRoute(RewardModeScreen(profile: widget.profile)));
+            break;
+          case 2:
+            Navigator.push(context, _createRoute(RapidityModeScreen(profile: widget.profile)));
+            break;
+          case 3:
+            Navigator.push(context, _createRoute(ProblemModeScreen(profile: widget.profile)));
+            break;
+          case 4:
+            Navigator.push(context, _createRoute(EquationsModeScreen(profile: widget.profile)));
+            break;
+          case 5:
+            _checkConnectionAndNavigate();
+            break;
+        }
+      });
+    });
+  }
+
+  Route _createRoute(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var begin = Offset(1.0, 0.0);
+        var end = Offset.zero;
+        var curve = Curves.ease;
+        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
+
+  void _showStartConfirmation(BuildContext context, String mode, VoidCallback onConfirm) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Color(0xFF2E0854),
+        title: Text('Commencer $mode?',
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
+        content: Text(modes.firstWhere((m) => m['name'] == mode)['description'],
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              onConfirm();
+            },
+            child: Text('Commencer', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showButtonAnimation(int index) {
+    _controllers[index].forward().then((_) => _controllers[index].reverse());
+  }
+
+  void _checkConnectionAndNavigate() async {
+    bool isConnected = await ConnectivityManager().isConnected();
+    if (isConnected) {
+      Navigator.push(context, _createRoute(JoinOrCreateCompetitionScreen(profile: widget.profile)));
+    } else {
+      _showNoConnectionDialog();
+    }
+  }
+
+  void _showNoConnectionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Color(0xFF2E0854),
+        title: Text('NO CONNECTION', style: TextStyle(color: Color(0xFFFF0000), fontFamily: 'PixelFont')),
+        content: Text('Internet connection required for competition mode.', style: TextStyle(color: Color(0xFFF0F0F0), fontFamily: 'PixelFont')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('OK', style: TextStyle(color: Color(0xFF00A0FF), fontFamily: 'PixelFont')),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -89,7 +209,6 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with SingleTi
             _buildLogo(),
             Expanded(
               child: GridView.builder(
-                physics: NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.all(16),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
@@ -124,192 +243,82 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with SingleTi
   }
 
   Widget _buildModeButton(int index) {
-    return GestureDetector(
-      onTapDown: (_) => _onTapDown(index),
-      onTapUp: (_) => _onTapUp(index),
-      onTapCancel: () => _onTapCancel(),
-      onTap: () => _selectMode(index),
-      onLongPress: () => _showDescription(index),
-      child: AnimatedBuilder(
-        animation: _animation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: _hoveredIndex == index ? _animation.value : 1.0,
-            child: Container(
-              decoration: BoxDecoration(
-                color: modes[index]['color'],
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: modes[index]['color'].withOpacity(0.3),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ColorFiltered(
-                      colorFilter: ColorFilter.mode(
-                        Colors.white,  // Appliquer le filtre blanc à toutes les icônes
-                        BlendMode.srcATop,
-                      ),
-                      child: Image.asset(
-                        modes[index]['icon'],  // Utiliser une image d'asset pour l'icône
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      modes[index]['name'],
-                      style: TextStyle(
-                        fontFamily: 'PixelFont',
-                        fontSize: 14,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black54,
-                            offset: Offset(1, 1),
-                            blurRadius: 2,
-                          ),
-                        ],
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+    return MouseRegion(
+      onEnter: (_) => _onHover(index, true),
+      onExit: (_) => _onHover(index, false),
+      child: GestureDetector(
+        onTap: () => _selectMode(index),
+        child: AnimatedBuilder(
+          animation: _animations[index],
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _animations[index].value,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: modes[index]['color'],
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: modes[index]['color'].withOpacity(0.3),
+                      blurRadius: 10,
+                      spreadRadius: 2,
                     ),
                   ],
                 ),
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            modes[index]['icon'],
+                            width: 60,
+                            height: 60,
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            modes[index]['name'],
+                            style: TextStyle(
+                              fontFamily: 'PixelFont',
+                              fontSize: 14,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black54,
+                                  offset: Offset(1, 1),
+                                  blurRadius: 2,
+                                ),
+                              ],
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_hoveredIndex == index)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withOpacity(0.3),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.play_arrow,
+                              color: Colors.white,
+                              size: 50,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-
-  void _onTapDown(int index) {
-    setState(() {
-      _hoveredIndex = index;
-    });
-    _controller.forward();
-  }
-
-  void _onTapUp(int index) {
-    _controller.reverse();
-  }
-
-  void _onTapCancel() {
-    _controller.reverse();
-  }
-
-  void _showDescription(int index) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFF2E0854),
-          title: Text(modes[index]['name'],
-              style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          content: Text(modes[index]['description'],
-              style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          actions: [
-            TextButton(
-              child: Text('OK', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _selectMode(int index) {
-    _showStartConfirmation(context, modes[index]['name'], () {
-      _showButtonAnimation(index);
-      Future.delayed(Duration(milliseconds: 500), () {
-        switch (index) {
-          case 0:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ProgressionModeScreen(profile: widget.profile)));
-            break;
-          case 1:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => RewardModeScreen(profile: widget.profile)));
-            break;
-          case 2:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => RapidityModeScreen(profile: widget.profile)));
-            break;
-          case 3:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ProblemModeScreen(profile: widget.profile)));
-            break;
-          case 4:
-            Navigator.push(context, MaterialPageRoute(builder: (context) => EquationsModeScreen(profile: widget.profile)));
-            break;
-          case 5:
-            _checkConnectionAndNavigate();
-            break;
-        }
-      });
-    });
-  }
-
-  void _showStartConfirmation(BuildContext context, String mode, VoidCallback onConfirm) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFF2E0854),
-        title: Text('Commencer $mode?',
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-        content: Text(modes.firstWhere((m) => m['name'] == mode)['description'],
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Annuler', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              onConfirm();
-            },
-            child: Text('Commencer', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showButtonAnimation(int index) {
-    setState(() {
-      _hoveredIndex = index;
-    });
-    _controller.forward().then((_) => _controller.reverse());
-  }
-
-  void _checkConnectionAndNavigate() async {
-    bool isConnected = await ConnectivityManager().isConnected();
-    if (isConnected) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => JoinOrCreateCompetitionScreen(profile: widget.profile)));
-    } else {
-      _showNoConnectionDialog();
-    }
-  }
-
-  void _showNoConnectionDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFF2E0854),
-        title: Text('NO CONNECTION', style: TextStyle(color: Color(0xFFFF0000), fontFamily: 'PixelFont')),
-        content: Text('Internet connection required for competition mode.', style: TextStyle(color: Color(0xFFF0F0F0), fontFamily: 'PixelFont')),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK', style: TextStyle(color: Color(0xFF00A0FF), fontFamily: 'PixelFont')),
-          ),
-        ],
+            );
+          },
+        ),
       ),
     );
   }

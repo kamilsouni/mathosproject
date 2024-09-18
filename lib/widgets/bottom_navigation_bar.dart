@@ -33,17 +33,18 @@ class CustomBottomNavigationBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildNavItem(context, 0, 'JOUER', '▶️'),
-            _buildNavItem(context, 1, 'STATS', '📊'),
-            _buildNavItem(context, 2, 'PROFIL', '👤'),
-            _buildNavItem(context, 3, 'OPTIONS', '⚙️'),
+            _buildNavItem(context, 0, 'JOUER', Image.asset('assets/jouer.png')),
+            _buildNavItem(context, 1, 'STATS', Image.asset('assets/stats.png')),
+            _buildNavItem(context, 2, 'PROFIL', Image.asset('assets/users.png')),
+            _buildNavItem(context, 3, 'OPTIONS', Image.asset('assets/settings.png')),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(BuildContext context, int index, String label, String icon) {
+
+  Widget _buildNavItem(BuildContext context, int index, String label, Widget icon) {
     bool isSelected = selectedIndex == index;
     return Expanded(
       child: GestureDetector(
@@ -67,11 +68,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                icon,
-                style: TextStyle(
-                  fontSize: 20,
-                ),
+              Flexible(
+                child: icon,  // Utilise Flexible pour permettre à l'icône de s'adapter
               ),
               SizedBox(height: 2),
               Text(
@@ -91,6 +89,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
       ),
     );
   }
+
 
   void _navigateToScreen(BuildContext context, int index) {
     switch (index) {
