@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mathosproject/widgets/arcade_console.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/widgets/level_indicator.dart';
 import 'package:mathosproject/models/app_user.dart';
@@ -37,6 +38,7 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   late List<String> _answerChoices;
   late int _holePosition;
   bool hasTestStarted = false;
+  bool? _isCorrect;
 
   late AnimationController _equationController;
   late Animation<double> _equationAnimation;
@@ -182,7 +184,12 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
         }
       }
     });
-    generateQuestion();
+    Future.delayed(Duration(milliseconds: 500), () {
+      setState(() {
+        _isCorrect = null;
+      });
+      generateQuestion();
+    });
   }
 
   Future<void> _endTest() async {
@@ -333,170 +340,38 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     }
   }
 
-  Widget _buildEquationDisplay(String question) {
-    List<Widget> equationParts = [];
-    var splitQuestion = question.split(RegExp(r'\[.*?\]'));
 
-    for (int i = 0; i < splitQuestion.length; i++) {
-      equationParts.add(
-          Text(
-            splitQuestion[i],
-            style: TextStyle(
-              fontFamily: 'PixelFont',
-              fontSize: 32,
-              color: Colors.white,
-            ),
-          )
-      );
-
-      if (i < splitQuestion.length - 1) {
-        equationParts.add(
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.yellow,
-                border: Border.all(color: Colors.black, width: 2),
-              ),
-              child: Center(
-                child: Text(
-                  '?',
-                  style: TextStyle(
-                    fontFamily: 'PixelFont',
-                    fontSize: 32,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            )
-        );
-      }
-    }
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: equationParts,
-    );
-  }
-
-  Widget _buildAnswerButton(String choice, int index) {
-    return ScaleTransition(
-      scale: _buttonAnimations[index],
-      child: GestureDetector(
-        onTap: () => submitAnswer(choice),
-        child: Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            color: Color(0xFF4A752C),
-            border: Border.all(color: Colors.black, width: 3),
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black54,
-                offset: Offset(3, 3),
-                blurRadius: 0,
-              ),
-            ],
-          ),
-          child: Center(
-            child: Text(
-              choice,
-              style: TextStyle(
-                fontFamily: 'PixelFont',
-                fontSize: 32,
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFF564560),
-        appBar: GameAppBar(points: _points, lastChange: _pointsChange),
-        body: SafeArea(
+      backgroundColor: Color(0xFF564560),
+      appBar: GameAppBar(points: _points, lastChange: _pointsChange),
+      body: SafeArea(
         child: Column(
-        children: [
-        SizedBox(height: 20),
-    LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
-          SizedBox(height: 20),
-          CountdownTimer(
-            duration: 60,
-            onCountdownComplete: _endTest,
-            progressColor: Colors.green,
-            height: 20,
-          ),
-          SizedBox(height: 40),
-          ScaleTransition(
-            scale: _equationAnimation,
-            child: _buildEquationDisplay(_currentQuestion),
-          ),
-          SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(3, (index) {
-              return _buildAnswerButton(_answerChoices[index], index);
-            }),
-          ),
-        ],
-        ),
-        ),
-    );
-  }
-}
-
-// Ajoutez ces classes personnalisées pour améliorer l'aspect rétro
-
-class RetroButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final Widget child;
-
-  RetroButton({required this.onPressed, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: Color(0xFF4A752C),
-          border: Border.all(color: Colors.black, width: 3),
-          borderRadius: BorderRadius.circular(5),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black54,
-              offset: Offset(3, 3),
-              blurRadius: 0,
+          children: [
+            SizedBox(height: 20),
+            LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
+            SizedBox(height: 20),
+            CountdownTimer(
+              duration: 60,
+              onCountdownComplete: _endTest,
+              progressColor: Colors.green,
+              height: 20,
+            ),
+            SizedBox(height: 40),
+            Expanded(
+              child: Center(
+                child: ArcadeConsole(
+                  question: _currentQuestion,
+                  choices: _answerChoices,
+                  onAnswer: submitAnswer,
+                  isCorrect: _isCorrect,
+                ),
+              ),
             ),
           ],
         ),
-        child: child,
-      ),
-    );
-  }
-}
-
-class RetroText extends StatelessWidget {
-  final String text;
-  final double fontSize;
-  final Color color;
-
-  RetroText(this.text, {this.fontSize = 16, this.color = Colors.white});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontFamily: 'PixelFont',
-        fontSize: fontSize,
-        color: color,
       ),
     );
   }

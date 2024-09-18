@@ -1,4 +1,3 @@
-// arcade_console.dart
 import 'package:flutter/material.dart';
 
 class ArcadeConsole extends StatefulWidget {
@@ -25,33 +24,20 @@ class _ArcadeConsoleState extends State<ArcadeConsole> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 500),
-      vsync: this,
-    );
-    _glowAnimation = ColorTween(
-      begin: Colors.transparent,
-      end: Colors.transparent,
-    ).animate(_controller);
+    _controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
+    _glowAnimation = ColorTween(begin: Colors.transparent, end: Colors.transparent).animate(_controller);
   }
 
   @override
   void didUpdateWidget(ArcadeConsole oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isCorrect != oldWidget.isCorrect) {
-      if (widget.isCorrect != null) {
-        _glowAnimation = ColorTween(
-          begin: _glowAnimation.value,
-          end: widget.isCorrect! ? Colors.green.withOpacity(0.5) : Colors.red.withOpacity(0.5),
-        ).animate(_controller);
-        _controller.forward(from: 0.0);
-      } else {
-        _glowAnimation = ColorTween(
-          begin: _glowAnimation.value,
-          end: Colors.transparent,
-        ).animate(_controller);
-        _controller.forward(from: 0.0);
-      }
+      _glowAnimation = ColorTween(
+        begin: _glowAnimation.value,
+        end: widget.isCorrect == null ? Colors.transparent :
+        widget.isCorrect! ? Color(0xFF9BBC0F) : Color(0xFFBA4B32),
+      ).animate(_controller);
+      _controller.forward(from: 0.0);
     }
   }
 
@@ -63,77 +49,152 @@ class _ArcadeConsoleState extends State<ArcadeConsole> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 300,
-      height: 500,
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[900],
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black54,
-            blurRadius: 10,
-            spreadRadius: 5,
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: AnimatedBuilder(
-              animation: _glowAnimation,
-              builder: (context, child) {
-                return Container(
-                  padding: EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: _glowAnimation.value ?? Colors.transparent,
-                        blurRadius: 20,
-                        spreadRadius: 5,
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      widget.question,
-                      style: TextStyle(
-                        color: Colors.green,
-                        fontFamily: 'VT323',
-                        fontSize: 32,
-                      ),
-                    ),
-                  ),
-                );
-              },
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double consoleWidth = constraints.maxWidth * 0.8;  // Ajustement selon la largeur de l'écran
+        final double consoleHeight = consoleWidth * 1.6;  // Ratio 10:16 pour la Gameboy
+
+        return Padding(
+          padding: EdgeInsets.all(10),
+          child: FittedBox(
+            fit: BoxFit.contain,
+            alignment: Alignment.center,
+            child: Container(
+              width: consoleWidth,
+              height: consoleHeight,
+              decoration: BoxDecoration(
+                color: Color(0xFFDFDFDF),
+                border: Border.all(color: Colors.black, width: 3),
+                borderRadius: BorderRadius.circular(2), // Bordures moins arrondies pour un effet pixelisé
+              ),
+              child: Column(
+                children: [
+                  SizedBox(height: consoleHeight * 0.05),
+                  _buildScreen(consoleWidth * 0.8),
+                  Expanded(child: _buildControls()),
+                ],
+              ),
             ),
           ),
-          SizedBox(height: 16),
-          GridView.count(
-            crossAxisCount: 3,
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            shrinkWrap: true,
-            children: widget.choices.map((choice) {
-              return ElevatedButton(
-                child: Text(
-                  choice,
-                  style: TextStyle(fontSize: 24),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: CircleBorder(),
-                  padding: EdgeInsets.all(24),
-                ),
-                onPressed: () => widget.onAnswer(choice),
-              );
-            }).toList(),
+        );
+      },
+    );
+  }
+
+  Widget _buildScreen(double screenWidth) {
+    return Container(
+      width: screenWidth,
+      height: screenWidth * 0.75,  // Ratio de l'écran
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      decoration: BoxDecoration(
+        color: Color(0xFF9BBC0F),
+        border: Border.all(color: Color(0xFF616161), width: 2),
+        // Effet de texture en "carrés" pour simuler un pixel art minimal
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 1,
           ),
         ],
       ),
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: AnimatedBuilder(
+          animation: _glowAnimation,
+          builder: (context, child) {
+            return Container(
+              color: _glowAnimation.value ?? Color(0xFF9BBC0F),
+              child: Center(
+                child: Text(
+                  widget.question,
+                  style: TextStyle(
+                    color: Color(0xFF0F380F),
+                    fontFamily: 'VT323',
+                    fontSize: screenWidth * 0.11, // Taille augmentée pour un effet pixelisé
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildControls() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _buildDirectionalPad(),
+            _buildAnswerButtons(),
+          ],
+        ),
+        _buildStartSelectButtons(),
+      ],
+    );
+  }
+
+  Widget _buildDirectionalPad() {
+    return Container(
+      width: 80,
+      height: 80,
+      decoration: BoxDecoration(
+        color: Color(0xFF303030),
+        border: Border.all(color: Colors.black, width: 2),  // Bordures marquées pour effet pixel
+      ),
+      child: Icon(Icons.gamepad, color: Colors.grey[400], size: 50),
+    );
+  }
+
+  Widget _buildAnswerButtons() {
+    return Column(
+      children: widget.choices.map((choice) =>
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 1),
+            child: ElevatedButton(
+              child: Text(
+                choice,
+                style: TextStyle(fontSize: 24, color: Colors.white, fontFamily: 'VT323'),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF9C2C9C),
+                shape: CircleBorder(),
+                padding: EdgeInsets.all(20),
+                minimumSize: Size(60, 60),
+                elevation: 0,  // Pas d'ombrage pour respecter l'effet pixelisé
+                shadowColor: Colors.transparent,
+              ),
+              onPressed: () => widget.onAnswer(choice),
+            ),
+          )
+      ).toList(),
+    );
+  }
+
+  Widget _buildStartSelectButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: ['SELECT', 'START'].map((label) =>
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              width: 60,
+              height: 20,
+              decoration: BoxDecoration(
+                color: Color(0xFF5A5A5A),
+                border: Border.all(color: Colors.black, width: 2),  // Effet pixel avec bordures nettes
+              ),
+              child: Center(
+                child: Text(label, style: TextStyle(color: Colors.white, fontFamily: 'VT323', fontSize: 12)),
+              ),
+            ),
+          )
+      ).toList(),
     );
   }
 }
