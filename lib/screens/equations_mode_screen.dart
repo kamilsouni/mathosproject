@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mathosproject/screens/problem_mode_screen.dart';
-import 'package:mathosproject/screens/rapidity_mode_screen.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/widgets/level_indicator.dart';
 import 'package:mathosproject/models/app_user.dart';
@@ -29,7 +27,7 @@ class EquationsModeScreen extends StatefulWidget {
 }
 
 class _EquationsModeScreenState extends State<EquationsModeScreen>
-    with WidgetsBindingObserver, TickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late int _currentLevel;
   late int _correctAnswersInRow;
   late int _points;
@@ -40,8 +38,11 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   late int _holePosition;
   bool hasTestStarted = false;
 
-  List<AnimationController>? _cardAnimationControllers;
-  List<Animation<double>>? _cardAnimations;
+  late AnimationController _equationController;
+  late Animation<double> _equationAnimation;
+
+  List<AnimationController> _buttonControllers = [];
+  List<Animation<double>> _buttonAnimations = [];
 
   @override
   void initState() {
@@ -50,45 +51,24 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     _correctAnswersInRow = 0;
     _points = 0;
     _pointsChange = 0;
-    WidgetsBinding.instance.addObserver(this);
-    _initCardAnimations();
+    _equationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _equationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _equationController, curve: Curves.easeInOut),
+    );
     generateQuestion();
     _showStartDialog();
   }
 
-  void _initCardAnimations() {
-    _cardAnimationControllers = List.generate(
-      3,
-          (index) => AnimationController(
-        duration: Duration(milliseconds: 500),
-        vsync: this,
-      ),
-    );
-    _cardAnimations = _cardAnimationControllers!
-        .map((controller) => Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: controller, curve: Curves.easeInOut),
-    ))
-        .toList();
-  }
-
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-
-    if (_cardAnimationControllers != null) {
-      for (var controller in _cardAnimationControllers!) {
-        controller.dispose();
-      }
+    _equationController.dispose();
+    for (var controller in _buttonControllers) {
+      controller.dispose();
     }
-
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      _showExitDialog();
-    }
   }
 
   void generateQuestion() {
@@ -100,11 +80,23 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       _holePosition = result['holePosition'];
     });
 
-    if (_cardAnimationControllers != null) {
-      for (var controller in _cardAnimationControllers!) {
-        controller.reset();
-        controller.forward();
-      }
+    _equationController.reset();
+    _equationController.forward();
+
+    _buttonControllers.clear();
+    _buttonAnimations.clear();
+    for (int i = 0; i < _answerChoices.length; i++) {
+      final controller = AnimationController(
+        duration: Duration(milliseconds: 200 + (i * 100)),
+        vsync: this,
+      );
+      _buttonControllers.add(controller);
+      _buttonAnimations.add(
+        Tween<double>(begin: 0.0, end: 1.0).animate(
+          CurvedAnimation(parent: controller, curve: Curves.easeOut),
+        ),
+      );
+      controller.forward();
     }
   }
 
@@ -128,13 +120,13 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
         : '÷';
 
     if (holePosition == 0) {
-      question = '___ $operator $b = $answer';
+      question = '[ ? ] $operator $b = $answer';
       choices = _generateChoices(a.toString(), answer);
     } else if (holePosition == 1) {
-      question = '$a $operator ___ = $answer';
+      question = '$a $operator [ ? ] = $answer';
       choices = _generateChoices(b.toString(), answer);
     } else {
-      question = '$a ___ $b = $answer';
+      question = '$a [ ? ] $b = $answer';
       choices = _generateOperatorChoices(operator);
     }
 
@@ -194,36 +186,28 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   }
 
   Future<void> _endTest() async {
-    // Vérifie si c'est une compétition et met à jour les données de la compétition
     if (widget.isCompetition && widget.competitionId != null) {
       await _updateCompetitionData();
     }
 
-    // Mise à jour des records locaux
     widget.profile.updateRecords(
         newRapidPoints: 0,
         newProblemPoints: 0,
         newEquationPoints: _points
     );
 
-    // Incrémentation des points dans le profil utilisateur
     widget.profile.points += _points;
 
-    // Affiche immédiatement la fenêtre de fin de partie
     _showEndGamePopup();
 
-    // Synchroniser les données en arrière-plan
     Future.delayed(Duration.zero, () async {
       if (await widget.profile.isOnline()) {
-        // Si l'utilisateur est en ligne, synchroniser avec Firebase
         await UserPreferences.updateProfileInFirestore(widget.profile);
       } else {
-        // Si l'utilisateur est hors ligne, sauvegarder localement
         await widget.profile.saveToLocalStorage();
       }
     });
   }
-
 
   Future<void> _updateCompetitionData() async {
     var localData = await HiveDataManager.getData<Map<String, dynamic>>(
@@ -270,11 +254,12 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
-          content: Text(message),
+          backgroundColor: Color(0xFF564560),
+          title: Text(title, style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
+          content: Text(message, style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: Text('OK', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).pop(true);
@@ -292,18 +277,20 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Prêt à commencer ?'),
+          backgroundColor: Color(0xFF564560),
+          title: Text('Prêt à commencer ?', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Lorsque vous commencerez, vous aurez 60 secondes pour répondre à un maximum de questions.'),
-                Text('Bonne chance !'),
+                Text('Lorsque vous commencerez, vous aurez 60 secondes pour répondre à un maximum de questions.',
+                    style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
+                Text('Bonne chance !', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Commencer'),
+              child: Text('Commencer', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
               onPressed: () {
                 Navigator.of(context).pop();
                 if (!hasTestStarted) {
@@ -346,54 +333,18 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     }
   }
 
-  Future<void> _showExitDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Quitter l\'épreuve'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Si vous quittez maintenant, vous obtiendrez 0 point et l\'épreuve sera considérée comme terminée.'),
-                Text('Voulez-vous vraiment quitter ?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Annuler'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Quitter'),
-              onPressed: () {
-                _points = 0;
-                _endTest();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Widget _buildEquationDisplay(String question) {
     List<Widget> equationParts = [];
-    var splitQuestion = question.split('___');
+    var splitQuestion = question.split(RegExp(r'\[.*?\]'));
 
     for (int i = 0; i < splitQuestion.length; i++) {
       equationParts.add(
           Text(
             splitQuestion[i],
             style: TextStyle(
-              fontSize: 48,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              fontFamily: 'PixelFont',
+              fontSize: 32,
+              color: Colors.white,
             ),
           )
       );
@@ -401,10 +352,21 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       if (i < splitQuestion.length - 1) {
         equationParts.add(
             Container(
-              width: 60,
-              height: 60,
-              child: CustomPaint(
-                painter: CrystalPainter(),
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                color: Colors.yellow,
+                border: Border.all(color: Colors.black, width: 2),
+              ),
+              child: Center(
+                child: Text(
+                  '?',
+                  style: TextStyle(
+                    fontFamily: 'PixelFont',
+                    fontSize: 32,
+                    color: Colors.black,
+                  ),
+                ),
               ),
             )
         );
@@ -417,199 +379,125 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     );
   }
 
-  Widget _buildAnswerCard(String choice, int index) {
-    return AnimatedBuilder(
-      animation: _cardAnimations?[index] ?? AlwaysStoppedAnimation(1.0),
-      builder: (context, child) {
-        final animationValue = _cardAnimations?[index]?.value ?? 1.0;
-        return Transform(
-          transform: Matrix4.identity()
-            ..setEntry(3, 2, 0.001)
-            ..rotateY(pi * (1 - animationValue)),
-          alignment: Alignment.center,
-          child: GestureDetector(
-            onTap: () => submitAnswer(choice),
-            child: Container(
-              width: 120,
-              height: 200,
-              decoration: BoxDecoration(
-                color: Color(0xFFF0E6D2),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Color(0xFF8B0000), width: 3),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black45,
-                    blurRadius: 10,
-                    offset: Offset(0, 5),
-                  ),
-                ],
+  Widget _buildAnswerButton(String choice, int index) {
+    return ScaleTransition(
+      scale: _buttonAnimations[index],
+      child: GestureDetector(
+        onTap: () => submitAnswer(choice),
+        child: Container(
+          width: 80,
+          height: 80,
+          decoration: BoxDecoration(
+            color: Color(0xFF4A752C),
+            border: Border.all(color: Colors.black, width: 3),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black54,
+                offset: Offset(3, 3),
+                blurRadius: 0,
               ),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: CustomPaint(
-                      painter: TarotBackgroundPainter(),
-                    ),
-                  ),
-                  Center(
-                    child: Text(
-                      choice,
-                      style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF000000),fontFamily: 'Serif',
-                      ),
-                    ),
-                  ),
-                ],
+            ],
+          ),
+          child: Center(
+            child: Text(
+              choice,
+              style: TextStyle(
+                fontFamily: 'PixelFont',
+                fontSize: 32,
+                color: Colors.white,
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    return WillPopScope(
-      onWillPop: () async {
-        _showExitDialog();
-        return false;
-      },
-      child: Scaffold(
+    return Scaffold(
+        backgroundColor: Color(0xFF564560),
         appBar: GameAppBar(points: _points, lastChange: _pointsChange),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: SvgPicture.asset(
-                'assets/fond_d_ecran.svg',
-                fit: BoxFit.cover,
-                color: Colors.white.withOpacity(0.15),
-                colorBlendMode: BlendMode.modulate,
-              ),
-            ),
-            Column(
-              children: [
-                SizedBox(height: screenHeight * 0.05),
-                LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
-                SizedBox(height: screenHeight * 0.02),
-                CountdownTimer(
-                  duration: 60,
-                  onCountdownComplete: _endTest,
-                  progressColor: Colors.green,
-                  height: screenHeight * 0.02,
-                ),
-                SizedBox(height: screenHeight * 0.05),
-                _buildEquationDisplay(_currentQuestion),
-                SizedBox(height: screenHeight * 0.05),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: List.generate(3, (index) {
-                    return _buildAnswerCard(_answerChoices[index], index);
-                  }),
-                ),
-              ],
+        body: SafeArea(
+        child: Column(
+        children: [
+        SizedBox(height: 20),
+    LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
+          SizedBox(height: 20),
+          CountdownTimer(
+            duration: 60,
+            onCountdownComplete: _endTest,
+            progressColor: Colors.green,
+            height: 20,
+          ),
+          SizedBox(height: 40),
+          ScaleTransition(
+            scale: _equationAnimation,
+            child: _buildEquationDisplay(_currentQuestion),
+          ),
+          SizedBox(height: 40),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(3, (index) {
+              return _buildAnswerButton(_answerChoices[index], index);
+            }),
+          ),
+        ],
+        ),
+        ),
+    );
+  }
+}
+
+// Ajoutez ces classes personnalisées pour améliorer l'aspect rétro
+
+class RetroButton extends StatelessWidget {
+  final VoidCallback onPressed;
+  final Widget child;
+
+  RetroButton({required this.onPressed, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        padding: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Color(0xFF4A752C),
+          border: Border.all(color: Colors.black, width: 3),
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black54,
+              offset: Offset(3, 3),
+              blurRadius: 0,
             ),
           ],
         ),
+        child: child,
       ),
     );
   }
 }
 
-class DashedBorderPainter extends CustomPainter {
+class RetroText extends StatelessWidget {
+  final String text;
+  final double fontSize;
+  final Color color;
+
+  RetroText(this.text, {this.fontSize = 16, this.color = Colors.white});
+
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke;
-
-    const dashWidth = 5;
-    const dashSpace = 5;
-    double startX = 0;
-    final space = dashSpace + dashWidth;
-
-    while (startX < size.width) {
-      canvas.drawLine(Offset(startX, 0), Offset(startX + dashWidth, 0), paint);
-      canvas.drawLine(Offset(startX, size.height), Offset(startX + dashWidth, size.height), paint);
-      startX += space;
-    }
-
-    double startY = 0;
-    while (startY < size.height) {
-      canvas.drawLine(Offset(0, startY), Offset(0, startY + dashWidth), paint);
-      canvas.drawLine(Offset(size.width, startY), Offset(size.width, startY + dashWidth), paint);
-      startY += space;
-    }
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontFamily: 'PixelFont',
+        fontSize: fontSize,
+        color: color,
+      ),
+    );
   }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
-}
-
-class TarotBackgroundPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Color(0xFF8B0000).withOpacity(0.3)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-
-    for (int i = 0; i < size.width; i += 10) {
-      canvas.drawLine(Offset(i.toDouble(), 0), Offset(i.toDouble(), size.height), paint);
-    }
-    for (int i = 0; i < size.height; i += 10) {
-      canvas.drawLine(Offset(0, i.toDouble()), Offset(size.width, i.toDouble()), paint);
-    }
-
-    final decorPaint = Paint()
-      ..color = Color(0xFF8B0000).withOpacity(0.5)
-      ..style = PaintingStyle.fill;
-
-    canvas.drawCircle(Offset(size.width / 2, size.height / 2), 30, decorPaint);
-    canvas.drawRect(Rect.fromLTWH(10, 10, 20, 20), decorPaint);
-    canvas.drawRect(Rect.fromLTWH(size.width - 30, size.height - 30, 20, 20), decorPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class CrystalPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Color(0xFF8B0000)
-      ..style = PaintingStyle.fill;
-
-    final path = Path();
-    path.moveTo(size.width / 2, 0);
-    path.lineTo(size.width, size.height * 0.4);
-    path.lineTo(size.width * 0.7, size.height);
-    path.lineTo(size.width * 0.3, size.height);
-    path.lineTo(0, size.height * 0.4);
-    path.close();
-
-    canvas.drawPath(path, paint);
-
-    final highlightPaint = Paint()
-      ..color = Colors.white.withOpacity(0.5)
-      ..style = PaintingStyle.fill;
-
-    final highlightPath = Path();
-    highlightPath.moveTo(size.width * 0.3, size.height * 0.2);
-    highlightPath.lineTo(size.width * 0.7, size.height * 0.2);
-    highlightPath.lineTo(size.width * 0.5, size.height * 0.5);
-    highlightPath.close();
-
-    canvas.drawPath(highlightPath, highlightPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
