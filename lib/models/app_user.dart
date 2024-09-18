@@ -35,7 +35,7 @@ class AppUser extends HiveObject {
   int rapidTestRecord;
 
   @HiveField(9)
-  int precisionTestRecord;
+  int ProblemTestRecord;
 
   @HiveField(10)
   int equationTestRecord;
@@ -49,7 +49,7 @@ class AppUser extends HiveObject {
     this.points = 0,
     required this.flag,
     this.rapidTestRecord = 0,
-    this.precisionTestRecord = 0,
+    this.ProblemTestRecord = 0,
     this.equationTestRecord = 0,
     Map<int, Map<String, Map<String, int>>>? progression,
   }) : this.progression = progression ?? initializeProgression();
@@ -127,14 +127,14 @@ class AppUser extends HiveObject {
 
   void updateRecords({
     required int newRapidPoints,
-    required int newPrecisionPoints,
+    required int newProblemPoints,
     required int newEquationPoints
   }) async {
     if (newRapidPoints > rapidTestRecord) {
       rapidTestRecord = newRapidPoints;
     }
-    if (newPrecisionPoints > precisionTestRecord) {
-      precisionTestRecord = newPrecisionPoints;
+    if (newProblemPoints > ProblemTestRecord) {
+      ProblemTestRecord = newProblemPoints;
     }
     if (newEquationPoints > equationTestRecord) {
       equationTestRecord = newEquationPoints;
@@ -210,7 +210,7 @@ class AppUser extends HiveObject {
       'points': points,
       'flag': flag,
       'rapidTestRecord': rapidTestRecord,
-      'precisionTestRecord': precisionTestRecord,
+      'ProblemTestRecord': ProblemTestRecord,
       'equationTestRecord': equationTestRecord,
       'progression': progression.map((key, value) => MapEntry(key.toString(), value.map((k, v) => MapEntry(k, v)))),
     };
@@ -251,7 +251,7 @@ class AppUser extends HiveObject {
       points: json['points'] ?? 0,
       flag: json['flag'],
       rapidTestRecord: json['rapidTestRecord'] ?? 0,
-      precisionTestRecord: json['precisionTestRecord'] ?? 0,
+      ProblemTestRecord: json['ProblemTestRecord'] ?? 0,
       equationTestRecord: json['equationTestRecord'] ?? 0,
       progression: json['progression'] != null
           ? (json['progression'] as Map).map((key, value) => MapEntry(

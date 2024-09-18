@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mathosproject/screens/precision_mode_screen.dart';
+import 'package:mathosproject/screens/problem_mode_screen.dart';
 import 'package:mathosproject/screens/rapidity_mode_screen.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/widgets/level_indicator.dart';
@@ -202,7 +202,7 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     // Mise à jour des records locaux
     widget.profile.updateRecords(
         newRapidPoints: 0,
-        newPrecisionPoints: 0,
+        newProblemPoints: 0,
         newEquationPoints: _points
     );
 

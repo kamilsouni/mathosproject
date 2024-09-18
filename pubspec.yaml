@@ -55,6 +55,16 @@ flutter:
     - assets/logov2.png
     - assets/logov3.png
     - assets/chrono.png
+    - assets/progression.png
+    - assets/astuce.png
+    - assets/competition.png
+    - assets/probleme.png
+    - assets/progression.png
+    - assets/settings.png
+    - assets/speed.png
+    - assets/stats.png
+    - assets/target.png
+    - assets/users.png
 
   fonts:
     - family: 'PixelFont'

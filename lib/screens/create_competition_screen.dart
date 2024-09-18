@@ -19,7 +19,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
   final _formKey = GlobalKey<FormState>();
   String _competitionName = '';
   int _numRapidTests = 0;
-  int _numPrecisionTests = 0;
+  int _numProblemTests = 0;
   int _numEquationTests = 0;  // Nouveau champ pour les tests d'équations
 
 
@@ -33,7 +33,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
           DocumentReference competitionRef = await FirebaseFirestore.instance.collection('competitions').add({
             'name': _competitionName,
             'numRapidTests': _numRapidTests,
-            'numPrecisionTests': _numPrecisionTests,
+            'numProblemTests': _numProblemTests,
             'numEquationTests': _numEquationTests,  // Ajout du nombre de tests d'équations
             'createdBy': widget.profile.id,
           });
@@ -42,7 +42,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
           await competitionRef.collection('participants').doc(widget.profile.id).set({
             'name': widget.profile.name,
             'rapidTests': 0,
-            'precisionTests': 0,
+            'ProblemTests': 0,
             'totalPoints': 0,
           });
 
@@ -61,14 +61,14 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
           await HiveDataManager.saveData('competitions', tempId, {
             'name': _competitionName,
             'numRapidTests': _numRapidTests,
-            'numPrecisionTests': _numPrecisionTests,
+            'numProblemTests': _numProblemTests,
             'numEquationTests': _numEquationTests,  // Ajout du nombre de tests d'équations
             'createdBy': widget.profile.id,
             'participants': {
               widget.profile.id: {
                 'name': widget.profile.name,
                 'rapidTests': 0,
-                'precisionTests': 0,
+                'ProblemTests': 0,
                 'equationTests': 0,  // Ajout du compteur de tests d'équations
                 'totalPoints': 0,
               }
@@ -184,7 +184,7 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
                         return null;
                       },
                       onSaved: (value) {
-                        _numPrecisionTests = int.parse(value!);
+                        _numProblemTests = int.parse(value!);
                       },
                     ),
                     TextFormField(

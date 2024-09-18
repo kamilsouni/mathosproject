@@ -13,13 +13,13 @@ class Participant extends HiveObject {
   final int rapidTests;
 
   @HiveField(2)
-  final int precisionTests;
+  final int ProblemTests;
 
   @HiveField(3)
   final int rapidPoints;
 
   @HiveField(4)
-  final int precisionPoints;
+  final int ProblemPoints;
 
   @HiveField(5)
   final int totalPoints;
@@ -27,9 +27,9 @@ class Participant extends HiveObject {
   Participant({
     required this.name,
     required this.rapidTests,
-    required this.precisionTests,
+    required this.ProblemTests,
     required this.rapidPoints,
-    required this.precisionPoints,
+    required this.ProblemPoints,
     required this.totalPoints,
   });
 
@@ -37,9 +37,9 @@ class Participant extends HiveObject {
     return {
       'name': name,
       'rapidTests': rapidTests,
-      'precisionTests': precisionTests,
+      'ProblemTests': ProblemTests,
       'rapidPoints': rapidPoints,
-      'precisionPoints': precisionPoints,
+      'ProblemPoints': ProblemPoints,
       'totalPoints': totalPoints,
     };
   }
@@ -48,9 +48,9 @@ class Participant extends HiveObject {
     return Participant(
       name: data['name'],
       rapidTests: data['rapidTests'],
-      precisionTests: data['precisionTests'],
+      ProblemTests: data['ProblemTests'],
       rapidPoints: data['rapidPoints'],
-      precisionPoints: data['precisionPoints'],
+      ProblemPoints: data['ProblemPoints'],
       totalPoints: data['totalPoints'],
     );
   }

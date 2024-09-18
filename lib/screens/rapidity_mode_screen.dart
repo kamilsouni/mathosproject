@@ -122,7 +122,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
 
     widget.profile.updateRecords(
         newRapidPoints: _points,
-        newPrecisionPoints: 0,
+        newProblemPoints: 0,
         newEquationPoints: 0
     );
 

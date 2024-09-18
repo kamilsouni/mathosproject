@@ -95,7 +95,7 @@ class _StatsScreenState extends State<StatsScreen> {
                   _buildProgressionTab(),
                   _buildRankingTab(),
                   _buildRapidityRecordsTab(),
-                  _buildPrecisionRecordsTab(),
+                  _buildProblemRecordsTab(),
                   _buildEquationRecordsTab(), // Ajout de l'onglet Équation
                 ],
               ),
@@ -316,11 +316,11 @@ class _StatsScreenState extends State<StatsScreen> {
   }
 
   // Onglet Records pour Précision
-  Widget _buildPrecisionRecordsTab() {
+  Widget _buildProblemRecordsTab() {
     return FutureBuilder(
       future: FirebaseFirestore.instance
           .collection('profiles')
-          .orderBy('precisionTestRecord', descending: true) // Assurez-vous que ce champ est correct
+          .orderBy('ProblemTestRecord', descending: true) // Assurez-vous que ce champ est correct
           .limit(10)
           .get(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -339,7 +339,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 backgroundImage: AssetImage(data['flag'] ?? 'assets/default_flag.png'),
               ),
               title: Text('#${index + 1} ${data['name']}'),
-              trailing: Text('${data['precisionTestRecord'] ?? 'N/A'} points'),
+              trailing: Text('${data['ProblemTestRecord'] ?? 'N/A'} points'),
             );
           },
         );

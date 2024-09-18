@@ -25,7 +25,7 @@ class AppUserAdapter extends TypeAdapter<AppUser> {
       points: fields[5] as int,
       flag: fields[6] as String,
       rapidTestRecord: fields[8] as int,
-      precisionTestRecord: fields[9] as int,
+      ProblemTestRecord: fields[9] as int,
       progression: (fields[7] as Map?)?.map((dynamic k, dynamic v) => MapEntry(
           k as int,
           (v as Map).map((dynamic k, dynamic v) =>
@@ -56,7 +56,7 @@ class AppUserAdapter extends TypeAdapter<AppUser> {
       ..writeByte(8)
       ..write(obj.rapidTestRecord)
       ..writeByte(9)
-      ..write(obj.precisionTestRecord);
+      ..write(obj.ProblemTestRecord);
   }
 
   @override

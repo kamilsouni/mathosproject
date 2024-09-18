@@ -19,9 +19,9 @@ class ParticipantAdapter extends TypeAdapter<Participant> {
     return Participant(
       name: fields[0] as String,
       rapidTests: fields[1] as int,
-      precisionTests: fields[2] as int,
+      ProblemTests: fields[2] as int,
       rapidPoints: fields[3] as int,
-      precisionPoints: fields[4] as int,
+      ProblemPoints: fields[4] as int,
       totalPoints: fields[5] as int,
     );
   }
@@ -35,11 +35,11 @@ class ParticipantAdapter extends TypeAdapter<Participant> {
       ..writeByte(1)
       ..write(obj.rapidTests)
       ..writeByte(2)
-      ..write(obj.precisionTests)
+      ..write(obj.ProblemTests)
       ..writeByte(3)
       ..write(obj.rapidPoints)
       ..writeByte(4)
-      ..write(obj.precisionPoints)
+      ..write(obj.ProblemPoints)
       ..writeByte(5)
       ..write(obj.totalPoints);
   }

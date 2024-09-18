@@ -19,7 +19,7 @@ class Competition extends HiveObject {
   final int numRapidTests;
 
   @HiveField(4)
-  final int numPrecisionTests;
+  final int numProblemTests;
 
   @HiveField(5)
   final Map<String, dynamic> participants; // {userId: participantData}
@@ -29,7 +29,7 @@ class Competition extends HiveObject {
     required this.creatorId,
     required this.name,
     required this.numRapidTests,
-    required this.numPrecisionTests,
+    required this.numProblemTests,
     required this.participants,
   });
 
@@ -39,7 +39,7 @@ class Competition extends HiveObject {
       'creatorId': creatorId,
       'name': name,
       'numRapidTests': numRapidTests,
-      'numPrecisionTests': numPrecisionTests,
+      'numProblemTests': numProblemTests,
       'participants': participants,
     };
   }
@@ -51,7 +51,7 @@ class Competition extends HiveObject {
       creatorId: data['creatorId'],
       name: data['name'],
       numRapidTests: data['numRapidTests'],
-      numPrecisionTests: data['numPrecisionTests'],
+      numProblemTests: data['numProblemTests'],
       participants: data['participants'],
     );
   }
@@ -108,7 +108,7 @@ class Competition extends HiveObject {
       creatorId: json['creatorId'],
       name: json['name'],
       numRapidTests: json['numRapidTests'],
-      numPrecisionTests: json['numPrecisionTests'],
+      numProblemTests: json['numProblemTests'],
       participants: Map<String, dynamic>.from(json['participants']),
     );
   }

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/rapidity_mode_screen.dart';
-import 'package:mathosproject/screens/precision_mode_screen.dart';
+import 'package:mathosproject/screens/problem_mode_screen.dart';
 import 'package:mathosproject/utils/hive_data_manager.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
@@ -25,7 +25,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
   late List<Map<String, dynamic>> _participants = [];
   bool _isLoading = true;
   int totalRapidTests = 0;
-  int totalPrecisionTests = 0;
+  int totalProblemTests = 0;
   int totalEquationTests = 0;
 
   @override
@@ -122,13 +122,13 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
 
   void _updateTotalTests() {
     totalRapidTests = _competitionData['numRapidTests'] ?? 0;
-    totalPrecisionTests = _competitionData['numPrecisionTests'] ?? 0;
+    totalProblemTests = _competitionData['numProblemTests'] ?? 0;
   }
 
   Future<void> _startTest(String type) async {
     var currentParticipant = _participants.firstWhere((p) => p['id'] == widget.profile.id, orElse: () => {});
     int completedTests = currentParticipant['${type.toLowerCase()}Tests'] ?? 0;
-    int totalTests = type == 'Rapidité' ? totalRapidTests : totalPrecisionTests;
+    int totalTests = type == 'Rapidité' ? totalRapidTests : totalProblemTests;
 
     if (completedTests >= totalTests) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -143,7 +143,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
       MaterialPageRoute(
         builder: (context) => type == 'Rapidité'
             ? RapidityModeScreen(profile: widget.profile, isCompetition: true, competitionId: widget.competitionId)
-            : PrecisionModeScreen(profile: widget.profile, isCompetition: true, competitionId: widget.competitionId),
+            : ProblemModeScreen(profile: widget.profile, isCompetition: true, competitionId: widget.competitionId),
       ),
     );
 
@@ -254,7 +254,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
 
     var currentParticipant = _participants.firstWhere((p) => p['id'] == widget.profile.id, orElse: () => {});
     int completedRapidTests = currentParticipant['rapidTests'] ?? 0;
-    int completedPrecisionTests = currentParticipant['precisionTests'] ?? 0;
+    int completedProblemTests = currentParticipant['ProblemTests'] ?? 0;
     int completedEquationTests = currentParticipant['equationTests'] ?? 0;
 
     return Scaffold(
@@ -301,11 +301,11 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
                     SizedBox(width: 8),
                     Expanded(
                       child: _buildButton(
-                        label: 'Précision',
+                        label: 'Problème',
                         icon: Icons.precision_manufacturing,
                         onPressed: () => _startTest('Précision'),
-                        completedTests: completedPrecisionTests,
-                        totalTests: totalPrecisionTests,
+                        completedTests: completedProblemTests,
+                        totalTests: totalProblemTests,
                       ),
                     ),
                     SizedBox(width: 8),
@@ -368,7 +368,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
                       ),
                     ),
                     DataCell(Text('${participant['rapidTests'] ?? 0}')),
-                    DataCell(Text('${participant['precisionTests'] ?? 0}')),
+                    DataCell(Text('${participant['ProblemTests'] ?? 0}')),
                     DataCell(Text('${participant['equationTests'] ?? 0}')),
                     DataCell(Text('${participant['totalPoints'] ?? 0}')),
                   ],

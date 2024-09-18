@@ -21,7 +21,7 @@ class CompetitionAdapter extends TypeAdapter<Competition> {
       creatorId: fields[1] as String,
       name: fields[2] as String,
       numRapidTests: fields[3] as int,
-      numPrecisionTests: fields[4] as int,
+      numProblemTests: fields[4] as int,
       participants: (fields[5] as Map).cast<String, dynamic>(),
     );
   }
@@ -39,7 +39,7 @@ class CompetitionAdapter extends TypeAdapter<Competition> {
       ..writeByte(3)
       ..write(obj.numRapidTests)
       ..writeByte(4)
-      ..write(obj.numPrecisionTests)
+      ..write(obj.numProblemTests)
       ..writeByte(5)
       ..write(obj.participants);
   }

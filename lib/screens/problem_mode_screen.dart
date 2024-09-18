@@ -11,22 +11,22 @@ import 'package:mathosproject/utils/hive_data_manager.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PrecisionModeScreen extends StatefulWidget {
+class ProblemModeScreen extends StatefulWidget {
   final AppUser profile;
   final bool isCompetition;
   final String? competitionId;
 
-  PrecisionModeScreen({
+  ProblemModeScreen({
     required this.profile,
     this.isCompetition = false,
     this.competitionId,
   });
 
   @override
-  _PrecisionModeScreenState createState() => _PrecisionModeScreenState();
+  _ProblemModeScreenState createState() => _ProblemModeScreenState();
 }
 
-class _PrecisionModeScreenState extends State<PrecisionModeScreen> with WidgetsBindingObserver {
+class _ProblemModeScreenState extends State<ProblemModeScreen> with WidgetsBindingObserver {
   late int _points;
   late int _pointsChange;
   late String _currentQuestion;
@@ -280,7 +280,7 @@ class _PrecisionModeScreenState extends State<PrecisionModeScreen> with WidgetsB
     // Mise à jour des records locaux
     widget.profile.updateRecords(
         newRapidPoints: 0,
-        newPrecisionPoints: _points,
+        newProblemPoints: _points,
         newEquationPoints: 0
     );
 
@@ -307,7 +307,7 @@ class _PrecisionModeScreenState extends State<PrecisionModeScreen> with WidgetsB
         'competitionParticipants_${widget.competitionId}', widget.profile.id) ?? {};
 
     localData['name'] = widget.profile.name;
-    localData['precisionTests'] = (localData['precisionTests'] ?? 0) + 1;
+    localData['ProblemTests'] = (localData['ProblemTests'] ?? 0) + 1;
     localData['totalPoints'] = (localData['totalPoints'] ?? 0) + _points;
     localData['flag'] = widget.profile.flag;
 

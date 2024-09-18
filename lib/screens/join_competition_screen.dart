@@ -47,7 +47,7 @@ class _JoinCompetitionScreenState extends State<JoinCompetitionScreen> {
                 .set({
               'name': widget.profile.name,
               'rapidTests': 0,
-              'precisionTests': 0,
+              'ProblemTests': 0,
               'totalPoints': 0,
               'flagUrl': widget.profile.flag, // Ensure the flag URL is set
             });
