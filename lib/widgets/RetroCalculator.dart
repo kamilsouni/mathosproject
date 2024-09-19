@@ -10,6 +10,8 @@ class RetroCalculator extends StatelessWidget {
   final VoidCallback onDelete;
   final bool isCorrectAnswer;
   final bool isSkipped;
+  final bool isEquationMode; // Nouveau paramètre pour distinguer le mode Équation
+
 
   RetroCalculator({
     required this.question,
@@ -19,14 +21,14 @@ class RetroCalculator extends StatelessWidget {
     required this.onDelete,
     this.isCorrectAnswer = false,
     this.isSkipped = false,
+    this.isEquationMode = false, // Par défaut, on considère que c'est le mode Problème
+
   });
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        double fontSize = constraints.maxWidth * 0.1; // Calcul de la taille de police en fonction de la largeur
-
         return Container(
           margin: EdgeInsets.all(16),
           decoration: BoxDecoration(
@@ -43,7 +45,6 @@ class RetroCalculator extends StatelessWidget {
           ),
           child: Column(
             children: [
-              // Partie supérieure de la calculette
               Container(
                 height: 20,
                 decoration: BoxDecoration(
@@ -54,72 +55,60 @@ class RetroCalculator extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // Écran de la calculette avec ajustement de la taille de police
-              Container(
-                padding: EdgeInsets.all(16),
-                margin: EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      isCorrectAnswer ? Colors.green[200]! :
-                      isSkipped ? Colors.red[200]! : Color(0xFFCCCDBF),
-                      isCorrectAnswer ? Colors.green[100]! :
-                      isSkipped ? Colors.red[100]! : Color(0xFFBBBCAE),
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  margin: EdgeInsets.symmetric(horizontal: 8),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        isCorrectAnswer ? Colors.green[200]! :
+                        isSkipped ? Colors.red[200]! : Color(0xFFCCCDBF),
+                        isCorrectAnswer ? Colors.green[100]! :
+                        isSkipped ? Colors.red[100]! : Color(0xFFBBBCAE),
+                      ],
+                    ),
+                    border: Border.all(color: Colors.black, width: 4),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Center(
+                          child: AutoSizeText(
+                            question,
+                            style: TextStyle(
+                              fontFamily: 'VT323',
+                              color: Colors.black87,
+                            ),
+                            maxLines: isEquationMode ? 1 : 5, // Une seule ligne pour les équations, plusieurs pour les problèmes
+                            minFontSize: 10,
+                            maxFontSize: isEquationMode ? 48 : 24, // Plus grande taille pour les équations
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: AutoSizeText(
+                          answer,
+                          style: TextStyle(
+                            fontFamily: 'VT323',
+                            color: Colors.black,
+                          ),
+                          maxLines: 1,
+                          minFontSize: 10,
+                          maxFontSize: 24,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ],
                   ),
-                  border: Border.all(color: Colors.black, width: 4),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AutoSizeText(
-                      question,
-                      style: TextStyle(
-                        fontFamily: 'VT323',
-                        fontSize: fontSize + 10, // Ajustement de la taille de police
-                        color: Colors.black87,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 2,
-                            color: Colors.black26,
-                            offset: Offset(1, 1),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1, // S'assurer que le texte tient sur une ligne
-                      minFontSize: 10, // Taille minimale du texte
-                    ),
-                    SizedBox(height: 8),
-                    AutoSizeText(
-                      answer,
-                      style: TextStyle(
-                        fontFamily: 'VT323',
-                        fontSize: fontSize + 10,
-                        color: Colors.black,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 2,
-                            color: Colors.black26,
-                            offset: Offset(1, 1),
-                          ),
-                        ],
-                      ),
-                      textAlign: TextAlign.center,
-                      maxLines: 1, // S'assurer que le texte tient sur une ligne
-                      minFontSize: 10, // Taille minimale du texte
-                    ),
-                  ],
                 ),
               ),
-
-              SizedBox(height: 20),
-
-              // Clavier personnalisé
               Expanded(
                 child: CustomKeyboard(
                   controller: controller,

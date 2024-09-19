@@ -5,7 +5,7 @@ class CountdownTimer extends StatefulWidget {
   final VoidCallback onCountdownComplete;
   final TextStyle? textStyle;
   final Color progressColor;
-  final double height; // Cette propriété sera utilisée comme hauteur maximale
+  final double height;
 
   CountdownTimer({
     required this.duration,
@@ -53,15 +53,15 @@ class _CountdownTimerState extends State<CountdownTimer>
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final barWidth = screenWidth - 32; // 16 pixels de marge de chaque côté
-    final segmentWidth = (barWidth - 4 - 19) / 20; // -4 pour la bordure, -19 pour les séparateurs
+    final barWidth = screenWidth - 32;
+    final segmentWidth = (barWidth - 4 - 19) / 20;
     final segmentHeight = segmentWidth < widget.height ? segmentWidth : widget.height;
 
     return Center(
       child: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
-          final elapsedSegments = ((widget.duration - (_controller.value * widget.duration)) / 3).floor();
+          final elapsedSegments = ((widget.duration - (_controller.value * widget.duration)) / (widget.duration / 20)).floor();
           return Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -76,7 +76,7 @@ class _CountdownTimerState extends State<CountdownTimer>
               SizedBox(height: 10),
               Container(
                 width: barWidth,
-                height: segmentHeight + 4, // +4 pour la bordure
+                height: segmentHeight + 4,
                 decoration: BoxDecoration(
                   color: Colors.black,
                   border: Border.all(color: Colors.white, width: 2),

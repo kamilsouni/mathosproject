@@ -65,48 +65,37 @@ class _LevelIndicatorState extends State<LevelIndicator>
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double totalWidth = screenWidth - 32; // Subtracting some padding
+    double totalWidth = screenWidth - 32;
     double boxSize = (totalWidth - (widget.maxLevel - 1) * 4) / widget.maxLevel;
-    double fontSize = boxSize * 0.5;
 
     List<Widget> levelBlocks = [];
 
     for (int i = 1; i <= widget.maxLevel; i++) {
       levelBlocks.add(
-        AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            double offset =
-            i == widget.currentLevel ? _vibrationAnimation.value : 0.0;
-            return Transform.translate(
-              offset: Offset(offset, 0),
-              child: Container(
-                width: boxSize,
-                height: boxSize,
-                margin: EdgeInsets.symmetric(horizontal: 2.0),
-                decoration: BoxDecoration(
-                  color: i <= widget.currentLevel ? Colors.yellow : Colors.grey[800],
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                child: Center(
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Padding(
-                      padding: EdgeInsets.all(4.0),
-                      child: Text(
-                        '$i',
-                        style: TextStyle(
-                          fontFamily: 'PixelFont',
-                          color: i <= widget.currentLevel ? Colors.black : Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+        Container(
+          width: boxSize,
+          height: boxSize,
+          margin: EdgeInsets.symmetric(horizontal: 2.0),
+          decoration: BoxDecoration(
+            color: i <= widget.currentLevel ? Colors.yellow : Colors.grey[800],
+            border: Border.all(color: Colors.white, width: 2),
+          ),
+          child: Center(
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: Padding(
+                padding: EdgeInsets.all(4.0),
+                child: Text(
+                  '$i',
+                  style: TextStyle(
+                    fontFamily: 'PixelFont',
+                    color: i <= widget.currentLevel ? Colors.black : Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-            );
-          },
+            ),
+          ),
         ),
       );
     }
@@ -119,7 +108,7 @@ class _LevelIndicatorState extends State<LevelIndicator>
           style: TextStyle(
             fontFamily: 'PixelFont',
             color: Colors.white,
-            fontSize: 20, // Reduced font size
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),

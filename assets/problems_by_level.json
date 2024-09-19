@@ -981,404 +981,245 @@
 
     "niveau5": [
         {
-            "question": "Un stock de 70000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 21000
+            "question": "Une entreprise dispose de 10000 euros pour son budget annuel. Elle décide d'allouer 40% de ce budget à l'achat de nouveaux équipements, puis de réduire de 10% le montant restant pour la formation des employés. Combien d'euros restent après ces deux allocations ?",
+            "reponse": 5400
         },
         {
-            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 40000
+            "question": "Une usine produit 20000 unités de produits. Elle vend 30% de la production à un grossiste, puis réduit de 20% le stock restant pour un autre client. Combien d'unités de produit restent dans l'usine ?",
+            "reponse": 11200
         },
         {
-            "question": "Un stock de 40000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 28000
+            "question": "Un budget de 50000 euros est alloué à une campagne marketing. L'entreprise utilise 50% du budget pour des publicités en ligne, puis 25% du montant restant pour des publicités télévisées. Combien d'euros restent pour d'autres initiatives ?",
+            "reponse": 18750
         },
         {
-            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 6000
+            "question": "Une société reçoit 30000 litres de carburant. Elle utilise 70% pour ses camions, puis 15% du reste pour ses voitures de service. Combien de litres de carburant restent après ces deux utilisations ?",
+            "reponse": 7650
         },
         {
-            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 99000
+            "question": "Une entreprise a un budget de 40000 euros. Elle utilise 40% du budget pour des campagnes publicitaires, puis retire 30% du budget restant pour des événements promotionnels. Combien reste-t-il d'euros après ces dépenses ?",
+            "reponse": 16800
         },
         {
-            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 60000
-        },
-        {
-            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 40000
-        },
-        {
-            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 48000
-        },
-        {
-            "question": "Un stock de 40000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 40000
-        },
-        {
-            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 54000
-        },
-        {
-            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 21000
-        },
-        {
-            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 44999
-        },
-        {
-            "question": "Un stock de 40000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 36000
-        },
-        {
-            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 17000
-        },
-        {
-            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 35000
-        },
-        {
-            "question": "Un stock de 100000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 120000
-        },
-        {
-            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 140000
-        },
-        {
-            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 40000
-        },
-        {
-            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 22000
-        },
-        {
-            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 88000
-        },
-        {
-            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 54000
-        },
-        {
-            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 96000
-        },
-        {
-            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 102000
-        },
-        {
-            "question": "Un stock de 30000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 24000
-        },
-        {
-            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 36000
-        },
-        {
-            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 50000
-        },
-        {
-            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 32000
-        },
-        {
-            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "question": "Une usine produit 50000 unités. Elle vend 60% à un client, puis réserve 25% du stock restant pour un autre acheteur. Combien d'unités restent en stock après ces deux transactions ?",
             "reponse": 15000
         },
         {
-            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 60000
+            "question": "Un budget de 70000 euros est alloué pour des projets d'innovation. 40% est dépensé pour la recherche et développement, puis 10% du montant restant est utilisé pour le marketing des nouveaux produits. Combien reste-t-il dans le budget après ces dépenses ?",
+            "reponse": 37800
         },
         {
-            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 99000
+            "question": "Une entreprise dispose de 90000 litres de carburant. Elle utilise 75% pour les camions, puis 20% du reste pour des véhicules de service. Combien de litres de carburant restent après ces deux utilisations ?",
+            "reponse": 4500
         },
         {
-            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 98000
+            "question": "Une société alloue un budget de 60000 euros. Elle dépense 35% pour la formation des employés, puis 15% du montant restant pour des projets de bien-être. Combien d'euros restent dans le budget après ces allocations ?",
+            "reponse": 33150
         },
         {
-            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 162000
+            "question": "Une usine produit 30000 unités de marchandises. Elle vend 50% à un client, puis 10% du reste est mis de côté pour un autre client. Combien d'unités restent après ces transactions ?",
+            "reponse": 13500
         },
         {
-            "question": "Un stock de 70000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 77000
+            "question": "Un budget de 80000 euros est alloué pour des travaux d'amélioration. 60% est dépensé pour la rénovation des locaux, puis 20% du montant restant est utilisé pour l'achat de matériel. Combien reste-t-il dans le budget ?",
+            "reponse": 25600
         },
         {
-            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 160000
+            "question": "Une société reçoit 40000 litres de carburant. Elle utilise 50% pour les camions, puis 30% du reste pour les véhicules légers. Combien de litres de carburant restent après ces deux utilisations ?",
+            "reponse": 14000
         },
         {
-            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 108000
-        },
-        {
-            "question": "Un stock de 40000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 44000
-        },
-        {
-            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 3000
-        },
-        {
-            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 112000
-        },
-        {
-            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 63000
-        },
-        {
-            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 55000
-        },
-        {
-            "question": "Un stock de 40000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 32000
-        },
-        {
-            "question": "Un stock de 80000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 64000
-        },
-        {
-            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 65000
-        },
-        {
-            "question": "Un stock de 20000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 32000
-        },
-        {
-            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 72000
-        },
-        {
-            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 22000
-        },
-        {
-            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 120000
-        },
-        {
-            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 35000
-        },
-        {
-            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 102000
-        },
-        {
-            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 35000
-        },
-        {
-            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 35000
-        },
-        {
-            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 29999
-        },
-        {
-            "question": "Un stock de 80000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 80000
-        },
-        {
-            "question": "Un stock de 40000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 12000
-        },
-        {
-            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 13000
-        },
-        {
-            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
+            "question": "Un budget de 100000 euros est mis de côté pour le développement de produits. 70% est alloué aux équipes de R&D, puis 20% du reste est utilisé pour les essais de produits. Combien reste-t-il après ces dépenses ?",
             "reponse": 24000
         },
         {
-            "question": "Un stock de 40000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 40000
+            "question": "Une entreprise produit 20000 unités de produits. Elle vend 40% à un client, puis utilise 30% du reste pour une commande spéciale. Combien d'unités de produit restent après ces ventes ?",
+            "reponse": 8400
         },
         {
-            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 36000
-        },
-        {
-            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 108000
-        },
-        {
-            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 88000
-        },
-        {
-            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 60000
-        },
-        {
-            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 56000
-        },
-        {
-            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 50000
-        },
-        {
-            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 60000
-        },
-        {
-            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 126000
-        },
-        {
-            "question": "Un stock de 80000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 48000
-        },
-        {
-            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 30000
-        },
-        {
-            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 72000
-        },
-        {
-            "question": "Un stock de 100000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 70000
-        },
-        {
-            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 29999
-        },
-        {
-            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 55000
-        },
-        {
-            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 99000
-        },
-        {
-            "question": "Un stock de 100000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 50000
-        },
-        {
-            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 85000
-        },
-        {
-            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 16000
-        },
-        {
-            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 77000
-        },
-        {
-            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 26000
-        },
-        {
-            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 42000
-        },
-        {
-            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 130000
-        },
-        {
-            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 14999
-        },
-        {
-            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 72000
-        },
-        {
-            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 180000
-        },
-        {
-            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 18000
-        },
-        {
-            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 11000
-        },
-        {
-            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 30000
-        },
-        {
-            "question": "Un stock de 70000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 84000
-        },
-        {
-            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 153000
-        },
-        {
-            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 84000
-        },
-        {
-            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 40000
-        },
-        {
-            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 36000
-        },
-        {
-            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 1000
-        },
-        {
-            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 18000
-        },
-        {
-            "question": "Un stock de 40000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 56000
-        },
-        {
-            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 54000
-        },
-        {
-            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 32000
-        },
-        {
-            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 55000
-        },
-        {
-            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 144000
-        },
-        {
-            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 40000
-        },
-        {
-            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "question": "Une société a un budget de 50000 euros. Elle dépense 50% pour des campagnes marketing, puis retire 20% du montant restant pour la logistique. Combien d'euros restent après ces dépenses ?",
             "reponse": 20000
         },
         {
-            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
-            "reponse": 7000
+            "question": "Une usine dispose de 30000 unités. Elle vend 70% à des grossistes, puis met de côté 10% du reste pour un autre client. Combien d'unités restent après ces transactions ?",
+            "reponse": 8100
+        },
+        {
+            "question": "Un budget de 40000 euros est alloué à une campagne publicitaire. 60% est utilisé pour des spots télévisés, puis 25% du reste est utilisé pour des annonces en ligne. Combien reste-t-il dans le budget après ces dépenses ?",
+            "reponse": 12000
+        },
+        {
+            "question": "Une société reçoit 50000 litres de carburant. Elle utilise 80% pour des camions, puis 10% du reste pour des véhicules légers. Combien de litres restent après ces deux utilisations ?",
+            "reponse": 9000
+        },
+        {
+            "question": "Une entreprise alloue un budget de 90000 euros. Elle dépense 50% pour le développement de nouveaux produits, puis retire 30% du montant restant pour le marketing. Combien d'euros restent après ces dépenses ?",
+            "reponse": 31500
+        },
+        {
+            "question": "Une usine produit 70000 unités de marchandises. Elle vend 60% à un distributeur, puis réserve 15% du reste pour un autre client. Combien d'unités restent après ces transactions ?",
+            "reponse": 23800
+        },
+        {
+            "question": "Une société dispose d'un budget de 100000 euros. Elle utilise 40% pour des projets d'infrastructure, puis 25% du montant restant pour des projets de durabilité. Combien reste-t-il après ces dépenses ?",
+            "reponse": 45000
+        },
+        {
+            "question": "Une entreprise reçoit 60000 litres de carburant. Elle utilise 70% pour des camions, puis 10% du reste pour des voitures de service. Combien de litres restent après ces deux utilisations ?",
+            "reponse": 16200
+        },
+        {
+            "question": "Une société dispose de 80000 euros. Elle dépense 50% pour la modernisation des équipements, puis 20% du montant restant pour la formation des employés. Combien d'euros restent après ces dépenses ?",
+            "reponse": 32000
+        },
+        {
+            "question": "Une usine produit 40000 unités. Elle vend 50% à un client, puis 10% du stock restant pour une commande spéciale. Combien d'unités restent après ces transactions ?",
+            "reponse": 18000
+        },
+        {
+            "question": "Un budget de 50000 euros est mis en place pour l'innovation. 60% est alloué à la R&D, puis 25% du reste est utilisé pour les essais de produits. Combien reste-t-il dans le budget ?",
+            "reponse": 15000
+        },
+        {
+            "question": "Une société reçoit 30000 litres de carburant. Elle utilise 80% pour des camions, puis 20% du reste pour les véhicules légers. Combien de litres restent après ces deux utilisations ?",
+            "reponse": 4800
+        },
+        {
+            "question": "Une entreprise dispose de 40000 euros. Elle dépense 70% pour la logistique, puis 10% du montant restant pour des projets annexes. Combien reste-t-il dans le budget après ces dépenses ?",
+            "reponse": 10800
+        },
+        {
+            "question": "Une usine produit 100000 unités de marchandises. Elle vend 50% à un client, puis 30% du stock restant pour un autre client. Combien d'unités restent après ces transactions ?",
+            "reponse": 35000
+        },
+        {
+            "question": "Une société a un budget de 200000 euros. Elle utilise 30% pour des projets d'extension, puis 25% du montant restant pour des projets de durabilité. Combien d'euros restent après ces dépenses ?",
+            "reponse": 105000
+        },
+        {
+            "question": "Une entreprise reçoit 90000 litres de carburant. Elle utilise 75% pour des camions, puis 15% du reste pour des véhicules de service. Combien de litres restent après ces deux utilisations ?",
+            "reponse": 11475
+        },
+        {
+            "question": "Une société dispose d'un budget de 70000 euros. Elle dépense 40% pour des campagnes marketing, puis retire 30% du montant restant pour la logistique. Combien d'euros restent après ces dépenses ?",
+            "reponse": 29400
+        },
+        {
+            "question": "Une usine produit 60000 unités. Elle vend 55% à un client, puis réserve 20% du stock restant pour un autre acheteur. Combien d'unités restent en stock après ces deux transactions ?",
+            "reponse": 21600
+        },
+        {
+            "question": "Un budget de 100000 euros est alloué pour des projets de recherche. 50% est dépensé pour la recherche fondamentale, puis 20% du montant restant est utilisé pour des essais de produits. Combien reste-t-il dans le budget ?",
+            "reponse": 40000
+        },
+        {
+            "question": "Une société reçoit 120000 litres de carburant. Elle utilise 65% pour des camions, puis 10% du reste pour des véhicules de service. Combien de litres restent après ces deux utilisations ?",
+            "reponse": 37800
+        },
+        {
+            "question": "Une entreprise a un budget de 200000 euros. Elle utilise 50% pour des projets d'expansion, puis 20% du montant restant pour des initiatives durables. Combien d'euros restent après ces dépenses ?",
+            "reponse": 80000
+        },
+        {
+            "question": "Une usine produit 70000 unités de marchandises. Elle vend 45% à un grossiste, puis réserve 25% du stock restant pour une commande spéciale. Combien d'unités restent en stock après ces transactions ?",
+            "reponse": 28875
+        },
+        {
+            "question": "Une société alloue un budget de 50000 euros. Elle dépense 60% pour le développement de produits, puis retire 30% du montant restant pour le marketing. Combien d'euros restent après ces dépenses ?",
+            "reponse": 14000
+        },
+        {
+            "question": "Une usine dispose de 80000 unités. Elle vend 65% à des distributeurs, puis met de côté 20% du reste pour une commande spéciale. Combien d'unités restent après ces deux transactions ?",
+            "reponse": 22400
+        },
+        {
+            "question": "Un budget de 120000 euros est alloué à une entreprise. 50% est utilisé pour l'infrastructure, puis 25% du montant restant est consacré à la formation des employés. Combien reste-t-il dans le budget après ces dépenses ?",
+            "reponse": 45000
+        },
+        {
+            "question": "Une société reçoit 90000 litres de carburant. Elle utilise 75% pour des camions, puis 20% du reste pour les véhicules légers. Combien de litres restent après ces deux utilisations ?",
+            "reponse": 13500
+        },
+        {
+            "question": "Un budget de 100000 euros est alloué pour des projets de durabilité. 70% est dépensé pour des initiatives écologiques, puis 20% du montant restant est consacré à la logistique. Combien reste-t-il dans le budget ?",
+            "reponse": 24000
+        },
+        {
+            "question": "Une entreprise dispose de 150000 euros. Elle utilise 40% pour la modernisation des équipements, puis 30% du montant restant pour la formation des employés. Combien d'euros restent après ces dépenses ?",
+            "reponse": 63000
+        },
+        {
+            "question": "Une usine produit 90000 unités. Elle vend 50% à un client, puis 25% du stock restant pour une commande spéciale. Combien d'unités restent après ces transactions ?",
+            "reponse": 33750
+        },
+        {
+            "question": "Une société a un budget de 250000 euros. Elle utilise 30% pour des projets d'extension, puis 20% du montant restant pour des initiatives de durabilité. Combien d'euros restent après ces dépenses ?",
+            "reponse": 140000
+        },
+        {
+            "question": "Une entreprise reçoit 50000 litres de carburant. Elle utilise 60% pour les camions, puis 25% du reste pour des véhicules légers. Combien de litres de carburant restent après ces deux utilisations ?",
+            "reponse": 15000
+        },
+        {
+            "question": "Une société dispose de 120000 euros. Elle dépense 55% pour des projets d'infrastructure, puis 20% du montant restant pour la logistique. Combien d'euros restent après ces dépenses ?",
+            "reponse": 43200
+        },
+        {
+            "question": "Une usine dispose de 60000 unités. Elle vend 45% à un client, puis 30% du stock restant pour un autre client. Combien d'unités restent après ces transactions ?",
+            "reponse": 23100
+        },
+        {
+            "question": "Un budget de 80000 euros est alloué à une entreprise. 65% est utilisé pour des travaux d'infrastructure, puis 20% du montant restant est dépensé en publicité. Combien reste-t-il dans le budget ?",
+            "reponse": 11200
+        },
+        {
+            "question": "Une société reçoit 75000 litres de carburant. Elle utilise 70% pour des camions, puis 10% du reste pour des voitures de service. Combien de litres restent après ces deux utilisations ?",
+            "reponse": 20250
+        },
+        {
+            "question": "Un budget de 100000 euros est mis en place pour la recherche. 50% est alloué aux équipes de R&D, puis 30% du montant restant est utilisé pour des essais. Combien reste-t-il dans le budget ?",
+            "reponse": 35000
+        },
+        {
+            "question": "Une société alloue 200000 euros pour le développement de produits. Elle dépense 50% pour la conception, puis retire 20% du montant restant pour la production. Combien reste-t-il après ces dépenses ?",
+            "reponse": 80000
+        },
+        {
+            "question": "Une entreprise reçoit 150000 litres de carburant. Elle utilise 65% pour des camions, puis 25% du reste pour les véhicules légers. Combien de litres restent après ces deux utilisations ?",
+            "reponse": 39375
+        },
+        {
+            "question": "Une société dispose d'un budget de 250000 euros. Elle utilise 40% pour l'infrastructure, puis 15% du montant restant pour la logistique. Combien d'euros restent après ces dépenses ?",
+            "reponse": 127500
+        },
+        {
+            "question": "Une usine produit 180000 unités. Elle vend 50% à un client, puis 30% du stock restant pour une commande spéciale. Combien d'unités restent après ces transactions ?",
+            "reponse": 63000
+        },
+        {
+            "question": "Un budget de 300000 euros est mis en place pour l'innovation. 70% est alloué à la R&D, puis 15% du montant restant est utilisé pour le marketing. Combien reste-t-il dans le budget ?",
+            "reponse": 76500
+        },
+        {
+            "question": "Une entreprise dispose de 200000 euros. Elle dépense 40% pour la modernisation des équipements, puis 25% du montant restant pour la formation des employés. Combien d'euros restent après ces dépenses ?",
+            "reponse": 90000
+        },
+        {
+            "question": "Une usine produit 50000 unités de marchandises. Elle vend 50% à un client, puis réserve 30% du stock restant pour une commande spéciale. Combien d'unités restent après ces transactions ?",
+            "reponse": 17500
+        },
+        {
+            "question": "Un budget de 100000 euros est mis de côté pour le développement de produits. 60% est alloué aux équipes de R&D, puis 20% du montant restant est utilisé pour les essais de produits. Combien reste-t-il après ces dépenses ?",
+            "reponse": 32000
+        },
+        {
+            "question": "Une société reçoit 120000 litres de carburant. Elle utilise 70% pour des camions, puis 20% du reste pour des véhicules de service. Combien de litres restent après ces deux utilisations ?",
+            "reponse": 28800
+        },
+        {
+            "question": "Une entreprise dispose de 150000 euros. Elle utilise 40% pour des projets de modernisation, puis 30% du montant restant pour des initiatives écologiques. Combien d'euros restent après ces dépenses ?",
+            "reponse": 63000
         }
     ]
+
 }

@@ -45,8 +45,8 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> with WidgetsBindi
     _correctAnswersInRow = 0;
     _points = 0;
     _pointsChange = 0;
-    _currentQuestion = "Chargement...";  // Initialiser la question avec une valeur par défaut
-    _currentAnswer = "";  // Initialiser avec une chaîne vide
+    _currentQuestion = "Chargement...";
+    _currentAnswer = "";
     _answerController = TextEditingController();
     _answerController.addListener(_checkAnswer);
     generateQuestion();
@@ -97,30 +97,31 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> with WidgetsBindi
 
     setState(() {
       _currentQuestion = selectedProblem['question'];
-      _currentAnswer = selectedProblem['answer'].toString();  // Convertir en chaîne si nécessaire
+      _currentAnswer = selectedProblem['reponse']?.toString() ?? "";
       _isAnswerCorrect = false;
       _isSkipped = false;
       _answerController.text = "";
     });
-
   }
 
   // Valider la réponse
   void _checkAnswer() {
-    if (_answerController.text.isNotEmpty) {
+    if (_answerController.text.isNotEmpty && _currentAnswer.isNotEmpty) {
       if (_answerController.text.trim().toLowerCase() == _currentAnswer.trim().toLowerCase()) {
         _validateCorrectAnswer();
       }
     }
-    setState(() {}); // Pour forcer la mise à jour de l'affichage
+    setState(() {});
   }
+
+
 
   void _validateCorrectAnswer() {
     setState(() {
       _isAnswerCorrect = true;
       _isSkipped = false;
       _correctAnswersInRow++;
-      _pointsChange = 10 * _currentLevel;
+      _pointsChange = 50 * _currentLevel;
       _points += _pointsChange;
       if (_correctAnswersInRow >= 3) {
         _currentLevel++;
@@ -251,10 +252,10 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> with WidgetsBindi
           Column(
             children: [
               SizedBox(height: 20),
-              LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
+              LevelIndicator(currentLevel: _currentLevel, maxLevel: 5),
               SizedBox(height: 20),
               CountdownTimer(
-                duration: 60,
+                duration: 120,
                 onCountdownComplete: _endTest,
                 progressColor: Colors.green,
                 height: 20,
