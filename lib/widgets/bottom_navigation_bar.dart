@@ -21,10 +21,10 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Container(
       height: 60,
       decoration: BoxDecoration(
-        color: Color(0xFF000000),
+        color: Color(0xFF564560),
         border: Border(
           top: BorderSide(
-            color: Color(0xFFFFFF00),
+            color: Colors.yellow,
             width: 3,
           ),
         ),
@@ -56,7 +56,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
           height: 60,
           padding: EdgeInsets.symmetric(vertical: 4),
           decoration: BoxDecoration(
-            color: isSelected ? Color(0xFF4A4A4A) : Colors.transparent,
+            color: isSelected ? Color(0xFFFFFF00) : Colors.transparent,
             border: Border(
               top: BorderSide(
                 color: isSelected ? Color(0xFFFFFF00) : Colors.transparent,
@@ -75,7 +75,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? Color(0xFFFFFF00) : Color(0xFFFFFFFF),
+                  color: isSelected ? Colors.black : Color(0xFFFFFFFF),
                   fontSize: 10,
                   fontFamily: 'PixelFont',
                   fontWeight: FontWeight.bold,
