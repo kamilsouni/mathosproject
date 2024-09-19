@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mathosproject/widgets/custom_keyboard.dart';
+import 'package:auto_size_text/auto_size_text.dart'; // Import auto_size_text pour ajuster la taille du texte
 
 class RetroCalculator extends StatelessWidget {
   final String question;
@@ -24,7 +25,7 @@ class RetroCalculator extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        double fontSize = constraints.maxWidth * 0.1;
+        double fontSize = constraints.maxWidth * 0.1; // Calcul de la taille de police en fonction de la largeur
 
         return Container(
           margin: EdgeInsets.all(16),
@@ -54,7 +55,7 @@ class RetroCalculator extends StatelessWidget {
                 ),
               ),
 
-              // Écran de la calculette
+              // Écran de la calculette avec ajustement de la taille de police
               Container(
                 padding: EdgeInsets.all(16),
                 margin: EdgeInsets.symmetric(horizontal: 8),
@@ -75,11 +76,11 @@ class RetroCalculator extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
+                    AutoSizeText(
                       question,
                       style: TextStyle(
                         fontFamily: 'VT323',
-                        fontSize: fontSize+10,
+                        fontSize: fontSize + 10, // Ajustement de la taille de police
                         color: Colors.black87,
                         shadows: [
                           Shadow(
@@ -90,13 +91,15 @@ class RetroCalculator extends StatelessWidget {
                         ],
                       ),
                       textAlign: TextAlign.center,
+                      maxLines: 1, // S'assurer que le texte tient sur une ligne
+                      minFontSize: 10, // Taille minimale du texte
                     ),
                     SizedBox(height: 8),
-                    Text(
+                    AutoSizeText(
                       answer,
                       style: TextStyle(
                         fontFamily: 'VT323',
-                        fontSize: fontSize+10,
+                        fontSize: fontSize + 10,
                         color: Colors.black,
                         shadows: [
                           Shadow(
@@ -107,6 +110,8 @@ class RetroCalculator extends StatelessWidget {
                         ],
                       ),
                       textAlign: TextAlign.center,
+                      maxLines: 1, // S'assurer que le texte tient sur une ligne
+                      minFontSize: 10, // Taille minimale du texte
                     ),
                   ],
                 ),

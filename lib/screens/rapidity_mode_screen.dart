@@ -92,7 +92,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
       _isSkipped = true;
       _isAnswerCorrect = false;
       _correctAnswersInRow = 0;
-      _pointsChange = -5;
+      _pointsChange = -100;
       _points += _pointsChange;
       if (_currentLevel > 1) {
         _currentLevel--;

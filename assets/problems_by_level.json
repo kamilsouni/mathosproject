@@ -1,0 +1,1384 @@
+{
+    "niveau1": [
+        {
+            "question": "Il y a 50 parts de gâteau à distribuer lors d'une fête d'anniversaire. Si 50% sont donnés aux garçons, combien de gâteaux restent pour les filles ?",
+            "reponse": 25
+        },
+        {
+            "question": "Un magasin vend 20 jouets. Si 50% des jouets sont vendus le matin, combien en reste-t-il à vendre pour l'après-midi ?",
+            "reponse": 10
+        },
+        {
+            "question": "Un élève possède 30 crayons. Si 10% sont perdus en cours de route, combien lui en reste-t-il ?",
+            "reponse": 27
+        },
+        {
+            "question": "Dans une bibliothèque, il y a 40 livres. Si 50% sont empruntés par des étudiants, combien de livres restent dans la bibliothèque ?",
+            "reponse": 20
+        },
+        {
+            "question": "Dans une fête, 10 bonbons sont à distribuer. Si 10% des bonbons sont donnés à des invités, combien en reste-t-il à distribuer ?",
+            "reponse": 9
+        },
+        {
+            "question": "Une classe possède 50 jouets. Si 50% sont utilisés pendant la récréation, combien restent inutilisés ?",
+            "reponse": 25
+        },
+        {
+            "question": "Lors d'une fête scolaire, 20 parts de gâteau sont préparées. Si 50% sont mangées par les enfants, combien restent pour les adultes ?",
+            "reponse": 10
+        },
+        {
+            "question": "Un étudiant a 30 crayons pour son examen. Si 10% sont prêtés à ses amis, combien lui en reste-t-il ?",
+            "reponse": 27
+        },
+        {
+            "question": "Dans une classe, il y a 40 livres à disposition. Si 50% des élèves empruntent un livre, combien de livres restent dans la classe ?",
+            "reponse": 20
+        },
+        {
+            "question": "Un sac contient 10 bonbons. Si 10% des bonbons sont mangés par un enfant, combien restent dans le sac ?",
+            "reponse": 9
+        },
+        {
+            "question": "Un magasin de jouets a 50 articles en stock. Si 10% des jouets sont vendus, combien de jouets restent en magasin ?",
+            "reponse": 45
+        },
+        {
+            "question": "Lors d'une fête d'anniversaire, 20 parts de gâteau sont servies. Si 50% des parts sont consommées, combien de parts restent sur la table ?",
+            "reponse": 10
+        },
+        {
+            "question": "Un élève a 30 crayons dans sa trousse. Si 50% des crayons sont utilisés, combien en reste-t-il dans sa trousse ?",
+            "reponse": 15
+        },
+        {
+            "question": "Dans une bibliothèque, il y a 40 livres disponibles. Si 10% des livres sont empruntés, combien de livres restent en bibliothèque ?",
+            "reponse": 36
+        },
+        {
+            "question": "Un sac contient 10 bonbons. Si 50% des bonbons sont donnés à un ami, combien en reste-t-il dans le sac ?",
+            "reponse": 5
+        },
+        {
+            "question": "Un magasin de jouets reçoit 50 jouets en livraison. Si 10% des jouets sont défectueux, combien de jouets sont en bon état ?",
+            "reponse": 45
+        },
+        {
+            "question": "Lors d'une fête, 20 parts de gâteau sont préparées. Si 10% des parts sont offertes aux invités, combien de parts restent à servir ?",
+            "reponse": 18
+        },
+        {
+            "question": "Un élève a 30 crayons pour ses devoirs. Si 10% des crayons sont cassés, combien de crayons peuvent encore être utilisés ?",
+            "reponse": 27
+        },
+        {
+            "question": "Dans une bibliothèque, il y a 40 livres à disposition. Si 10% des livres sont perdus, combien de livres restent dans la bibliothèque ?",
+            "reponse": 36
+        },
+        {
+            "question": "Un sac contient 10 bonbons. Si 50% des bonbons sont donnés lors d'une fête, combien en reste-t-il dans le sac ?",
+            "reponse": 5
+        },
+        {
+            "question": "Un magasin vend 50 jouets chaque jour. Si 10% des jouets sont retournés par les clients, combien de jouets sont définitivement vendus ?",
+            "reponse": 45
+        },
+        {
+            "question": "Lors d'une fête, 20 parts de gâteau sont servies. Si 10% des parts sont jetées, combien de parts restent disponibles pour les invités ?",
+            "reponse": 18
+        },
+        {
+            "question": "Un élève possède 30 crayons. Si 50% des crayons sont donnés à ses amis, combien lui en reste-t-il ?",
+            "reponse": 15
+        },
+        {
+            "question": "Dans une bibliothèque, il y a 40 livres. Si 50% des livres sont réservés pour un événement, combien restent disponibles pour les lecteurs ?",
+            "reponse": 20
+        },
+        {
+            "question": "Un sac contient 10 bonbons. Si 50% des bonbons sont donnés à un autre enfant, combien de bonbons restent dans le sac ?",
+            "reponse": 5
+        },
+        {
+            "question": "Un magasin reçoit 50 jouets en livraison. Si 50% des jouets sont vendus en une journée, combien en reste-t-il en stock ?",
+            "reponse": 25
+        },
+        {
+            "question": "Lors d'une fête d'anniversaire, 20 parts de gâteau sont servies. Si 10% des parts sont offertes à des invités, combien de parts restent sur la table ?",
+            "reponse": 18
+        },
+        {
+            "question": "Un élève a 30 crayons. Si 50% des crayons sont utilisés pendant l'examen, combien de crayons lui restent-ils ?",
+            "reponse": 15
+        },
+        {
+            "question": "Dans une bibliothèque, il y a 40 livres. Si 10% des livres sont perdus, combien de livres restent dans la bibliothèque ?",
+            "reponse": 36
+        },
+        {
+            "question": "Un sac contient 10 bonbons. Si 10% des bonbons sont donnés à un ami, combien de bonbons restent dans le sac ?",
+            "reponse": 9
+        },
+
+
+            {
+                "question": "Un magasin a 50 jouets en stock. Si 50% des jouets sont vendus pendant la matinée, combien de jouets restent à vendre l'après-midi ?",
+                "reponse": 25
+            },
+            {
+                "question": "Lors d'une fête de village, 20 parts de gâteau sont préparées. Si 10% des parts sont données aux enfants, combien restent à distribuer aux adultes ?",
+                "reponse": 18
+            },
+            {
+                "question": "Un élève possède 30 crayons. Si 50% de ses crayons sont utilisés pour un projet, combien de crayons lui restent ?",
+                "reponse": 15
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 10% des livres sont donnés à une autre école, combien de livres restent à la bibliothèque ?",
+                "reponse": 36
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 50% des bonbons sont mangés pendant la pause, combien de bonbons restent dans le sac ?",
+                "reponse": 5
+            },
+            {
+                "question": "Un magasin reçoit 50 nouveaux jouets. Si 10% des jouets sont défectueux, combien de jouets sont prêts à être vendus ?",
+                "reponse": 45
+            },
+            {
+                "question": "Lors d'une fête, 20 parts de gâteau sont servies. Si 50% des parts sont mangées par les invités, combien de parts restent ?",
+                "reponse": 10
+            },
+            {
+                "question": "Un élève a 30 crayons pour ses devoirs. Si 10% des crayons sont cassés, combien de crayons sont encore utilisables ?",
+                "reponse": 27
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres à disposition. Si 50% des livres sont empruntés, combien de livres restent dans les rayons ?",
+                "reponse": 20
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 10% des bonbons sont donnés à un ami, combien en reste-t-il dans le sac ?",
+                "reponse": 9
+            },
+            {
+                "question": "Un magasin reçoit 50 jouets en livraison. Si 50% des jouets sont vendus, combien en reste-t-il en stock ?",
+                "reponse": 25
+            },
+            {
+                "question": "Lors d'une fête d'anniversaire, 20 parts de gâteau sont servies. Si 10% des parts sont données aux enfants, combien de parts restent pour les adultes ?",
+                "reponse": 18
+            },
+            {
+                "question": "Un élève a 30 crayons. Si 50% des crayons sont perdus, combien lui en reste-t-il ?",
+                "reponse": 15
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 10% des livres sont prêtés à des élèves, combien de livres restent dans la bibliothèque ?",
+                "reponse": 36
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 50% des bonbons sont donnés, combien en reste-t-il dans le sac ?",
+                "reponse": 5
+            },
+            {
+                "question": "Un magasin vend 50 jouets chaque jour. Si 10% des jouets sont retournés par les clients, combien de jouets sont effectivement vendus ?",
+                "reponse": 45
+            },
+            {
+                "question": "Lors d'une fête, 20 parts de gâteau sont servies. Si 50% des parts sont offertes, combien de parts restent sur la table ?",
+                "reponse": 10
+            },
+            {
+                "question": "Un élève possède 30 crayons. Si 10% des crayons sont cassés, combien de crayons peuvent encore être utilisés ?",
+                "reponse": 27
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 50% des livres sont prêtés, combien de livres restent sur les étagères ?",
+                "reponse": 20
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 10% des bonbons sont mangés, combien de bonbons restent dans le sac ?",
+                "reponse": 9
+            },
+            {
+                "question": "Un magasin de jouets a 50 articles en stock. Si 50% des jouets sont vendus, combien de jouets restent dans le magasin ?",
+                "reponse": 25
+            },
+            {
+                "question": "Lors d'une fête, 20 parts de gâteau sont préparées. Si 50% des parts sont distribuées aux enfants, combien de parts restent pour les adultes ?",
+                "reponse": 10
+            },
+            {
+                "question": "Un élève a 30 crayons. Si 10% des crayons sont prêtés à ses camarades, combien lui en reste-t-il ?",
+                "reponse": 27
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 10% des livres sont empruntés, combien de livres restent en bibliothèque ?",
+                "reponse": 36
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 50% des bonbons sont offerts, combien en reste-t-il dans le sac ?",
+                "reponse": 5
+            },
+            {
+                "question": "Un magasin reçoit 50 jouets. Si 10% des jouets sont vendus dans la matinée, combien de jouets restent pour l'après-midi ?",
+                "reponse": 45
+            },
+            {
+                "question": "Lors d'une fête d'anniversaire, 20 parts de gâteau sont distribuées. Si 50% des parts sont mangées, combien de parts restent ?",
+                "reponse": 10
+            },
+            {
+                "question": "Un élève a 30 crayons. Si 50% des crayons sont perdus pendant la récréation, combien de crayons lui restent ?",
+                "reponse": 15
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 10% des livres sont donnés à une autre école, combien de livres restent ?",
+                "reponse": 36
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 10% des bonbons sont mangés, combien restent dans le sac ?",
+                "reponse": 9
+            }
+        ]
+
+    ,
+
+    "niveau2": [
+        {
+            "question": "Une usine produit 100 litres d'huile d'olive. Si 20% de la production est destinée à l'exportation, combien de litres restent à vendre localement ?",
+            "reponse": 80
+        },
+        {
+            "question": "Un agriculteur a 200 litres de lait. Si 30% du lait est vendu dans la matinée, combien de litres lui reste-t-il pour l'après-midi ?",
+            "reponse": 140
+        },
+        {
+            "question": "Une école reçoit une donation de 400 crayons. Si 40% des crayons sont donnés aux élèves de première année, combien de crayons restent pour les autres classes ?",
+            "reponse": 240
+        },
+        {
+            "question": "Une piscine municipale utilise 500 litres d'eau par jour. Si 60% de l'eau est consommée pour les cours du matin, combien reste-t-il pour l'après-midi ?",
+            "reponse": 200
+        },
+        {
+            "question": "Un stock de 1000 litres de lait est reçu dans une laiterie. Si 90% du stock est transformé en fromage, combien de litres restent-ils pour les autres produits ?",
+            "reponse": 100
+        },
+        {
+            "question": "Une usine fabrique 300 litres d'huile d'olive par jour. Si 40% de la production est utilisée pour les commandes locales, combien de litres sont réservés à l'exportation ?",
+            "reponse": 180
+        },
+        {
+            "question": "Un fermier possède 600 litres de lait. Si 60% du lait est vendu à une usine, combien de litres restent-ils à vendre au marché local ?",
+            "reponse": 240
+        },
+        {
+            "question": "Une école reçoit 700 crayons pour l'année scolaire. Si 20% des crayons sont donnés aux élèves de première année, combien de crayons restent pour les autres classes ?",
+            "reponse": 560
+        },
+        {
+            "question": "Un parc aquatique utilise 800 litres d'eau chaque jour. Si 30% de l'eau est utilisée pour les attractions le matin, combien de litres d'eau restent pour l'après-midi ?",
+            "reponse": 560
+        },
+        {
+            "question": "Une laiterie reçoit 900 litres de lait. Si 80% du lait est utilisé pour la production de yaourts, combien de litres restent pour le fromage ?",
+            "reponse": 180
+        },
+        {
+            "question": "Un fabricant produit 200 litres d'huile d'olive. Si 90% de la production est vendue en grande surface, combien de litres restent à vendre sur les marchés locaux ?",
+            "reponse": 20
+        },
+        {
+            "question": "Une ferme produit 400 litres de lait. Si 30% de la production est vendue à une fromagerie, combien de litres restent pour les autres clients ?",
+            "reponse": 280
+        },
+        {
+            "question": "Une école reçoit 500 crayons pour la rentrée. Si 60% des crayons sont distribués aux élèves de primaire, combien de crayons restent pour les autres élèves ?",
+            "reponse": 200
+        },
+        {
+            "question": "Un parc utilise 1000 litres d'eau par jour. Si 90% de l'eau est utilisée pour les jeux d'eau le matin, combien de litres restent pour l'arrosage des plantes ?",
+            "reponse": 100
+        },
+        {
+            "question": "Une usine reçoit 600 litres d'huile d'olive. Si 60% de cette huile est utilisée pour fabriquer des produits alimentaires, combien de litres restent pour les cosmétiques ?",
+            "reponse": 240
+        },
+        {
+            "question": "Un fermier vend 800 litres de lait. Si 40% de ce lait est vendu à des particuliers, combien de litres restent à vendre à l'industrie ?",
+            "reponse": 480
+        },
+        {
+            "question": "Une école commande 200 crayons pour une activité scolaire. Si 40% des crayons sont utilisés lors de l'atelier, combien de crayons restent pour les autres élèves ?",
+            "reponse": 120
+        },
+        {
+            "question": "Un parc aquatique consomme 300 litres d'eau par jour. Si 60% de cette eau est utilisée le matin, combien de litres d'eau restent pour l'après-midi ?",
+            "reponse": 120
+        },
+        {
+            "question": "Une laiterie reçoit 500 litres de lait. Si 80% de ce lait est utilisé pour la production de fromage, combien de litres restent pour le yaourt ?",
+            "reponse": 100
+        },
+        {
+            "question": "Une usine produit 700 litres d'huile d'olive. Si 30% de la production est vendue à l'international, combien de litres restent à vendre localement ?",
+            "reponse": 490
+        },
+        {
+            "question": "Une ferme reçoit 1000 litres de lait. Si 20% de cette production est réservée à la vente directe, combien de litres restent pour la transformation industrielle ?",
+            "reponse": 800
+        },
+        {
+            "question": "Un agriculteur produit 400 litres de lait. Si 30% de la production est vendue le matin, combien de litres restent pour le marché de l'après-midi ?",
+            "reponse": 280
+        },
+        {
+            "question": "Une école reçoit une livraison de 500 crayons. Si 40% des crayons sont donnés aux élèves de première année, combien de crayons restent pour les autres élèves ?",
+            "reponse": 300
+        },
+        {
+            "question": "Un parc aquatique consomme 600 litres d'eau chaque jour. Si 80% de cette eau est utilisée dans les attractions, combien de litres restent pour l'arrosage ?",
+            "reponse": 120
+        },
+        {
+            "question": "Une laiterie reçoit 900 litres de lait. Si 60% de ce lait est utilisé pour fabriquer des yaourts, combien de litres restent pour la production de beurre ?",
+            "reponse": 360
+        },
+        {
+            "question": "Une usine produit 300 litres d'huile d'olive. Si 90% de la production est destinée à l'exportation, combien de litres restent pour le marché local ?",
+            "reponse": 30
+        },
+        {
+            "question": "Un agriculteur récolte 800 litres de lait. Si 40% de la production est vendue à l'industrie, combien de litres restent pour la vente directe ?",
+            "reponse": 480
+        },
+        {
+            "question": "Une école reçoit 700 crayons. Si 20% des crayons sont donnés aux élèves de maternelle, combien de crayons restent pour les élèves de primaire ?",
+            "reponse": 560
+        },
+        {
+            "question": "Un parc consomme 1000 litres d'eau par jour. Si 30% de l'eau est utilisée pour les jeux d'eau, combien de litres restent pour l'arrosage des plantes ?",
+            "reponse": 700
+        },
+        {
+            "question": "Un agriculteur reçoit 600 litres de lait. Si 60% de ce lait est vendu le matin, combien de litres restent à vendre l'après-midi ?",
+            "reponse": 240
+        },
+
+        {
+            "question": "Une usine produit 700 litres d'huile d'olive. Si 40% de cette production est vendue en France, combien de litres sont destinés à l'exportation ?",
+            "reponse": 420
+        },
+        {
+            "question": "Un fermier récolte 900 litres de lait. Si 30% du lait est vendu en grande surface, combien de litres restent pour les marchés locaux ?",
+            "reponse": 630
+        },
+        {
+            "question": "Une école commande 300 crayons pour les élèves. Si 60% des crayons sont utilisés pendant les ateliers, combien de crayons restent pour les autres activités ?",
+            "reponse": 120
+        },
+        {
+            "question": "Un parc aquatique consomme 800 litres d'eau par jour. Si 90% de cette eau est utilisée dans les toboggans, combien de litres restent pour les autres attractions ?",
+            "reponse": 80
+        },
+        {
+            "question": "Une usine reçoit 1000 litres d'huile d'olive. Si 20% de cette huile est transformée en produits cosmétiques, combien de litres sont utilisés pour l'alimentaire ?",
+            "reponse": 800
+        },
+        {
+            "question": "Un agriculteur produit 600 litres de lait. Si 80% du lait est vendu à une fromagerie, combien de litres restent pour les autres clients ?",
+            "reponse": 120
+        },
+        {
+            "question": "Une école reçoit 400 crayons. Si 40% des crayons sont distribués aux élèves de maternelle, combien de crayons restent pour les élèves de primaire ?",
+            "reponse": 240
+        },
+        {
+            "question": "Un parc consomme 500 litres d'eau par jour. Si 60% de cette eau est utilisée dans les fontaines, combien de litres restent pour l'arrosage des plantes ?",
+            "reponse": 200
+        },
+        {
+            "question": "Une usine reçoit 900 litres d'huile d'olive. Si 90% de cette huile est utilisée pour les produits alimentaires, combien de litres restent pour les produits cosmétiques ?",
+            "reponse": 90
+        },
+        {
+            "question": "Un agriculteur produit 1000 litres de lait. Si 30% du lait est vendu directement, combien de litres restent pour la transformation industrielle ?",
+            "reponse": 700
+        },
+        {
+            "question": "Une école commande 500 crayons pour ses élèves. Si 20% des crayons sont perdus au cours de l'année, combien de crayons restent à la fin de l'année scolaire ?",
+            "reponse": 400
+        },
+        {
+            "question": "Un parc aquatique utilise 600 litres d'eau chaque jour. Si 40% de cette eau est consommée dans les piscines, combien de litres restent pour les toboggans ?",
+            "reponse": 360
+        },
+        {
+            "question": "Une usine reçoit 800 litres d'huile d'olive. Si 20% de cette huile est destinée à l'exportation, combien de litres sont vendus en France ?",
+            "reponse": 640
+        },
+        {
+            "question": "Un fermier récolte 500 litres de lait. Si 90% de ce lait est vendu à l'industrie, combien de litres restent pour la vente directe ?",
+            "reponse": 50
+        },
+        {
+            "question": "Une école reçoit 600 crayons. Si 30% des crayons sont utilisés pour des projets artistiques, combien de crayons restent pour les autres matières ?",
+            "reponse": 420
+        },
+        {
+            "question": "Un parc consomme 700 litres d'eau chaque jour. Si 60% de cette eau est utilisée pour l'arrosage des jardins, combien de litres restent pour les fontaines ?",
+            "reponse": 280
+        },
+        {
+            "question": "Une usine reçoit 200 litres d'huile d'olive. Si 40% de cette huile est utilisée pour les produits alimentaires, combien de litres restent pour la cosmétique ?",
+            "reponse": 120
+        },
+        {
+            "question": "Un agriculteur produit 900 litres de lait. Si 60% de ce lait est vendu à l'industrie, combien de litres restent pour les particuliers ?",
+            "reponse": 360
+        },
+        {
+            "question": "Une école commande 300 crayons pour les élèves. Si 30% des crayons sont distribués aux élèves de maternelle, combien de crayons restent pour les autres classes ?",
+            "reponse": 210
+        },
+        {
+            "question": "Un parc utilise 1000 litres d'eau par jour. Si 80% de cette eau est utilisée dans les toboggans, combien de litres restent pour les piscines ?",
+            "reponse": 200
+        },
+        {
+            "question": "Une usine produit 500 litres d'huile d'olive. Si 90% de la production est destinée à l'exportation, combien de litres restent à vendre localement ?",
+            "reponse": 50
+        },
+        {
+            "question": "Un agriculteur récolte 800 litres de lait. Si 40% du lait est vendu directement aux particuliers, combien de litres restent pour l'industrie ?",
+            "reponse": 480
+        },
+        {
+            "question": "Une école reçoit 1000 crayons. Si 20% des crayons sont donnés aux élèves de première année, combien de crayons restent pour les autres élèves ?",
+            "reponse": 800
+        },
+        {
+            "question": "Un parc aquatique utilise 400 litres d'eau par jour. Si 60% de cette eau est utilisée dans les piscines, combien de litres restent pour les fontaines ?",
+            "reponse": 160
+        },
+        {
+            "question": "Une usine produit 300 litres d'huile d'olive. Si 40% de la production est destinée aux produits alimentaires, combien de litres restent pour les cosmétiques ?",
+            "reponse": 180
+        },
+        {
+            "question": "Un fermier produit 700 litres de lait. Si 80% de ce lait est vendu à l'industrie, combien de litres restent pour la vente directe ?",
+            "reponse": 140
+        },
+        {
+            "question": "Une école commande 900 crayons pour l'année. Si 60% des crayons sont distribués aux élèves de maternelle, combien de crayons restent pour les élèves de primaire ?",
+            "reponse": 360
+        },
+        {
+            "question": "Un parc consomme 500 litres d'eau par jour. Si 80% de cette eau est utilisée pour les fontaines, combien de litres restent pour l'arrosage des plantes ?",
+            "reponse": 100
+        },
+        {
+            "question": "Une usine reçoit 700 litres d'huile d'olive. Si 60% de cette huile est utilisée pour l'alimentation, combien de litres restent pour la cosmétique ?",
+            "reponse": 280
+        },
+        {
+            "question": "Un agriculteur produit 400 litres de lait. Si 40% du lait est vendu aux particuliers, combien de litres restent pour la transformation industrielle ?",
+            "reponse": 240
+        }
+    ],
+
+    "niveau3": [
+        {
+            "question": "Une petite entreprise a un budget de 200 euros pour son stock de fournitures de bureau. Si 5% du budget est utilisé pour acheter des stylos, combien reste-t-il pour les autres fournitures ?",
+            "reponse": 190
+        },
+        {
+            "question": "Une usine a un stock de 400 pièces détachées. Si 15% des pièces sont utilisées pour réparer des machines, combien de pièces restent en stock ?",
+            "reponse": 340
+        },
+        {
+            "question": "Un agriculteur a une récolte de 1000 fruits. Si 25% des fruits sont vendus au marché, combien de fruits lui restent à vendre aux grossistes ?",
+            "reponse": 750
+        },
+        {
+            "question": "Une entreprise a un budget de 1500 euros pour la production de bouteilles de vin. Si 35% du budget est consacré à l'achat de bouteilles, combien d'euros restent pour les autres dépenses ?",
+            "reponse": 975
+        },
+        {
+            "question": "Une usine de parfumerie produit 500 flacons de parfum. Si 95% des flacons sont exportés, combien de flacons restent pour la vente locale ?",
+            "reponse": 25
+        },
+        {
+            "question": "Une PME a un budget de 2000 euros pour l'achat de matières premières. Si 5% de ce budget est utilisé pour le transport, combien reste-t-il pour l'achat des matières premières ?",
+            "reponse": 1900
+        },
+        {
+            "question": "Une usine a un stock de 1200 pièces. Si 15% des pièces sont utilisées pour la production, combien de pièces restent en réserve ?",
+            "reponse": 1020
+        },
+        {
+            "question": "Un producteur de fruits récolte 600 fruits. Si 25% de sa récolte est vendue à un grossiste, combien lui reste-t-il de fruits ?",
+            "reponse": 450
+        },
+        {
+            "question": "Une entreprise viticole dispose d'un budget de 2000 euros pour la production de bouteilles de vin. Si 35% de ce budget est dépensé pour les bouteilles, combien d'euros restent pour le reste de la production ?",
+            "reponse": 1300
+        },
+        {
+            "question": "Une usine produit 1000 flacons de parfum. Si 95% de la production est destinée à l'exportation, combien de flacons restent pour la vente en France ?",
+            "reponse": 50
+        },
+        {
+            "question": "Une petite entreprise a un budget de 1500 euros pour les fournitures de bureau. Si 5% de ce budget est utilisé pour des stylos, combien reste-t-il pour les autres articles ?",
+            "reponse": 1425
+        },
+        {
+            "question": "Une usine a un stock de 500 pièces. Si 25% de ces pièces sont utilisées pour fabriquer des machines, combien de pièces restent dans le stock ?",
+            "reponse": 375
+        },
+        {
+            "question": "Un agriculteur récolte 400 fruits. Si 15% de cette récolte est vendue à un marché local, combien de fruits lui reste-t-il ?",
+            "reponse": 340
+        },
+        {
+            "question": "Une entreprise de vin a un budget de 1500 euros pour la production. Si 35% du budget est consacré à l'achat de bouteilles, combien reste-t-il pour les autres dépenses ?",
+            "reponse": 975
+        },
+        {
+            "question": "Une usine de parfumerie fabrique 1200 flacons de parfum. Si 95% des flacons sont exportés, combien de flacons sont vendus en France ?",
+            "reponse": 60
+        },
+        {
+            "question": "Une PME a un budget de 1000 euros pour des matières premières. Si 5% de ce budget est utilisé pour le transport, combien reste-t-il pour les achats ?",
+            "reponse": 950
+        },
+        {
+            "question": "Une usine a un stock de 800 pièces. Si 15% des pièces sont utilisées pour une commande, combien de pièces restent en stock ?",
+            "reponse": 680
+        },
+        {
+            "question": "Un producteur de fruits récolte 1200 fruits. Si 25% de la récolte est vendue, combien lui reste-t-il ?",
+            "reponse": 900
+        },
+        {
+            "question": "Une entreprise de vin dispose d'un budget de 800 euros. Si 35% du budget est dépensé pour les bouteilles, combien d'euros restent pour les autres dépenses ?",
+            "reponse": 520
+        },
+        {
+            "question": "Une usine produit 400 flacons de parfum. Si 95% des flacons sont exportés, combien de flacons restent pour la vente locale ?",
+            "reponse": 20
+        },
+        {
+            "question": "Une petite entreprise a un budget de 1000 euros pour les fournitures de bureau. Si 5% de ce budget est dépensé en stylos, combien reste-t-il pour les autres fournitures ?",
+            "reponse": 950
+        },
+        {
+            "question": "Une usine a un stock de 2000 pièces. Si 25% des pièces sont utilisées pour une commande, combien restent en stock ?",
+            "reponse": 1500
+        },
+        {
+            "question": "Un agriculteur a une récolte de 600 fruits. Si 15% des fruits sont vendus à un grossiste, combien de fruits lui restent ?",
+            "reponse": 510
+        },
+        {
+            "question": "Une entreprise viticole a un budget de 3000 euros pour la production de vin. Si 35% du budget est utilisé pour l'achat des bouteilles, combien reste-t-il pour les autres dépenses ?",
+            "reponse": 1950
+        },
+        {
+            "question": "Une usine de parfumerie produit 200 flacons. Si 95% des flacons sont exportés, combien de flacons sont vendus localement ?",
+            "reponse": 10
+        },
+        {
+            "question": "Une PME dispose de 1200 euros pour l'achat de matières premières. Si 5% de ce budget est utilisé pour le transport, combien d'euros restent pour les matières premières ?",
+            "reponse": 1140
+        },
+        {
+            "question": "Une usine dispose de 1000 pièces en stock. Si 15% des pièces sont utilisées pour une commande, combien de pièces restent en réserve ?",
+            "reponse": 850
+        },
+        {
+            "question": "Un producteur récolte 400 fruits. Si 25% de la récolte est vendue à des marchés locaux, combien de fruits lui restent ?",
+            "reponse": 300
+        },
+        {
+            "question": "Une entreprise viticole a un budget de 2500 euros pour la production de bouteilles de vin. Si 35% du budget est utilisé pour les bouteilles, combien reste-t-il pour les autres coûts ?",
+            "reponse": 1625
+        },
+        {
+            "question": "Une usine produit 1500 flacons de parfum. Si 95% des flacons sont exportés, combien de flacons sont vendus localement ?",
+            "reponse": 75
+        },
+
+        {
+            "question": "Un agriculteur récolte 800 fruits. Si 15% de sa récolte est vendue à un marché, combien lui reste-t-il de fruits ?",
+            "reponse": 680
+        },
+        {
+            "question": "Une entreprise a un budget de 500 euros pour l'achat de fournitures. Si 25% du budget est dépensé pour des stylos, combien d'euros restent pour les autres achats ?",
+            "reponse": 375
+        },
+        {
+            "question": "Une usine a un stock de 1000 pièces détachées. Si 35% des pièces sont utilisées pour une commande, combien de pièces restent en stock ?",
+            "reponse": 650
+        },
+        {
+            "question": "Un producteur a récolté 2000 fruits. Si 25% de la récolte est vendue aux grossistes, combien de fruits lui reste-t-il ?",
+            "reponse": 1500
+        },
+        {
+            "question": "Une PME dispose d'un budget de 600 euros pour les fournitures. Si 5% du budget est utilisé pour des cahiers, combien reste-t-il pour les autres articles ?",
+            "reponse": 570
+        },
+        {
+            "question": "Une usine produit 400 pièces. Si 15% des pièces sont vendues dans la matinée, combien de pièces restent en stock pour l'après-midi ?",
+            "reponse": 340
+        },
+        {
+            "question": "Un agriculteur vend 1000 fruits. Si 25% des fruits sont réservés à des grossistes, combien de fruits restent pour la vente directe ?",
+            "reponse": 750
+        },
+        {
+            "question": "Une entreprise a un budget de 1200 euros pour la production de bouteilles. Si 35% du budget est consacré à l'achat de bouteilles, combien d'euros restent pour le reste de la production ?",
+            "reponse": 780
+        },
+        {
+            "question": "Une usine de parfumerie fabrique 600 flacons de parfum. Si 95% de la production est exportée, combien de flacons sont vendus en France ?",
+            "reponse": 30
+        },
+        {
+            "question": "Une PME a un budget de 1500 euros pour l'achat de matières premières. Si 5% du budget est utilisé pour le transport, combien reste-t-il pour les achats ?",
+            "reponse": 1425
+        },
+        {
+            "question": "Une usine dispose d'un stock de 3000 pièces. Si 25% de ces pièces sont utilisées pour une commande, combien de pièces restent en stock ?",
+            "reponse": 2250
+        },
+        {
+            "question": "Un producteur récolte 1500 fruits. Si 15% de sa récolte est vendue dans un marché local, combien de fruits lui restent ?",
+            "reponse": 1275
+        },
+        {
+            "question": "Une entreprise de vin a un budget de 2500 euros pour la production. Si 35% du budget est consacré à l'achat des bouteilles, combien reste-t-il pour les autres dépenses ?",
+            "reponse": 1625
+        },
+        {
+            "question": "Une usine de parfumerie fabrique 800 flacons. Si 95% des flacons sont exportés, combien de flacons restent pour la vente locale ?",
+            "reponse": 40
+        },
+        {
+            "question": "Une PME dispose de 2000 euros pour l'achat de matières premières. Si 5% de ce budget est utilisé pour le transport, combien d'euros restent pour les matières premières ?",
+            "reponse": 1900
+        },
+        {
+            "question": "Une usine dispose de 500 pièces en stock. Si 15% de ces pièces sont utilisées pour une commande, combien de pièces restent en stock ?",
+            "reponse": 425
+        },
+        {
+            "question": "Un agriculteur récolte 1200 fruits. Si 25% de la récolte est vendue aux grossistes, combien lui reste-t-il de fruits ?",
+            "reponse": 900
+        },
+        {
+            "question": "Une entreprise viticole a un budget de 1000 euros pour la production de bouteilles de vin. Si 35% de ce budget est dépensé pour l'achat de bouteilles, combien reste-t-il pour les autres coûts ?",
+            "reponse": 650
+        },
+        {
+            "question": "Une usine de parfumerie produit 100 flacons de parfum. Si 95% des flacons sont exportés, combien de flacons sont vendus en France ?",
+            "reponse": 5
+        },
+        {
+            "question": "Une petite entreprise a un budget de 800 euros pour les fournitures de bureau. Si 5% de ce budget est utilisé pour des stylos, combien reste-t-il pour les autres articles ?",
+            "reponse": 760
+        },
+        {
+            "question": "Une usine dispose de 600 pièces en stock. Si 15% de ces pièces sont utilisées pour une commande, combien de pièces restent en stock ?",
+            "reponse": 510
+        },
+        {
+            "question": "Un agriculteur récolte 1000 fruits. Si 25% de sa récolte est vendue à un grossiste, combien lui reste-t-il ?",
+            "reponse": 750
+        },
+        {
+            "question": "Une entreprise dispose de 500 euros pour des fournitures de bureau. Si 35% de ce budget est utilisé pour des stylos, combien reste-t-il pour les autres fournitures ?",
+            "reponse": 325
+        },
+        {
+            "question": "Une usine de parfumerie produit 1500 flacons. Si 95% de ces flacons sont exportés, combien de flacons restent pour la vente locale ?",
+            "reponse": 75
+        },
+        {
+            "question": "Un producteur de fruits récolte 2000 fruits. Si 25% de la récolte est vendue à un grossiste, combien lui reste-t-il de fruits ?",
+            "reponse": 1500
+        },
+        {
+            "question": "Une petite entreprise dispose d'un budget de 400 euros pour les fournitures. Si 5% de ce budget est utilisé pour des stylos, combien reste-t-il pour le reste ?",
+            "reponse": 380
+        },
+        {
+            "question": "Une usine a un stock de 700 pièces. Si 25% des pièces sont utilisées pour la production, combien de pièces restent en stock ?",
+            "reponse": 525
+        },
+        {
+            "question": "Un agriculteur récolte 300 fruits. Si 15% des fruits sont vendus à un marché local, combien de fruits lui reste-t-il ?",
+            "reponse": 255
+        },
+        {
+            "question": "Une entreprise de vin a un budget de 3000 euros pour la production de bouteilles. Si 35% de ce budget est utilisé pour l'achat de bouteilles, combien reste-t-il pour les autres dépenses ?",
+            "reponse": 1950
+        },
+        {
+            "question": "Une usine de parfumerie produit 1200 flacons de parfum. Si 95% des flacons sont destinés à l'export, combien restent pour la vente en France ?",
+            "reponse": 60
+        }
+    ],
+
+    "niveau4": [
+        {
+            "question": "Une entreprise dispose d'un stock industriel de 7000 unités de produit. Si 47% de ce stock est vendu à un distributeur, combien d'unités restent à vendre ?",
+            "reponse": 3710
+        },
+        {
+            "question": "Un dépôt industriel reçoit 8000 litres de carburant. Si 63% de ce carburant est utilisé pour les machines, combien de litres restent en réserve ?",
+            "reponse": 2960
+        },
+        {
+            "question": "Une entreprise consacre 10000 euros à son budget marketing. Si 78% de ce budget est utilisé pour des publicités en ligne, combien reste-t-il pour les autres campagnes ?",
+            "reponse": 2200
+        },
+        {
+            "question": "Un entrepôt dispose d'un stock de 9000 unités de produits. Si 55% des produits sont envoyés à un grossiste, combien d'unités restent en stock ?",
+            "reponse": 4050
+        },
+        {
+            "question": "Une entreprise reçoit 12000 litres de carburant. Si 89% du carburant est utilisé pour les camions de livraison, combien de litres restent pour les véhicules légers ?",
+            "reponse": 1320
+        },
+        {
+            "question": "Un budget de publicité de 15000 euros est alloué à une entreprise. Si 72% de ce budget est utilisé pour des publicités à la télévision, combien d'euros restent pour les campagnes numériques ?",
+            "reponse": 4200
+        },
+        {
+            "question": "Une usine a un stock industriel de 10000 pièces. Si 61% des pièces sont envoyées à l'assemblage, combien de pièces restent en réserve ?",
+            "reponse": 3900
+        },
+        {
+            "question": "Une entreprise dispose de 6000 litres de carburant pour ses opérations. Si 37% de ce carburant est utilisé pour les machines, combien reste-t-il de carburant ?",
+            "reponse": 3780
+        },
+        {
+            "question": "Un budget de marketing de 25000 euros est établi pour une campagne. Si 45% de ce budget est utilisé pour des spots publicitaires, combien d'euros restent pour d'autres initiatives ?",
+            "reponse": 13750
+        },
+        {
+            "question": "Un entrepôt reçoit 15000 unités de produit. Si 54% de ces unités sont envoyées à des distributeurs, combien d'unités restent dans l'entrepôt ?",
+            "reponse": 6900
+        },
+        {
+            "question": "Une entreprise reçoit 20000 litres de carburant. Si 85% de ce carburant est utilisé pour des camions, combien de litres restent pour les voitures ?",
+            "reponse": 3000
+        },
+        {
+            "question": "Une entreprise consacre 12000 euros à un budget publicitaire. Si 76% de ce budget est dépensé en affichage publicitaire, combien d'euros restent pour les publicités en ligne ?",
+            "reponse": 2880
+        },
+        {
+            "question": "Une usine a un stock de 9000 unités de produit. Si 33% de ce stock est utilisé pour une commande importante, combien d'unités restent disponibles ?",
+            "reponse": 6030
+        },
+        {
+            "question": "Un dépôt industriel reçoit 10000 litres de carburant. Si 69% de ce carburant est utilisé pour des véhicules de chantier, combien de litres restent pour d'autres usages ?",
+            "reponse": 3100
+        },
+        {
+            "question": "Un budget marketing de 8000 euros est alloué à une entreprise. Si 62% de ce budget est utilisé pour des annonces en ligne, combien d'euros restent pour d'autres canaux publicitaires ?",
+            "reponse": 3040
+        },
+        {
+            "question": "Un entrepôt stocke 5000 unités de produit. Si 41% des produits sont envoyés à un distributeur, combien d'unités restent dans l'entrepôt ?",
+            "reponse": 2950
+        },
+        {
+            "question": "Une entreprise dispose de 7000 litres de carburant pour ses opérations. Si 53% de ce carburant est utilisé pour des camions de livraison, combien de litres restent pour les voitures ?",
+            "reponse": 3290
+        },
+        {
+            "question": "Un budget de 20000 euros est alloué à une campagne publicitaire. Si 67% de ce budget est consacré aux publicités télévisées, combien d'euros restent pour les autres supports publicitaires ?",
+            "reponse": 6600
+        },
+        {
+            "question": "Un dépôt industriel reçoit 15000 unités de produit. Si 25% des produits sont utilisés pour une commande spéciale, combien d'unités restent dans le stock ?",
+            "reponse": 11250
+        },
+        {
+            "question": "Une entreprise reçoit 6000 litres de carburant. Si 34% de ce carburant est utilisé pour des véhicules lourds, combien de litres restent pour d'autres usages ?",
+            "reponse": 3960
+        },
+        {
+            "question": "Une entreprise a un budget de 12000 euros pour une campagne marketing. Si 28% de ce budget est dépensé pour la publicité en ligne, combien d'euros restent pour les autres supports ?",
+            "reponse": 8640
+        },
+        {
+            "question": "Un dépôt industriel reçoit 8000 unités de produit. Si 48% des produits sont envoyés à des clients, combien d'unités restent en stock ?",
+            "reponse": 4160
+        },
+        {
+            "question": "Une usine a un stock industriel de 10000 pièces. Si 38% des pièces sont utilisées pour des commandes, combien de pièces restent en stock ?",
+            "reponse": 6200
+        },
+        {
+            "question": "Une entreprise reçoit 9000 litres de carburant pour ses opérations. Si 52% de ce carburant est utilisé pour des véhicules de chantier, combien de litres restent pour d'autres véhicules ?",
+            "reponse": 4320
+        },
+        {
+            "question": "Un budget marketing de 15000 euros est alloué à une entreprise. Si 69% de ce budget est utilisé pour des publicités télévisées, combien d'euros restent pour les autres campagnes ?",
+            "reponse": 4650
+        },
+        {
+            "question": "Un dépôt industriel reçoit 20000 unités de produit. Si 22% de ce stock est réservé pour un client important, combien d'unités restent disponibles ?",
+            "reponse": 15600
+        },
+        {
+            "question": "Une entreprise dispose de 12000 litres de carburant pour ses véhicules. Si 58% de ce carburant est utilisé par les camions, combien de litres restent pour les voitures ?",
+            "reponse": 5040
+        },
+        {
+            "question": "Un budget de publicité de 25000 euros est mis en place. Si 64% de ce budget est utilisé pour des affichages publicitaires, combien reste-t-il pour les autres supports ?",
+            "reponse": 9000
+        },
+        {
+            "question": "Un dépôt industriel dispose de 8000 unités de produit. Si 36% de ces unités sont envoyées à un distributeur, combien d'unités restent dans l'entrepôt ?",
+            "reponse": 5120
+        },
+        {
+            "question": "Une entreprise reçoit 10000 litres de carburant pour ses opérations. Si 47% de ce carburant est utilisé pour les camions, combien de litres restent pour les autres véhicules ?",
+            "reponse": 5300
+        },
+        {
+            "question": "Un dépôt industriel reçoit 9000 unités de produit. Si 39% des produits sont envoyés à des clients, combien d'unités restent en stock ?",
+            "reponse": 5490
+        },
+        {
+            "question": "Une entreprise reçoit 12000 litres de carburant. Si 45% de ce carburant est utilisé pour des véhicules légers, combien de litres restent pour les autres véhicules ?",
+            "reponse": 6600
+        },
+        {
+            "question": "Un budget de marketing de 20000 euros est alloué à une entreprise. Si 75% de ce budget est utilisé pour des publicités en ligne, combien d'euros restent pour les autres campagnes ?",
+            "reponse": 5000
+        },
+        {
+            "question": "Un entrepôt dispose d'un stock de 8000 unités de produits. Si 57% des produits sont envoyés à un distributeur, combien d'unités restent en stock ?",
+            "reponse": 3440
+        },
+        {
+            "question": "Une entreprise reçoit 10000 litres de carburant. Si 82% du carburant est utilisé pour des machines, combien de litres restent pour les véhicules ?",
+            "reponse": 1800
+        },
+        {
+            "question": "Un budget de publicité de 15000 euros est établi pour une campagne. Si 69% de ce budget est utilisé pour des annonces à la télévision, combien d'euros restent pour d'autres initiatives ?",
+            "reponse": 4650
+        },
+        {
+            "question": "Une usine a un stock industriel de 12000 pièces. Si 61% des pièces sont envoyées à l'assemblage, combien de pièces restent en réserve ?",
+            "reponse": 4680
+        },
+        {
+            "question": "Une entreprise dispose de 6000 litres de carburant pour ses opérations. Si 43% de ce carburant est utilisé pour les machines, combien reste-t-il de carburant ?",
+            "reponse": 3420
+        },
+        {
+            "question": "Un budget de marketing de 25000 euros est mis en place. Si 49% de ce budget est utilisé pour des publicités en ligne, combien d'euros restent pour d'autres initiatives ?",
+            "reponse": 12750
+        },
+        {
+            "question": "Un entrepôt reçoit 20000 unités de produit. Si 52% de ces unités sont envoyées à des clients, combien d'unités restent dans l'entrepôt ?",
+            "reponse": 9600
+        },
+        {
+            "question": "Une entreprise reçoit 18000 litres de carburant. Si 64% de ce carburant est utilisé pour des camions de livraison, combien de litres restent pour les autres véhicules ?",
+            "reponse": 6480
+        },
+        {
+            "question": "Une entreprise consacre 10000 euros à son budget marketing. Si 74% de ce budget est utilisé pour des publicités sur les réseaux sociaux, combien reste-t-il pour les autres campagnes ?",
+            "reponse": 2600
+        },
+        {
+            "question": "Une usine a un stock de 12000 unités de produit. Si 68% de ce stock est utilisé pour une commande importante, combien d'unités restent disponibles ?",
+            "reponse": 3840
+        },
+        {
+            "question": "Un dépôt industriel reçoit 10000 litres de carburant. Si 73% de ce carburant est utilisé pour des camions de livraison, combien de litres restent pour d'autres usages ?",
+            "reponse": 2700
+        },
+        {
+            "question": "Un budget marketing de 8000 euros est alloué à une entreprise. Si 63% de ce budget est utilisé pour des annonces publicitaires, combien d'euros restent pour d'autres canaux ?",
+            "reponse": 2960
+        },
+        {
+            "question": "Un entrepôt stocke 5000 unités de produit. Si 47% des produits sont envoyés à un distributeur, combien d'unités restent dans l'entrepôt ?",
+            "reponse": 2650
+        },
+        {
+            "question": "Une entreprise dispose de 7000 litres de carburant pour ses opérations. Si 56% de ce carburant est utilisé pour des machines, combien de litres restent ?",
+            "reponse": 3080
+        },
+        {
+            "question": "Un budget de 20000 euros est alloué à une campagne publicitaire. Si 64% de ce budget est consacré aux publicités télévisées, combien d'euros restent pour les autres supports ?",
+            "reponse": 7200
+        },
+        {
+            "question": "Un dépôt industriel reçoit 15000 unités de produit. Si 48% des produits sont utilisés pour des commandes, combien d'unités restent dans le stock ?",
+            "reponse": 7800
+        },
+        {
+            "question": "Une entreprise reçoit 8000 litres de carburant. Si 38% de ce carburant est utilisé pour des véhicules légers, combien de litres restent pour les autres véhicules ?",
+            "reponse": 4960
+        },
+        {
+            "question": "Une entreprise a un budget de 12000 euros pour une campagne marketing. Si 57% de ce budget est dépensé pour la publicité télévisée, combien d'euros restent pour les autres supports ?",
+            "reponse": 5160
+        },
+        {
+            "question": "Un dépôt industriel reçoit 8000 unités de produit. Si 44% des produits sont envoyés à des clients, combien d'unités restent en stock ?",
+            "reponse": 4480
+        },
+        {
+            "question": "Une usine a un stock industriel de 10000 pièces. Si 43% des pièces sont utilisées pour des commandes, combien de pièces restent en stock ?",
+            "reponse": 5700
+        },
+        {
+            "question": "Une entreprise reçoit 9000 litres de carburant pour ses opérations. Si 39% de ce carburant est utilisé pour des véhicules légers, combien de litres restent pour les camions ?",
+            "reponse": 5490
+        },
+        {
+            "question": "Un budget marketing de 15000 euros est alloué à une entreprise. Si 62% de ce budget est utilisé pour des publicités en ligne, combien d'euros restent pour les autres campagnes ?",
+            "reponse": 5700
+        },
+        {
+            "question": "Un dépôt industriel reçoit 20000 unités de produit. Si 24% de ce stock est réservé pour un client important, combien d'unités restent disponibles ?",
+            "reponse": 15200
+        },
+        {
+            "question": "Une entreprise dispose de 12000 litres de carburant pour ses véhicules. Si 59% de ce carburant est utilisé par les camions, combien de litres restent pour les voitures ?",
+            "reponse": 4920
+        },
+        {
+            "question": "Un budget de publicité de 25000 euros est mis en place. Si 57% de ce budget est utilisé pour des campagnes télévisées, combien reste-t-il pour les autres supports ?",
+            "reponse": 10750
+        },
+        {
+            "question": "Un dépôt industriel dispose de 8000 unités de produit. Si 39% de ces unités sont envoyées à un distributeur, combien d'unités restent dans l'entrepôt ?",
+            "reponse": 4880
+        },
+        {
+            "question": "Une entreprise reçoit 10000 litres de carburant pour ses opérations. Si 66% de ce carburant est utilisé pour les camions, combien de litres restent pour les voitures ?",
+            "reponse": 3400
+        }
+    ],
+
+
+
+    "niveau5": [
+        {
+            "question": "Un stock de 70000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 21000
+        },
+        {
+            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 40000
+        },
+        {
+            "question": "Un stock de 40000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 28000
+        },
+        {
+            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 6000
+        },
+        {
+            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 99000
+        },
+        {
+            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 60000
+        },
+        {
+            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 40000
+        },
+        {
+            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 48000
+        },
+        {
+            "question": "Un stock de 40000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 40000
+        },
+        {
+            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 54000
+        },
+        {
+            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 21000
+        },
+        {
+            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 44999
+        },
+        {
+            "question": "Un stock de 40000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 36000
+        },
+        {
+            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 17000
+        },
+        {
+            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 35000
+        },
+        {
+            "question": "Un stock de 100000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 120000
+        },
+        {
+            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 140000
+        },
+        {
+            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 40000
+        },
+        {
+            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 22000
+        },
+        {
+            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 88000
+        },
+        {
+            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 54000
+        },
+        {
+            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 96000
+        },
+        {
+            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 102000
+        },
+        {
+            "question": "Un stock de 30000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 24000
+        },
+        {
+            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 36000
+        },
+        {
+            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 50000
+        },
+        {
+            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 32000
+        },
+        {
+            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 15000
+        },
+        {
+            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 60000
+        },
+        {
+            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 99000
+        },
+        {
+            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 98000
+        },
+        {
+            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 162000
+        },
+        {
+            "question": "Un stock de 70000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 77000
+        },
+        {
+            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 160000
+        },
+        {
+            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 108000
+        },
+        {
+            "question": "Un stock de 40000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 44000
+        },
+        {
+            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 3000
+        },
+        {
+            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 112000
+        },
+        {
+            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 63000
+        },
+        {
+            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 55000
+        },
+        {
+            "question": "Un stock de 40000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 32000
+        },
+        {
+            "question": "Un stock de 80000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 64000
+        },
+        {
+            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 65000
+        },
+        {
+            "question": "Un stock de 20000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 32000
+        },
+        {
+            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 72000
+        },
+        {
+            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 22000
+        },
+        {
+            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 120000
+        },
+        {
+            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 35000
+        },
+        {
+            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 102000
+        },
+        {
+            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 35000
+        },
+        {
+            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 35000
+        },
+        {
+            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 29999
+        },
+        {
+            "question": "Un stock de 80000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 80000
+        },
+        {
+            "question": "Un stock de 40000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 12000
+        },
+        {
+            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 13000
+        },
+        {
+            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 24000
+        },
+        {
+            "question": "Un stock de 40000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 40000
+        },
+        {
+            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 36000
+        },
+        {
+            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 108000
+        },
+        {
+            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 88000
+        },
+        {
+            "question": "Un stock de 60000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 60000
+        },
+        {
+            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 56000
+        },
+        {
+            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 50000
+        },
+        {
+            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 60000
+        },
+        {
+            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 126000
+        },
+        {
+            "question": "Un stock de 80000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 48000
+        },
+        {
+            "question": "Un stock de 60000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 30000
+        },
+        {
+            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 72000
+        },
+        {
+            "question": "Un stock de 100000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 70000
+        },
+        {
+            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 29999
+        },
+        {
+            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 55000
+        },
+        {
+            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 99000
+        },
+        {
+            "question": "Un stock de 100000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 50000
+        },
+        {
+            "question": "Un stock de 50000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 85000
+        },
+        {
+            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 16000
+        },
+        {
+            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 77000
+        },
+        {
+            "question": "Un stock de 20000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 35% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 26000
+        },
+        {
+            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 55% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 42000
+        },
+        {
+            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 130000
+        },
+        {
+            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 14999
+        },
+        {
+            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 45%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 72000
+        },
+        {
+            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 180000
+        },
+        {
+            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 18000
+        },
+        {
+            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 35%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 11000
+        },
+        {
+            "question": "Un stock de 100000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 30000
+        },
+        {
+            "question": "Un stock de 70000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 75% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 84000
+        },
+        {
+            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 25%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 153000
+        },
+        {
+            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 84000
+        },
+        {
+            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 40000
+        },
+        {
+            "question": "Un stock de 30000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 65%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 85% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 36000
+        },
+        {
+            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 1000
+        },
+        {
+            "question": "Un stock de 10000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 15%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 18000
+        },
+        {
+            "question": "Un stock de 40000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 55%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 95% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 56000
+        },
+        {
+            "question": "Un stock de 90000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 45% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 54000
+        },
+        {
+            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 32000
+        },
+        {
+            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 15% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 55000
+        },
+        {
+            "question": "Un stock de 90000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 5%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 65% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 144000
+        },
+        {
+            "question": "Un stock de 80000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 75%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 40000
+        },
+        {
+            "question": "Un stock de 50000 augmentation/r\u00e9duction de budget subit une r\u00e9duction de 85%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 25% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 20000
+        },
+        {
+            "question": "Un stock de 70000 gestion de stock avec ajouts/retraits subit une r\u00e9duction de 95%. Ensuite, on ajoute une quantit\u00e9 \u00e9quivalente \u00e0 5% du stock initial. Combien reste-t-il en tout ?",
+            "reponse": 7000
+        }
+    ]
+}

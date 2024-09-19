@@ -66,6 +66,7 @@ flutter:
     - assets/users.png
     - assets/equation.png
     - assets/jouer.png
+    - assets/problems_by_level.json
 
   fonts:
     - family: 'PixelFont'
