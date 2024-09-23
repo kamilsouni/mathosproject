@@ -241,9 +241,164 @@
             {
                 "question": "Un sac contient 10 bonbons. Si 10% des bonbons sont mangés, combien restent dans le sac ?",
                 "reponse": 9
+            },
+            {
+                "question": "Il y a 50 parts de gâteau à distribuer lors d'une fête d'anniversaire. Si 50% de parts supplémentaires sont préparées, combien y aura-t-il au total ?",
+                "reponse": 75
+            },
+            {
+                "question": "Un magasin vend 20 jouets. Si 50% de jouets supplémentaires sont livrés, combien de jouets le magasin a-t-il en tout ?",
+                "reponse": 30
+            },
+            {
+                "question": "Un élève possède 30 crayons. Si 10% de crayons supplémentaires sont achetés, combien de crayons aura-t-il en tout ?",
+                "reponse": 33
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 50% de livres supplémentaires sont ajoutés à la collection, combien de livres y aura-t-il au total ?",
+                "reponse": 60
+            },
+            {
+                "question": "Dans une fête, 10 bonbons sont à distribuer. Si 10% de bonbons supplémentaires sont donnés, combien de bonbons y aura-t-il au total ?",
+                "reponse": 11
+            },
+            {
+                "question": "Une classe possède 50 jouets. Si 50% de jouets supplémentaires sont ajoutés, combien de jouets y aura-t-il en tout ?",
+                "reponse": 75
+            },
+            {
+                "question": "Lors d'une fête scolaire, 20 parts de gâteau sont préparées. Si 50% de parts supplémentaires sont ajoutées, combien y aura-t-il de parts au total ?",
+                "reponse": 30
+            },
+            {
+                "question": "Un étudiant a 30 crayons pour son examen. Si 10% de crayons supplémentaires sont achetés, combien aura-t-il en tout ?",
+                "reponse": 33
+            },
+            {
+                "question": "Dans une classe, il y a 40 livres à disposition. Si 50% de livres supplémentaires sont achetés, combien de livres y aura-t-il au total ?",
+                "reponse": 60
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 10% de bonbons supplémentaires sont ajoutés, combien y aura-t-il de bonbons au total ?",
+                "reponse": 11
+            },
+            {
+                "question": "Un magasin de jouets a 50 articles en stock. Si 10% de jouets supplémentaires sont ajoutés, combien de jouets y aura-t-il au total ?",
+                "reponse": 55
+            },
+            {
+                "question": "Lors d'une fête d'anniversaire, 20 parts de gâteau sont servies. Si 50% de parts supplémentaires sont ajoutées, combien de parts y aura-t-il au total ?",
+                "reponse": 30
+            },
+            {
+                "question": "Un élève a 30 crayons dans sa trousse. Si 50% de crayons supplémentaires sont ajoutés, combien de crayons aura-t-il en tout ?",
+                "reponse": 45
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres disponibles. Si 10% de livres supplémentaires sont achetés, combien de livres y aura-t-il au total ?",
+                "reponse": 44
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 50% de bonbons supplémentaires sont ajoutés, combien y aura-t-il de bonbons au total ?",
+                "reponse": 15
+            },
+            {
+                "question": "Un magasin de jouets reçoit 50 jouets en livraison. Si 10% de jouets supplémentaires sont livrés, combien de jouets y aura-t-il au total ?",
+                "reponse": 55
+            },
+            {
+                "question": "Lors d'une fête, 20 parts de gâteau sont préparées. Si 10% de parts supplémentaires sont ajoutées, combien y aura-t-il de parts au total ?",
+                "reponse": 22
+            },
+            {
+                "question": "Un élève a 30 crayons pour ses devoirs. Si 10% de crayons supplémentaires sont achetés, combien de crayons aura-t-il en tout ?",
+                "reponse": 33
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres à disposition. Si 10% de livres supplémentaires sont achetés, combien de livres y aura-t-il au total ?",
+                "reponse": 44
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 50% de bonbons supplémentaires sont ajoutés, combien de bonbons y aura-t-il au total ?",
+                "reponse": 15
+            },
+            {
+                "question": "Un magasin vend 50 jouets chaque jour. Si 10% de jouets supplémentaires sont vendus, combien de jouets le magasin vend-il au total ?",
+                "reponse": 55
+            },
+            {
+                "question": "Lors d'une fête, 20 parts de gâteau sont servies. Si 10% de parts supplémentaires sont ajoutées, combien de parts y aura-t-il au total ?",
+                "reponse": 22
+            },
+            {
+                "question": "Un élève possède 30 crayons. Si 50% de crayons supplémentaires sont achetés, combien de crayons aura-t-il en tout ?",
+                "reponse": 45
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 50% de livres supplémentaires sont ajoutés, combien de livres y aura-t-il au total ?",
+                "reponse": 60
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 50% de bonbons supplémentaires sont ajoutés, combien de bonbons y aura-t-il au total ?",
+                "reponse": 15
+            },
+            {
+                "question": "Un magasin reçoit 50 jouets en livraison. Si 50% de jouets supplémentaires sont livrés, combien de jouets y aura-t-il en tout ?",
+                "reponse": 75
+            },
+            {
+                "question": "Lors d'une fête d'anniversaire, 20 parts de gâteau sont servies. Si 10% de parts supplémentaires sont ajoutées, combien de parts y aura-t-il au total ?",
+                "reponse": 22
+            },
+            {
+                "question": "Un élève a 30 crayons. Si 50% de crayons supplémentaires sont achetés, combien de crayons aura-t-il au total ?",
+                "reponse": 45
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 10% de livres supplémentaires sont achetés, combien de livres y aura-t-il au total ?",
+                "reponse": 44
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 10% de bonbons supplémentaires sont ajoutés, combien de bonbons y aura-t-il au total ?",
+                "reponse": 11
+            },
+            {
+                "question": "Un magasin de jouets a 50 articles en stock. Si 50% de jouets supplémentaires sont ajoutés, combien de jouets y aura-t-il au total ?",
+                "reponse": 75
+            },
+            {
+                "question": "Lors d'une fête, 20 parts de gâteau sont préparées. Si 50% de parts supplémentaires sont ajoutées, combien de parts y aura-t-il au total ?",
+                "reponse": 30
+            },
+            {
+                "question": "Un élève a 30 crayons. Si 10% de crayons supplémentaires sont achetés, combien de crayons aura-t-il en tout ?",
+                "reponse": 33
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 10% de livres supplémentaires sont achetés, combien de livres y aura-t-il au total ?",
+                "reponse": 44
+            },
+            {
+                "question": "Un sac contient 10 bonbons. Si 50% de bonbons supplémentaires sont ajoutés, combien de bonbons y aura-t-il au total ?",
+                "reponse": 15
+            },
+            {
+                "question": "Un magasin reçoit 50 jouets. Si 10% de jouets supplémentaires sont livrés, combien de jouets y aura-t-il au total ?",
+                "reponse": 55
+            },
+            {
+                "question": "Lors d'une fête d'anniversaire, 20 parts de gâteau sont distribuées. Si 50% de parts supplémentaires sont ajoutées, combien de parts y aura-t-il au total ?",
+                "reponse": 30
+            },
+            {
+                "question": "Un élève a 30 crayons. Si 50% de crayons supplémentaires sont achetés, combien de crayons aura-t-il en tout ?",
+                "reponse": 45
+            },
+            {
+                "question": "Dans une bibliothèque, il y a 40 livres. Si 10% de livres supplémentaires sont achetés, combien de livres y aura-t-il au total ?",
+                "reponse": 44
             }
         ]
-
     ,
 
     "niveau2": [
@@ -412,6 +567,7 @@
             "question": "Une école commande 500 crayons pour ses élèves. Si 20% des crayons sont perdus au cours de l'année, combien de crayons restent à la fin de l'année scolaire ?",
             "reponse": 400
         },
+
         {
             "question": "Un parc aquatique utilise 600 litres d'eau chaque jour. Si 40% de cette eau est consommée dans les piscines, combien de litres restent pour les toboggans ?",
             "reponse": 360
@@ -487,6 +643,166 @@
         {
             "question": "Un agriculteur produit 400 litres de lait. Si 40% du lait est vendu aux particuliers, combien de litres restent pour la transformation industrielle ?",
             "reponse": 240
+        },
+        {
+            "question": "Une usine produit 100 litres d'huile d'olive. Si 20% supplémentaires sont produits, combien de litres y aura-t-il au total ?",
+            "reponse": 120
+        },
+        {
+            "question": "Un agriculteur a 200 litres de lait. Si 30% supplémentaires sont ajoutés, combien de litres y aura-t-il au total ?",
+            "reponse": 260
+        },
+        {
+            "question": "Une école reçoit une donation de 400 crayons. Si 40% supplémentaires sont offerts, combien de crayons y aura-t-il au total ?",
+            "reponse": 560
+        },
+        {
+            "question": "Une piscine municipale utilise 500 litres d'eau par jour. Si 60% supplémentaires sont fournis, combien de litres y aura-t-il en tout ?",
+            "reponse": 800
+        },
+        {
+            "question": "Un stock de 1000 litres de lait est reçu dans une laiterie. Si 90% supplémentaires sont livrés, combien de litres y aura-t-il au total ?",
+            "reponse": 1900
+        },
+        {
+            "question": "Une usine fabrique 300 litres d'huile d'olive par jour. Si 40% supplémentaires sont produits, combien de litres y aura-t-il au total ?",
+            "reponse": 420
+        },
+        {
+            "question": "Un fermier possède 600 litres de lait. Si 60% supplémentaires sont ajoutés à son stock, combien de litres y aura-t-il au total ?",
+            "reponse": 960
+        },
+        {
+            "question": "Une école reçoit 700 crayons pour l'année scolaire. Si 20% supplémentaires sont fournis, combien de crayons y aura-t-il au total ?",
+            "reponse": 840
+        },
+        {
+            "question": "Un parc aquatique utilise 800 litres d'eau chaque jour. Si 30% supplémentaires sont nécessaires, combien de litres d'eau y aura-t-il en tout ?",
+            "reponse": 1040
+        },
+        {
+            "question": "Une laiterie reçoit 900 litres de lait. Si 80% supplémentaires sont livrés, combien de litres y aura-t-il au total ?",
+            "reponse": 1620
+        },
+        {
+            "question": "Un fabricant produit 200 litres d'huile d'olive. Si 90% supplémentaires sont ajoutés à la production, combien de litres y aura-t-il au total ?",
+            "reponse": 380
+        },
+        {
+            "question": "Une ferme produit 400 litres de lait. Si 30% supplémentaires sont produits, combien de litres y aura-t-il en tout ?",
+            "reponse": 520
+        },
+        {
+            "question": "Une école reçoit 500 crayons pour la rentrée. Si 60% supplémentaires sont livrés, combien de crayons y aura-t-il au total ?",
+            "reponse": 800
+        },
+        {
+            "question": "Un parc utilise 1000 litres d'eau par jour. Si 90% supplémentaires sont nécessaires, combien de litres d'eau y aura-t-il au total ?",
+            "reponse": 1900
+        },
+        {
+            "question": "Une usine reçoit 600 litres d'huile d'olive. Si 60% supplémentaires sont livrés, combien de litres y aura-t-il au total ?",
+            "reponse": 960
+        },
+        {
+            "question": "Un fermier vend 800 litres de lait. Si 40% supplémentaires sont livrés, combien de litres de lait y aura-t-il au total ?",
+            "reponse": 1120
+        },
+        {
+            "question": "Une école commande 200 crayons pour une activité scolaire. Si 40% supplémentaires sont fournis, combien de crayons y aura-t-il en tout ?",
+            "reponse": 280
+        },
+        {
+            "question": "Un parc aquatique consomme 300 litres d'eau par jour. Si 60% supplémentaires sont nécessaires, combien de litres y aura-t-il au total ?",
+            "reponse": 480
+        },
+        {
+            "question": "Une laiterie reçoit 500 litres de lait. Si 80% supplémentaires sont livrés, combien de litres de lait y aura-t-il au total ?",
+            "reponse": 900
+        },
+        {
+            "question": "Une usine produit 700 litres d'huile d'olive. Si 30% supplémentaires sont produits, combien de litres y aura-t-il au total ?",
+            "reponse": 910
+        },
+        {
+            "question": "Une ferme reçoit 1000 litres de lait. Si 20% supplémentaires sont livrés, combien de litres de lait y aura-t-il au total ?",
+            "reponse": 1200
+        },
+        {
+            "question": "Un agriculteur produit 400 litres de lait. Si 30% supplémentaires sont ajoutés à sa production, combien de litres y aura-t-il au total ?",
+            "reponse": 520
+        },
+        {
+            "question": "Une école reçoit une livraison de 500 crayons. Si 40% supplémentaires sont offerts, combien de crayons y aura-t-il au total ?",
+            "reponse": 700
+        },
+        {
+            "question": "Un parc aquatique consomme 600 litres d'eau chaque jour. Si 80% supplémentaires sont nécessaires, combien de litres d'eau y aura-t-il au total ?",
+            "reponse": 1080
+        },
+        {
+            "question": "Une laiterie reçoit 900 litres de lait. Si 60% supplémentaires sont livrés, combien de litres y aura-t-il au total ?",
+            "reponse": 1440
+        },
+        {
+            "question": "Une usine produit 300 litres d'huile d'olive. Si 90% supplémentaires sont produits, combien de litres y aura-t-il au total ?",
+            "reponse": 570
+        },
+        {
+            "question": "Un agriculteur récolte 800 litres de lait. Si 40% supplémentaires sont produits, combien de litres y aura-t-il au total ?",
+            "reponse": 1120
+        },
+        {
+            "question": "Une école reçoit 700 crayons. Si 20% supplémentaires sont donnés, combien de crayons y aura-t-il au total ?",
+            "reponse": 840
+        },
+        {
+            "question": "Un parc consomme 1000 litres d'eau par jour. Si 30% supplémentaires sont nécessaires, combien de litres y aura-t-il au total ?",
+            "reponse": 1300
+        },
+        {
+            "question": "Un agriculteur reçoit 600 litres de lait. Si 60% supplémentaires sont livrés, combien de litres y aura-t-il au total ?",
+            "reponse": 960
+        },
+        {
+            "question": "Une usine produit 700 litres d'huile d'olive. Si 40% supplémentaires sont produits, combien de litres y aura-t-il au total ?",
+            "reponse": 980
+        },
+        {
+            "question": "Un fermier récolte 900 litres de lait. Si 30% supplémentaires sont livrés, combien de litres y aura-t-il au total ?",
+            "reponse": 1170
+        },
+        {
+            "question": "Une école commande 300 crayons pour les élèves. Si 60% supplémentaires sont livrés, combien de crayons y aura-t-il au total ?",
+            "reponse": 480
+        },
+        {
+            "question": "Un parc aquatique consomme 800 litres d'eau par jour. Si 90% supplémentaires sont nécessaires, combien de litres y aura-t-il au total ?",
+            "reponse": 1520
+        },
+        {
+            "question": "Une usine reçoit 1000 litres d'huile d'olive. Si 20% supplémentaires sont livrés, combien de litres y aura-t-il au total ?",
+            "reponse": 1200
+        },
+        {
+            "question": "Un agriculteur produit 600 litres de lait. Si 80% supplémentaires sont ajoutés, combien de litres de lait y aura-t-il au total ?",
+            "reponse": 1080
+        },
+        {
+            "question": "Une école reçoit 400 crayons. Si 40% supplémentaires sont fournis, combien de crayons y aura-t-il au total ?",
+            "reponse": 560
+        },
+        {
+            "question": "Un parc consomme 500 litres d'eau par jour. Si 60% supplémentaires sont nécessaires, combien de litres y aura-t-il au total ?",
+            "reponse": 800
+        },
+        {
+            "question": "Une usine reçoit 900 litres d'huile d'olive. Si 90% supplémentaires sont livrés, combien de litres y aura-t-il au total ?",
+            "reponse": 1710
+        },
+        {
+            "question": "Un agriculteur produit 1000 litres de lait. Si 30% supplémentaires sont produits, combien de litres y aura-t-il au total ?",
+            "reponse": 1300
         }
     ],
 
@@ -731,8 +1047,153 @@
         {
             "question": "Une usine de parfumerie produit 1200 flacons de parfum. Si 95% des flacons sont destinés à l'export, combien restent pour la vente en France ?",
             "reponse": 60
+        },
+        {
+            "question": "Une petite entreprise a un budget de 200 euros pour son stock de fournitures de bureau. Si 5% du budget supplémentaire est utilisé pour acheter des stylos, combien reste-t-il pour les autres fournitures ?",
+            "reponse": 210
+        },
+        {
+            "question": "Une usine a un stock de 400 pièces détachées. Si 15% supplémentaires de pièces sont ajoutées, combien de pièces y aura-t-il en tout ?",
+            "reponse": 460
+        },
+        {
+            "question": "Un agriculteur a une récolte de 1000 fruits. Si 25% supplémentaires sont ajoutés à la récolte, combien de fruits aura-t-il en tout ?",
+            "reponse": 1250
+        },
+        {
+            "question": "Une entreprise a un budget de 1500 euros pour la production de bouteilles de vin. Si 35% supplémentaires sont alloués à l'achat de bouteilles, combien d'euros aura-t-elle au total pour l'achat de bouteilles ?",
+            "reponse": 2025
+        },
+        {
+            "question": "Une usine de parfumerie produit 500 flacons de parfum. Si 95% supplémentaires de flacons sont produits, combien de flacons y aura-t-il en tout ?",
+            "reponse": 975
+        },
+        {
+            "question": "Une PME a un budget de 2000 euros pour l'achat de matières premières. Si 5% supplémentaires sont alloués au transport, combien d'euros y aura-t-il en tout pour le transport ?",
+            "reponse": 2100
+        },
+        {
+            "question": "Une usine a un stock de 1200 pièces. Si 15% supplémentaires de pièces sont ajoutées, combien de pièces y aura-t-il en tout ?",
+            "reponse": 1380
+        },
+        {
+            "question": "Un producteur de fruits récolte 600 fruits. Si 25% supplémentaires de fruits sont récoltés, combien de fruits y aura-t-il en tout ?",
+            "reponse": 750
+        },
+        {
+            "question": "Une entreprise viticole dispose d'un budget de 2000 euros pour la production de bouteilles de vin. Si 35% supplémentaires du budget sont ajoutés pour la production de bouteilles, combien d'euros y aura-t-il au total ?",
+            "reponse": 2700
+        },
+        {
+            "question": "Une usine produit 1000 flacons de parfum. Si 95% supplémentaires de flacons sont exportés, combien de flacons y aura-t-il en tout pour l'exportation ?",
+            "reponse": 1950
+        },
+        {
+            "question": "Une petite entreprise a un budget de 1500 euros pour les fournitures de bureau. Si 5% supplémentaires sont alloués pour des stylos, combien d'euros y aura-t-il au total ?",
+            "reponse": 1575
+        },
+        {
+            "question": "Une usine a un stock de 500 pièces. Si 25% supplémentaires de pièces sont ajoutées, combien de pièces y aura-t-il en tout ?",
+            "reponse": 625
+        },
+        {
+            "question": "Un agriculteur récolte 400 fruits. Si 15% supplémentaires de fruits sont ajoutés à la récolte, combien de fruits y aura-t-il en tout ?",
+            "reponse": 460
+        },
+        {
+            "question": "Une entreprise de vin a un budget de 1500 euros pour la production. Si 35% supplémentaires sont ajoutés au budget pour l'achat de bouteilles, combien d'euros y aura-t-il au total ?",
+            "reponse": 2025
+        },
+        {
+            "question": "Une usine de parfumerie fabrique 1200 flacons de parfum. Si 95% supplémentaires de flacons sont produits, combien de flacons y aura-t-il en tout ?",
+            "reponse": 2340
+        },
+        {
+            "question": "Une PME a un budget de 1000 euros pour des matières premières. Si 5% supplémentaires sont alloués au transport, combien d'euros y aura-t-il en tout ?",
+            "reponse": 1050
+        },
+        {
+            "question": "Une usine a un stock de 800 pièces. Si 15% supplémentaires de pièces sont ajoutées, combien de pièces y aura-t-il en tout ?",
+            "reponse": 920
+        },
+        {
+            "question": "Un producteur de fruits récolte 1200 fruits. Si 25% supplémentaires de fruits sont ajoutés à la récolte, combien de fruits y aura-t-il en tout ?",
+            "reponse": 1500
+        },
+        {
+            "question": "Une entreprise de vin dispose d'un budget de 800 euros. Si 35% supplémentaires du budget sont alloués à l'achat de bouteilles, combien d'euros y aura-t-il au total ?",
+            "reponse": 1080
+        },
+        {
+            "question": "Une usine produit 400 flacons de parfum. Si 95% supplémentaires de flacons sont exportés, combien de flacons y aura-t-il au total pour l'exportation ?",
+            "reponse": 780
+        },
+        {
+            "question": "Une petite entreprise a un budget de 1000 euros pour les fournitures de bureau. Si 5% supplémentaires sont alloués aux stylos, combien d'euros y aura-t-il au total ?",
+            "reponse": 1050
+        },
+        {
+            "question": "Une usine a un stock de 2000 pièces. Si 25% supplémentaires de pièces sont ajoutées, combien de pièces y aura-t-il en tout ?",
+            "reponse": 2500
+        },
+        {
+            "question": "Un agriculteur a une récolte de 600 fruits. Si 15% supplémentaires de fruits sont ajoutés, combien de fruits y aura-t-il en tout ?",
+            "reponse": 690
+        },
+        {
+            "question": "Une entreprise viticole a un budget de 3000 euros pour la production de vin. Si 35% supplémentaires du budget sont alloués aux bouteilles, combien d'euros y aura-t-il au total ?",
+            "reponse": 4050
+        },
+        {
+            "question": "Une usine de parfumerie produit 200 flacons. Si 95% supplémentaires de flacons sont exportés, combien de flacons y aura-t-il en tout pour l'exportation ?",
+            "reponse": 390
+        },
+        {
+            "question": "Une PME dispose de 1200 euros pour l'achat de matières premières. Si 5% supplémentaires du budget sont alloués pour le transport, combien d'euros y aura-t-il en tout ?",
+            "reponse": 1260
+        },
+        {
+            "question": "Une usine dispose de 1000 pièces en stock. Si 15% supplémentaires de pièces sont ajoutées, combien de pièces y aura-t-il en tout ?",
+            "reponse": 1150
+        },
+        {
+            "question": "Un producteur récolte 400 fruits. Si 25% supplémentaires de fruits sont ajoutés à la récolte, combien de fruits y aura-t-il en tout ?",
+            "reponse": 500
+        },
+        {
+            "question": "Une entreprise viticole a un budget de 2500 euros pour la production de bouteilles de vin. Si 35% supplémentaires du budget sont alloués aux bouteilles, combien d'euros y aura-t-il en tout ?",
+            "reponse": 3375
+        },
+        {
+            "question": "Une usine produit 1500 flacons de parfum. Si 95% supplémentaires de flacons sont exportés, combien de flacons y aura-t-il au total ?",
+            "reponse": 2925
+        },
+        {
+            "question": "Un agriculteur récolte 800 fruits. Si 15% supplémentaires de fruits sont ajoutés, combien de fruits y aura-t-il en tout ?",
+            "reponse": 920
+        },
+        {
+            "question": "Une entreprise a un budget de 500 euros pour l'achat de fournitures. Si 25% supplémentaires du budget sont alloués aux stylos, combien d'euros y aura-t-il au total ?",
+            "reponse": 625
+        },
+        {
+            "question": "Une usine a un stock de 1000 pièces détachées. Si 35% supplémentaires de pièces sont ajoutées, combien de pièces y aura-t-il en tout ?",
+            "reponse": 1350
+        },
+        {
+            "question": "Un producteur a récolté 2000 fruits. Si 25% supplémentaires de fruits sont ajoutés à la récolte, combien de fruits y aura-t-il en tout ?",
+            "reponse": 2500
+        },
+        {
+            "question": "Une PME dispose d'un budget de 600 euros pour les fournitures. Si 5% supplémentaires du budget sont alloués pour des cahiers, combien d'euros y aura-t-il en tout ?",
+            "reponse": 630
+        },
+        {
+            "question": "Une usine produit 400 pièces. Si 15% supplémentaires de pièces sont ajoutées, combien de pièces y aura-t-il en tout ?",
+            "reponse": 460
         }
-    ],
+        ],
+
 
     "niveau4": [
         {
@@ -974,9 +1435,129 @@
         {
             "question": "Une entreprise reçoit 10000 litres de carburant pour ses opérations. Si 66% de ce carburant est utilisé pour les camions, combien de litres restent pour les voitures ?",
             "reponse": 3400
+        },
+        {
+            "question": "Une entreprise dispose d'un stock industriel de 7000 unités de produit. Si 47% supplémentaires sont ajoutés au stock, combien d'unités y aura-t-il en tout ?",
+            "reponse": 10290
+        },
+        {
+            "question": "Un dépôt industriel reçoit 8000 litres de carburant. Si 63% supplémentaires sont livrés pour les machines, combien de litres de carburant y aura-t-il au total ?",
+            "reponse": 13040
+        },
+        {
+            "question": "Une entreprise consacre 10000 euros à son budget marketing. Si 78% supplémentaires sont alloués aux publicités en ligne, combien d'euros y aura-t-il en tout pour ces campagnes ?",
+            "reponse": 17800
+        },
+        {
+            "question": "Un entrepôt dispose d'un stock de 9000 unités de produits. Si 55% supplémentaires de produits sont ajoutés pour un grossiste, combien d'unités y aura-t-il en tout ?",
+            "reponse": 13950
+        },
+        {
+            "question": "Une entreprise reçoit 12000 litres de carburant. Si 89% supplémentaires sont livrés pour les camions de livraison, combien de litres y aura-t-il au total ?",
+            "reponse": 22680
+        },
+        {
+            "question": "Un budget de publicité de 15000 euros est alloué à une entreprise. Si 72% supplémentaires sont ajoutés pour des publicités à la télévision, combien d'euros y aura-t-il au total ?",
+            "reponse": 25800
+        },
+        {
+            "question": "Une usine a un stock industriel de 10000 pièces. Si 61% supplémentaires sont ajoutés pour l'assemblage, combien de pièces y aura-t-il en tout ?",
+            "reponse": 16100
+        },
+        {
+            "question": "Une entreprise dispose de 6000 litres de carburant pour ses opérations. Si 37% supplémentaires sont ajoutés pour les machines, combien de litres de carburant y aura-t-il au total ?",
+            "reponse": 8220
+        },
+        {
+            "question": "Un budget de marketing de 25000 euros est établi pour une campagne. Si 45% supplémentaires sont alloués pour des spots publicitaires, combien d'euros y aura-t-il au total ?",
+            "reponse": 36250
+        },
+        {
+            "question": "Un entrepôt reçoit 15000 unités de produit. Si 54% supplémentaires sont livrés à des distributeurs, combien d'unités y aura-t-il en tout ?",
+            "reponse": 23100
+        },
+        {
+            "question": "Une entreprise reçoit 20000 litres de carburant. Si 85% supplémentaires sont utilisés pour les camions, combien de litres y aura-t-il au total ?",
+            "reponse": 37000
+        },
+        {
+            "question": "Une entreprise consacre 12000 euros à un budget publicitaire. Si 76% supplémentaires sont dépensés en affichage publicitaire, combien d'euros y aura-t-il au total ?",
+            "reponse": 21120
+        },
+        {
+            "question": "Une usine a un stock de 9000 unités de produit. Si 33% supplémentaires de ce stock sont ajoutés pour une commande importante, combien d'unités y aura-t-il en tout ?",
+            "reponse": 11970
+        },
+        {
+            "question": "Un dépôt industriel reçoit 10000 litres de carburant. Si 69% supplémentaires sont livrés pour des véhicules de chantier, combien de litres y aura-t-il au total ?",
+            "reponse": 16900
+        },
+        {
+            "question": "Un budget marketing de 8000 euros est alloué à une entreprise. Si 62% supplémentaires sont ajoutés pour des annonces en ligne, combien d'euros y aura-t-il au total ?",
+            "reponse": 12960
+        },
+        {
+            "question": "Un entrepôt stocke 5000 unités de produit. Si 41% supplémentaires de produits sont ajoutés pour un distributeur, combien d'unités y aura-t-il en tout ?",
+            "reponse": 7050
+        },
+        {
+            "question": "Une entreprise dispose de 7000 litres de carburant pour ses opérations. Si 53% supplémentaires sont ajoutés pour des camions de livraison, combien de litres de carburant y aura-t-il au total ?",
+            "reponse": 10710
+        },
+        {
+            "question": "Un budget de 20000 euros est alloué à une campagne publicitaire. Si 67% supplémentaires sont consacrés aux publicités télévisées, combien d'euros y aura-t-il au total ?",
+            "reponse": 33400
+        },
+        {
+            "question": "Un dépôt industriel reçoit 15000 unités de produit. Si 25% supplémentaires de produits sont ajoutés pour une commande spéciale, combien d'unités y aura-t-il en tout ?",
+            "reponse": 18750
+        },
+        {
+            "question": "Une entreprise reçoit 6000 litres de carburant. Si 34% supplémentaires sont ajoutés pour des véhicules lourds, combien de litres de carburant y aura-t-il au total ?",
+            "reponse": 8040
+        },
+        {
+            "question": "Une entreprise a un budget de 12000 euros pour une campagne marketing. Si 28% supplémentaires sont alloués pour la publicité en ligne, combien d'euros y aura-t-il au total ?",
+            "reponse": 15360
+        },
+        {
+            "question": "Un dépôt industriel reçoit 8000 unités de produit. Si 48% supplémentaires de produits sont ajoutés pour des clients, combien d'unités y aura-t-il en tout ?",
+            "reponse": 11840
+        },
+        {
+            "question": "Une usine a un stock industriel de 10000 pièces. Si 38% supplémentaires de pièces sont ajoutées pour des commandes, combien de pièces y aura-t-il en tout ?",
+            "reponse": 13800
+        },
+        {
+            "question": "Une entreprise reçoit 9000 litres de carburant pour ses opérations. Si 52% supplémentaires de carburant sont ajoutés pour des véhicules de chantier, combien de litres de carburant y aura-t-il au total ?",
+            "reponse": 13680
+        },
+        {
+            "question": "Un budget marketing de 15000 euros est alloué à une entreprise. Si 69% supplémentaires sont alloués pour des publicités télévisées, combien d'euros y aura-t-il au total ?",
+            "reponse": 25350
+        },
+        {
+            "question": "Un dépôt industriel reçoit 20000 unités de produit. Si 22% supplémentaires de ce stock sont réservés pour un client important, combien d'unités y aura-t-il au total ?",
+            "reponse": 24400
+        },
+        {
+            "question": "Une entreprise dispose de 12000 litres de carburant pour ses véhicules. Si 58% supplémentaires de carburant sont livrés pour les camions, combien de litres y aura-t-il en tout ?",
+            "reponse": 18960
+        },
+        {
+            "question": "Un budget de publicité de 25000 euros est mis en place. Si 64% supplémentaires sont alloués pour des affichages publicitaires, combien d'euros y aura-t-il au total ?",
+            "reponse": 41000
+        },
+        {
+            "question": "Un dépôt industriel dispose de 8000 unités de produit. Si 36% supplémentaires de ces unités sont envoyées à un distributeur, combien d'unités y aura-t-il en tout ?",
+            "reponse": 10880
+        },
+        {
+            "question": "Une entreprise reçoit 10000 litres de carburant pour ses opérations. Si 47% supplémentaires de carburant sont livrés pour les camions, combien de litres y aura-t-il au total ?",
+            "reponse": 14700
         }
-    ],
 
+    ],
 
 
     "niveau5": [

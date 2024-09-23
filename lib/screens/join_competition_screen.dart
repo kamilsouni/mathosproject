@@ -4,6 +4,8 @@ import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/competition_screen.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/user_preferences.dart';
+import 'package:mathosproject/widgets/top_navigation_bar.dart';
+import 'package:mathosproject/widgets/PacManButton.dart';
 
 class JoinCompetitionScreen extends StatefulWidget {
   final AppUser profile;
@@ -16,6 +18,7 @@ class JoinCompetitionScreen extends StatefulWidget {
 
 class _JoinCompetitionScreenState extends State<JoinCompetitionScreen> {
   final TextEditingController _competitionIdController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -24,21 +27,22 @@ class _JoinCompetitionScreenState extends State<JoinCompetitionScreen> {
   }
 
   Future<void> _joinCompetition() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final competitionId = _competitionIdController.text.trim();
     if (competitionId.isNotEmpty) {
       try {
-        // Vérifier la connectivité
         bool isConnected = await ConnectivityManager().isConnected();
 
         if (isConnected) {
-          // Check if the competition exists
           DocumentSnapshot competitionSnapshot = await FirebaseFirestore.instance
               .collection('competitions')
               .doc(competitionId)
               .get();
 
           if (competitionSnapshot.exists) {
-            // Add the user as a participant in Firestore
             await FirebaseFirestore.instance
                 .collection('competitions')
                 .doc(competitionId)
@@ -49,7 +53,7 @@ class _JoinCompetitionScreenState extends State<JoinCompetitionScreen> {
               'rapidTests': 0,
               'ProblemTests': 0,
               'totalPoints': 0,
-              'flagUrl': widget.profile.flag, // Ensure the flag URL is set
+              'flagUrl': widget.profile.flag,
             });
 
             Navigator.pushReplacement(
@@ -62,53 +66,69 @@ class _JoinCompetitionScreenState extends State<JoinCompetitionScreen> {
               ),
             );
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Compétition non trouvée')),
-            );
+            _showErrorSnackBar('Compétition non trouvée');
           }
         } else {
-          // Sauvegarder localement si hors ligne
           await UserPreferences.saveProfileLocally(widget.profile);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Hors ligne. Les données seront synchronisées une fois la connexion rétablie.')),
-          );
+          _showErrorSnackBar('Hors ligne. Les données seront synchronisées une fois la connexion rétablie.');
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur lors de la jointure : $e')),
-        );
+        _showErrorSnackBar('Erreur lors de la jointure : $e');
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Veuillez entrer un ID de compétition')),
-      );
+      _showErrorSnackBar('Veuillez entrer un ID de compétition');
     }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Rejoindre une compétition'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _competitionIdController,
-              decoration: InputDecoration(
-                labelText: 'ID de la compétition',
-                border: OutlineInputBorder(),
+      appBar: TopAppBar(title: 'Rejoindre une compétition', showBackButton: true),
+      body: Container(
+        color: Color(0xFF564560), // Fond violet comme la page d'accueil
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
+                  border: Border.all(color: Colors.yellow, width: 2),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  controller: _competitionIdController,
+                  style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+                  decoration: InputDecoration(
+                    labelText: 'ID de la compétition',
+                    labelStyle: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont'),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(16),
+                  ),
+                ),
               ),
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _joinCompetition,
-              child: Text('Rejoindre la compétition'),
-            ),
-          ],
+              SizedBox(height: 20),
+              PacManButton(
+                text: 'Rejoindre la compétition',
+                onPressed: _joinCompetition,
+                isLoading: _isLoading,
+              ),
+            ],
+          ),
         ),
       ),
     );

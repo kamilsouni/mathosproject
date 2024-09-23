@@ -82,77 +82,31 @@ class _StatsScreenState extends State<StatsScreen> {
       child: Scaffold(
         appBar: TopAppBar(title: 'Statistiques'),
         body: Container(
-          color: Color(0xFF564560), // Fond violet
+          color: Color(0xFF564560),
           child: Column(
             children: [
               TabBar(
                 indicatorColor: Colors.yellow,
-                labelStyle: TextStyle(fontFamily: 'VT323', fontWeight: FontWeight.bold, fontSize: 15), // Ajuste la taille du texte
+                labelStyle: TextStyle(fontFamily: 'VT323', fontWeight: FontWeight.bold, fontSize: 15),
                 unselectedLabelStyle: TextStyle(fontFamily: 'VT323', fontSize: 10),
                 labelColor: Colors.yellow,
                 unselectedLabelColor: Colors.white70,
                 tabs: [
-                  Tab(
-                    icon: IconTheme(
-                      data: IconThemeData(size: 24),
-                      child: Image.asset(
-                        'assets/progression.png', // Image pour l'onglet Progression
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    text: 'Progression',
-                  ),
-                  Tab(
-                    icon: IconTheme(
-                      data: IconThemeData(size: 24),
-                      child: Image.asset(
-                        'assets/astuce.png', // Image pour l'onglet Points
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    text: 'Points',
-                  ),
-                  Tab(
-                    icon: IconTheme(
-                      data: IconThemeData(size: 24),
-                      child: Image.asset(
-                        'assets/speed.png', // Image pour l'onglet Rapidité
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    text: 'Rapidité',
-                  ),
-                  Tab(
-                    icon: IconTheme(
-                      data: IconThemeData(size: 24),
-                      child: Image.asset(
-                        'assets/probleme.png', // Image pour l'onglet Problème
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    text: 'Problème',
-                  ),
-                  Tab(
-                    icon: IconTheme(
-                      data: IconThemeData(size: 24),
-                      child: Image.asset(
-                        'assets/equation.png', // Image pour l'onglet Équation
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                    text: 'Équation',
-                  ),
-
+                  Tab(icon: Image.asset('assets/progression.png'), text: 'Progression'),
+                  Tab(icon: Image.asset('assets/astuce.png'), text: 'Points'),
+                  Tab(icon: Image.asset('assets/speed.png'), text: 'Rapidité'),
+                  Tab(icon: Image.asset('assets/probleme.png'), text: 'Problème'),
+                  Tab(icon: Image.asset('assets/equation.png'), text: 'Équation'),
                 ],
               ),
               Expanded(
                 child: TabBarView(
                   children: [
                     _buildProgressionTab(),
-                    _buildRankingTab(),
-                    _buildRapidityRecordsTab(),
-                    _buildProblemRecordsTab(),
-                    _buildEquationRecordsTab(),
+                    _buildTopTenTab('points', 'Top 10 des Joueurs', 'points'),
+                    _buildTopTenTab('rapidTestRecord', 'Top 10 - Rapidité', 'rapidTestRecord'),
+                    _buildTopTenTab('ProblemTestRecord', 'Top 10 - Problème', 'ProblemTestRecord'),
+                    _buildTopTenTab('equationTestRecord', 'Top 10 - Équations', 'equationTestRecord'),
                   ],
                 ),
               ),
@@ -340,273 +294,102 @@ class _StatsScreenState extends State<StatsScreen> {
     );
   }
 
-  Widget _buildRankingTab() {
+
+  Widget _buildTopTenTab(String field, String title, String scoreLabel) {
     return FutureBuilder(
-      future: FirebaseFirestore.instance
-          .collection('profiles')
-          .orderBy('points', descending: true)
-          .limit(10)
-          .get(),
+      future: FirebaseFirestore.instance.collection('profiles').orderBy(field, descending: true).limit(10).get(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator(color: Colors.yellow));
         }
 
-        List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
+        // Convertir les documents Firestore en List<Map<String, dynamic>>
+        List<Map<String, dynamic>> participants = snapshot.data!.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          'Top 10 des Joueurs',
-                          style: TextStyle(fontSize: 40, fontFamily: 'VT323', color: Colors.yellow, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Expanded(
-                        child: _buildRetroTable(
-                          columns: ['Rang', 'Joueur', 'Points'],
-                          rows: docs.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            var data = entry.value.data() as Map<String, dynamic>;
-                            return [
-                              '${index + 1}',
-                              '${data['name']}',
-                              '${data['points']}',
-                            ];
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
+        return _buildParticipantsTable(participants, scoreLabel);
       },
     );
   }
 
-  Widget _buildRapidityRecordsTab() {
-    return FutureBuilder(
-      future: FirebaseFirestore.instance
-          .collection('profiles')
-          .orderBy('rapidTestRecord', descending: true)
-          .limit(10)
-          .get(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator(color: Colors.yellow));
-        }
+  Widget _buildParticipantsTable(List<Map<String, dynamic>> participants, String scoreLabel) {
+    // Trier les participants en fonction des points
+    participants.sort((a, b) => (b[scoreLabel] ?? 0).compareTo(a[scoreLabel] ?? 0));
 
-        List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
-
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          'Top 10 - Rapidité',
-                          style: TextStyle(fontSize: 40, fontFamily: 'VT323', color: Colors.yellow, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Expanded(
-                        child: _buildRetroTable(
-                          columns: ['Rang', 'Joueur', 'Score'],
-                          rows: docs.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            var data = entry.value.data() as Map<String, dynamic>;
-                            return [
-                              '${index + 1}',
-                              '${data['name']}',
-                              '${data['rapidTestRecord'] ?? 'N/A'}',
-                            ];
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildProblemRecordsTab() {
-    return FutureBuilder(
-      future: FirebaseFirestore.instance
-          .collection('profiles')
-          .orderBy('ProblemTestRecord', descending: true)
-          .limit(10)
-          .get(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator(color: Colors.yellow));
-        }
-
-        List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
-
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          'Top 10 - Problème',
-                          style: TextStyle(fontSize: 40, fontFamily: 'VT323', color: Colors.yellow, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Expanded(
-                        child: _buildRetroTable(
-                          columns: ['Rang', 'Joueur', 'Score'],
-                          rows: docs.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            var data = entry.value.data() as Map<String, dynamic>;
-                            return [
-                              '${index + 1}',
-                              '${data['name']}',
-                              '${data['ProblemTestRecord'] ?? 'N/A'}',
-                            ];
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildEquationRecordsTab() {
-    return FutureBuilder(
-      future: FirebaseFirestore.instance
-          .collection('profiles')
-          .orderBy('equationTestRecord', descending: true)
-          .limit(10)
-          .get(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator(color: Colors.yellow));
-        }
-
-        List<QueryDocumentSnapshot> docs = snapshot.data!.docs;
-
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                child: IntrinsicHeight(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Text(
-                          'Top 10 - Équations',
-                          style: TextStyle(fontSize: 40, fontFamily: 'VT323', color: Colors.yellow, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Expanded(
-                        child: _buildRetroTable(
-                          columns: ['Rang', 'Joueur', 'Score'],
-                          rows: docs.asMap().entries.map((entry) {
-                            int index = entry.key;
-                            var data = entry.value.data() as Map<String, dynamic>;
-                            return [
-                              '${index + 1}',
-                              '${data['name']}',
-                              '${data['equationTestRecord'] ?? 'N/A'}',
-                            ];
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildRetroTable({required List<String> columns, required List<List<String>> rows}) {
-    return Table(
-      border: TableBorder.all(
-        color: Colors.yellow,
-        width: 3,
-        style: BorderStyle.solid,
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        border: Border.all(color: Colors.yellow, width: 2),
+        borderRadius: BorderRadius.circular(10),
       ),
-      columnWidths: {
-        0: FlexColumnWidth(1),
-        1: FlexColumnWidth(2),
-        2: FlexColumnWidth(1),
-      },
-      children: [
-        TableRow(
-          decoration: BoxDecoration(color: Colors.blue), // Couleur bleu foncé pour un style rétro
-          children: columns.map((column) => Padding(
+      margin: EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              column,
-              style: TextStyle(
-                fontFamily: 'VT323',
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 25, // Taille du texte pour un look pixel art
-              ),
-              textAlign: TextAlign.center,
+              'CLASSEMENT',
+              style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 24, fontWeight: FontWeight.bold),
             ),
-          )).toList(),
-        ),
-        ...rows.map((row) => TableRow(
-          decoration: BoxDecoration(
-            color: Colors.grey[850], // Couleur sombre pour le fond des rangées
           ),
-          children: row.map((cell) => Padding(
-            padding: const EdgeInsets.all(7.0),
-            child: Text(
-              cell,
-              style: TextStyle(
-                fontFamily: 'VT323',
-                color: Colors.yellow, // Texte jaune pour le style rétro
-                fontSize: 20, // Taille du texte pour un look pixel art
-              ),
-              textAlign: TextAlign.center,
+          Expanded(
+            child: ListView.builder(
+              itemCount: participants.length,
+              itemBuilder: (context, index) {
+                var participant = participants[index];
+                return Container(
+                  height: 40, // Hauteur fixe pour chaque ligne
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.yellow.withOpacity(0.3), width: 1),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${index + 1}',
+                            style: TextStyle(color: Colors.black, fontFamily: 'PixelFont', fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Image.asset(participant['flag'] ?? 'assets/default_flag.png', width: 24, height: 24),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          participant['name'] ?? 'Inconnu',
+                          style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '${participant[scoreLabel] ?? 0}', // Utilise le champ correct pour afficher le score
+                          style: TextStyle(color: Colors.black, fontFamily: 'PixelFont', fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                );
+              },
             ),
-          )).toList(),
-        )).toList(),
-      ],
+          ),
+        ],
+      ),
     );
   }
 

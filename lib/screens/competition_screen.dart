@@ -248,7 +248,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
     if (_isLoading) {
       return Scaffold(
         appBar: TopAppBar(title: 'Chargement...', showBackButton: true),
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: CircularProgressIndicator(color: Colors.yellow)),
       );
     }
 
@@ -262,123 +262,176 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
         title: _competitionData['name'] ?? 'Compétition',
         showBackButton: true,
       ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.15,
-              child: SvgPicture.asset('assets/fond_d_ecran.svg', fit: BoxFit.cover),
-            ),
-          ),
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton.icon(
-                  onPressed: _showShareOptions,
-                  icon: Icon(Icons.share, color: Colors.white),
-                  label: Text('Partager la compétition', style: TextStyle(color: Colors.white)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black.withOpacity(0.7),
-                    padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      body: Container(
+        color: Color(0xFF564560), // Fond uni violet
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton.icon(
+                onPressed: _showShareOptions,
+                icon: Icon(Icons.share, color: Colors.black),
+                label: Text('Partager', style: TextStyle(color: Colors.black, fontFamily: 'PixelFont')),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.yellow,
+                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide(color: Colors.white, width: 2),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: _buildButton(
-                        label: 'Rapidité',
-                        icon: Icons.flash_on,
-                        onPressed: () => _startTest('Rapidité'),
-                        completedTests: completedRapidTests,
-                        totalTests: totalRapidTests,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: _buildButton(
-                        label: 'Problème',
-                        icon: Icons.precision_manufacturing,
-                        onPressed: () => _startTest('Précision'),
-                        completedTests: completedProblemTests,
-                        totalTests: totalProblemTests,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: _buildButton(
-                        label: 'Équations',
-                        icon: Icons.functions,
-                        onPressed: () => _startTest('Équations'),
-                        completedTests: completedEquationTests,
-                        totalTests: totalEquationTests,
-                      ),
-                    ),
-                  ],
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildTestButton('Rapidité', Icons.flash_on, () => _startTest('Rapidité'), completedRapidTests, totalRapidTests),
+                  _buildTestButton('Probleme', Icons.precision_manufacturing, () => _startTest('Précision'), completedProblemTests, totalProblemTests),
+                  _buildTestButton('Equation', Icons.functions, () => _startTest('Équations'), completedEquationTests, totalEquationTests),
+                ],
+              ),
+            ),
+            SizedBox(height: 16),
+            Expanded(
+              child: _buildParticipantsTable(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTestButton(String label, IconData icon, VoidCallback onPressed, int completedTests, int totalTests) {
+    bool isEnabled = completedTests < totalTests;
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: ElevatedButton(
+          onPressed: isEnabled ? onPressed : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: isEnabled ? Colors.yellow : Colors.yellow.withOpacity(0.3),
+            padding: EdgeInsets.symmetric(vertical: 12.0),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(color: Colors.white, width: 2),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: isEnabled ? Colors.black : Colors.black.withOpacity(0.5)),
+              SizedBox(height: 4),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: TextStyle(
+                      color: isEnabled ? Colors.black : Colors.black.withOpacity(0.5),
+                      fontFamily: 'PixelFont',
+                      fontSize: 12
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
-              SizedBox(height: 16),
-              Expanded(
-                child: _buildParticipantsTable(),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  '$completedTests/$totalTests',
+                  style: TextStyle(
+                      color: isEnabled ? Colors.black : Colors.black.withOpacity(0.5),
+                      fontFamily: 'PixelFont',
+                      fontSize: 12
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildParticipantsTable() {
+    _participants.sort((a, b) => (b['totalPoints'] ?? 0).compareTo(a['totalPoints'] ?? 0));
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        border: Border.all(color: Colors.yellow, width: 2),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      margin: EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'CLASSEMENT',
+              style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _participants.length,
+              itemBuilder: (context, index) {
+                var participant = _participants[index];
+                return Container(
+                  height: 40, // Hauteur fixe pour chaque ligne
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.yellow.withOpacity(0.3), width: 1),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      SizedBox(width: 10),
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${index + 1}',
+                            style: TextStyle(color: Colors.black, fontFamily: 'PixelFont', fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Image.asset(participant['flag'] ?? 'assets/default_flag.png', width: 24, height: 24),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          participant['name'] ?? 'Inconnu',
+                          style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.yellow,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          '${participant['totalPoints'] ?? 0}',
+                          style: TextStyle(color: Colors.black, fontFamily: 'PixelFont', fontSize: 14, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                    ],
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
-  Widget _buildParticipantsTable() {
-    _participants.sort((a, b) => (b['totalPoints'] ?? 0).compareTo(a['totalPoints'] ?? 0));
-
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columnSpacing: 20, // Espace entre les colonnes pour remplir plus de largeur
-              headingTextStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-              dataTextStyle: TextStyle(color: Colors.black87),
-              columns: [
-                DataColumn(label: Expanded(child: Text('#'))),
-                DataColumn(label: Expanded(child: Text('Joueur'))),
-                DataColumn(label: Expanded(child: Text('R'))),
-                DataColumn(label: Expanded(child: Text('P'))),
-                DataColumn(label: Expanded(child: Text('E'))),
-                DataColumn(label: Expanded(child: Text('Pts'))),
-              ],
-              rows: _participants.asMap().entries.map((entry) {
-                int index = entry.key;
-                var participant = entry.value;
-                return DataRow(
-                  cells: [
-                    DataCell(Text('${index + 1}')),
-                    DataCell(
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(participant['flag'] ?? 'assets/default_flag.png', width: 24, height: 24),
-                          SizedBox(width: 8),
-                          Text(participant['name'] ?? 'Inconnu', overflow: TextOverflow.ellipsis),
-                        ],
-                      ),
-                    ),
-                    DataCell(Text('${participant['rapidTests'] ?? 0}')),
-                    DataCell(Text('${participant['ProblemTests'] ?? 0}')),
-                    DataCell(Text('${participant['equationTests'] ?? 0}')),
-                    DataCell(Text('${participant['totalPoints'] ?? 0}')),
-                  ],
-                );
-              }).toList(),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
 }

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/create_competition_screen.dart';
 import 'package:mathosproject/screens/join_competition_screen.dart';
 import 'package:mathosproject/screens/competition_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/utils/hive_data_manager.dart';
+import 'package:mathosproject/widgets/top_navigation_bar.dart';
 
 class JoinOrCreateCompetitionScreen extends StatefulWidget {
   final AppUser profile;
@@ -70,52 +70,37 @@ class _JoinOrCreateCompetitionScreenState
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        title: Text(
-          'Rejoindre ou créer une compétition',
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: Colors.black.withOpacity(0.7),
-      ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.15,
-              child: SvgPicture.asset(
-                'assets/fond_d_ecran.svg',
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: screenHeight * 0.1,
-              ),
-              child: Column(
-                children: [
-                  GridView.count(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    shrinkWrap: true,
+      appBar: TopAppBar(title: 'Mode Compétition', showBackButton: true),
+      body: Container(
+        color: Color(0xFF564560), // Fond violet
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 2),
+                      Text(
+                        'Créez ou rejoignez une compétition',
+                        style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 22),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _buildCompetitionButton(
-                        title: 'Créer une compétition',
+                        title: 'Créer',
                         icon: Icons.add,
                         onPressed: () {
                           Navigator.push(
@@ -128,8 +113,8 @@ class _JoinOrCreateCompetitionScreenState
                         },
                       ),
                       _buildCompetitionButton(
-                        title: 'Rejoindre une nouvelle compétition',
-                        icon: Icons.group,
+                        title: 'Rejoindre',
+                        icon: Icons.group_add,
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -142,50 +127,11 @@ class _JoinOrCreateCompetitionScreenState
                       ),
                     ],
                   ),
-                  SizedBox(
-                      height: 16), // Ajustement de la hauteur pour rapprocher la liste
-                  _buildJoinedCompetitionsList(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCompetitionButton({
-    required String title,
-    required IconData icon,
-    required VoidCallback onPressed,
-  }) {
-    return Tooltip(
-      message: title,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.7),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: InkWell(
-          onTap: onPressed,
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  icon,
-                  size: 64,
-                  color: Colors.white,
                 ),
-                SizedBox(height: 8),
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+                SizedBox(height: 20), // Ajout d'un espace de 20 pixels
+                Expanded(
+                  flex: 6,
+                  child: _buildJoinedCompetitionsList(),
                 ),
               ],
             ),
@@ -195,46 +141,102 @@ class _JoinOrCreateCompetitionScreenState
     );
   }
 
-  Widget _buildJoinedCompetitionsList() {
-    if (_competitions.isEmpty) {
-      return Center(child: Text('Aucune compétition rejointe.'));
-    }
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: _competitions.length,
-        itemBuilder: (context, index) {
-          final competition = _competitions[index];
-          return Card(
-            elevation: 4,
-            margin:
-            EdgeInsets.symmetric(vertical: 4), // Ajustement de la marge verticale
-            child: ListTile(
-              title: Text(
-                competition['name'],
+  Widget _buildCompetitionButton({
+    required String title,
+    required IconData icon,
+    required VoidCallback onPressed,
+  }) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.yellow,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(color: Colors.black, width: 2),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 16),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 40, color: Colors.black),
+              SizedBox(height: 8),
+              Text(
+                title,
                 style: TextStyle(
-                  color: Colors.black.withOpacity(0.8),
+                  color: Colors.black,
+                  fontFamily: 'PixelFont',
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => CompetitionScreen(
-                      profile: widget.profile,
-                      competitionId: competition['id'],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildJoinedCompetitionsList() {
+    if (_competitions.isEmpty) {
+      return Center(
+        child: Text(
+          'Aucune compétition rejointe',
+          style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
+        ),
+      );
+    }
+
+    return Column(
+      children: [
+        Text(
+          'Vos compétitions',
+          style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 20, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 8),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _competitions.length,
+            itemBuilder: (context, index) {
+              final competition = _competitions[index];
+              return Card(
+                color: Colors.white.withOpacity(0.1),
+                margin: EdgeInsets.symmetric(vertical: 4),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide(color: Colors.yellow, width: 2),
+                ),
+                child: ListTile(
+                  title: Text(
+                    competition['name'],
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'PixelFont',
+                      fontSize: 16,
                     ),
                   ),
-                );
-              },
-            ),
-          );
-        },
-      ),
+                  trailing: Icon(Icons.chevron_right, color: Colors.yellow),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CompetitionScreen(
+                          profile: widget.profile,
+                          competitionId: competition['id'],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
