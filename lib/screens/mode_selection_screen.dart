@@ -29,37 +29,37 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
       'name': 'PROGRESSION',
       'color': Color(0xFFFF0000),
       'icon': 'assets/progression.png',
-      'description': 'Validez les opérations pour passer au niveau suivant.',
+      'description': 'Validez tous les opérateurs pour passer au niveau suivant. Chaque opérateur vous débloque une astuce.',
     },
     {
       'name': 'ASTUCES',
       'color': Color(0xFF0000FF),
       'icon': 'assets/astuce.png',
-      'description': 'Débloquez des astuces pour chaque niveau réussi.',
+      'description': 'Découvrez ici les astuces débloquées dans le mode Progression.',
     },
     {
       'name': 'RAPIDITE',
       'color': Color(0xFF00FFFF),
       'icon': 'assets/speed.png',
-      'description': 'Répondez rapidement en 1 minute.',
+      'description': 'Répondez le plus rapidement possible à un maximum de calculs. Vous avez 1 minute.',
     },
     {
       'name': 'PROBLEME',
       'color': Color(0xFF00FF00),
       'icon': 'assets/probleme.png',
-      'description': 'Soyez précis dans vos calculs.',
+      'description': 'Résolvez le plus rapidement possible les problèmes. Vous avez 2 minutes.',
     },
     {
       'name': 'EQUATION',
       'color': Color(0xFFEC003E),
       'icon': 'assets/equation.png',
-      'description': 'Résolvez des équations à trou.',
+      'description': 'Résolvez le plus rapidement possible les équations. Vous avez 1 minute.',
     },
     {
       'name': 'COMPETITION',
       'color': Color(0xFF02A6CC),
       'icon': 'assets/competition.png',
-      'description': 'Défiez d\'autres joueurs en ligne.',
+      'description': 'Créez ou rejoignez une compétition pour défier vos amis.',
     },
   ];
 
@@ -147,23 +147,23 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFF2E0854),
-        title: Text('Commencer $mode?',
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
+        backgroundColor: Color(0xFF564560),
+        title: Text('$mode',
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 18)),
         content: Text(modes.firstWhere((m) => m['name'] == mode)['description'],
             style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Annuler', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          ),
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               onConfirm();
             },
             child: Text('Commencer', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
+          ),TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Annuler', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
           ),
+
         ],
       ),
     );

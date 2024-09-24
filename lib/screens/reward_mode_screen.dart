@@ -1,5 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 
@@ -15,105 +15,68 @@ class RewardModeScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: TopAppBar(title: 'Récompenses et Astuces', showBackButton: true ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.15,
-              child: SvgPicture.asset(
-                'assets/fond_d_ecran.svg',
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: screenWidth * 0.9,
-                ),
-                child: ListView(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    for (int level = 1; level <= 10; level++) ...[
-                      Card(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        color: Colors.white.withOpacity(0.8),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          side: BorderSide(color: Colors.black, width: 2),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                'Niveau $level',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
+      appBar: TopAppBar(title: 'Récompenses et Astuces', showBackButton: true),
+      body: Container(
+        color: Color(0xFF564560), // Fond violet
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.all(16),
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    int level = index + 1;
+                    return Card(
+                      margin: EdgeInsets.only(bottom: 16),
+                      color: Colors.white.withOpacity(0.1),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        side: BorderSide(color: Colors.yellow, width: 2),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Niveau $level',
+                              style: TextStyle(
+                                fontFamily: 'PixelFont',
+                                fontSize: screenWidth * 0.06,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.yellow,
                               ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  _buildTipButton(context, 'Addition', level,
-                                      screenWidth, screenHeight),
-                                  _buildTipButton(context, 'Soustraction',
-                                      level, screenWidth, screenHeight),
-                                  _buildTipButton(context, 'Multiplication',
-                                      level, screenWidth, screenHeight),
-                                  _buildTipButton(context, 'Division', level,
-                                      screenWidth, screenHeight),
-                                ],
-                              ),
-                            ],
-                          ),
+                            ),
+                            SizedBox(height: 16),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _buildTipButton(context, 'Addition', level, screenWidth, screenHeight),
+                                _buildTipButton(context, 'Soustraction', level, screenWidth, screenHeight),
+                                _buildTipButton(context, 'Multiplication', level, screenWidth, screenHeight),
+                                _buildTipButton(context, 'Division', level, screenWidth, screenHeight),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    ]
-                  ],
+                    );
+                  },
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildTipButton(BuildContext context, String operation, int level,
-      double screenWidth, double screenHeight) {
-    bool isAccessible =
-        profile.progression[level]?[operation]?['validation'] == 1;
+  Widget _buildTipButton(BuildContext context, String operation, int level, double screenWidth, double screenHeight) {
+    bool isAccessible = profile.progression[level]?[operation]?['validation'] == 1;
 
-    Color buttonColor;
-    if (!isAccessible) {
-      buttonColor = Colors.grey;
-    } else {
-      buttonColor = Colors.black.withOpacity(0.7);
-    }
-    String buttonText;
-    switch (operation) {
-      case 'Addition':
-        buttonText = '+';
-        break;
-      case 'Soustraction':
-        buttonText = '-';
-        break;
-      case 'Multiplication':
-        buttonText = '×'; // Utilisation de '×' pour la multiplication
-        break;
-      case 'Division':
-        buttonText = '÷'; // Utilisation de '÷' pour la division
-        break;
-      default:
-        buttonText = operation.substring(0, 1);
-    }
+    Color buttonColor = isAccessible ? Colors.yellow.withOpacity(0.7) : Colors.grey;
+    String buttonText = _getOperationSymbol(operation);
 
     return Expanded(
       child: Padding(
@@ -124,8 +87,7 @@ class RewardModeScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    TipDetailScreen(level: level, operation: operation),
+                builder: (context) => TipDetailScreen(level: level, operation: operation),
               ),
             );
           }
@@ -148,7 +110,25 @@ class RewardModeScreen extends StatelessWidget {
       ),
     );
   }
+
+  String _getOperationSymbol(String operation) {
+    switch (operation) {
+      case 'Addition':
+        return '+';
+      case 'Soustraction':
+        return '-';
+      case 'Multiplication':
+        return '×';
+      case 'Division':
+        return '÷';
+      default:
+        return operation.substring(0, 1);
+    }
+  }
 }
+
+
+
 
 class TipDetailScreen extends StatelessWidget {
   final int level;
@@ -158,69 +138,99 @@ class TipDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: TopAppBar(title: 'Astuce pour $operation - Niveau $level'),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.15,
-              child: SvgPicture.asset(
-                'assets/fond_d_ecran.svg',
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Center(
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: screenWidth * 0.9,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Astuce pour $operation au Niveau $level',
-                        style: TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 20),
-                      _getTipContent(level, operation),
-                    ],
+      appBar: TopAppBar(title: 'Astuce', showBackButton: true),
+      body: Container(
+        color: Color(0xFF564560), // Fond violet
+        child: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          '$operation - Niveau $level',
+                          style: TextStyle(
+                            fontFamily: 'VT323',
+                            fontSize: constraints.maxWidth * 0.06,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.yellow,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: constraints.maxHeight * 0.02),
+                        Container(
+                          height: constraints.maxHeight * 0.7, // 70% de la hauteur de l'écran
+                          child: _getTipContent(level, operation, constraints),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _getTipContent(int level, String operation) {
-    switch (operation) {
-      case 'Addition':
-        return _buildAdditionTip(level);
-      case 'Soustraction':
-        return _buildSoustractionTip(level);
-      case 'Multiplication':
-        return _buildMultiplicationTip(level);
-      case 'Division':
-        return _buildDivisionTip(level);
-      default:
-        return Text('Astuces à venir.');
-    }
+  Widget _buildTipContent(String content, BoxConstraints constraints) {
+    return Container(
+      padding: EdgeInsets.all(constraints.maxWidth * 0.04),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.7),
+        border: Border.all(color: Colors.yellow, width: 2),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: SingleChildScrollView(
+        child: AutoSizeText(
+          content,
+          style: TextStyle(
+            fontFamily: 'VT323',
+            color: Colors.white,
+          ),
+          minFontSize: 20,
+          maxFontSize: 45,
+          stepGranularity: 1,
+          maxLines: 20, // Ajustez ce nombre selon vos besoins
+        ),
+      ),
+    );
   }
 
-  Widget _buildAdditionTip(int level) {
+  Widget _getTipContent(int level, String operation, BoxConstraints constraints) {
+    String content;
+    switch (operation) {
+      case 'Addition':
+        content = _getAdditionTip(level);
+        break;
+      case 'Soustraction':
+        content = _getSubtractionTip(level);
+        break;
+      case 'Multiplication':
+        content = _getMultiplicationTip(level);
+        break;
+      case 'Division':
+        content = _getDivisionTip(level);
+        break;
+      default:
+        content = 'Astuces à venir.';
+    }
+    return _buildTipContent(content, constraints);
+  }
+
+
+
+  String _getAdditionTip(int level) {
     String content;
     switch (level) {
       case 1:
@@ -309,10 +319,12 @@ class TipDetailScreen extends StatelessWidget {
       default:
         content = 'Astuces à venir.';
     }
-    return _buildTipContent(content);
-  }
 
-  Widget _buildSoustractionTip(int level) {
+    return content;
+
+}
+
+  String _getSubtractionTip(int level) {
     String content;
     switch (level) {
       case 1:
@@ -402,10 +414,10 @@ class TipDetailScreen extends StatelessWidget {
       default:
         content = 'Astuces à venir.';
     }
-    return _buildTipContent(content);
+    return content;
   }
 
-  Widget _buildMultiplicationTip(int level) {
+  String _getMultiplicationTip(int level) {
     String content;
     switch (level) {
       case 1:
@@ -495,10 +507,10 @@ class TipDetailScreen extends StatelessWidget {
       default:
         content = 'Astuces à venir.';
     }
-    return _buildTipContent(content);
+    return content;
   }
 
-  Widget _buildDivisionTip(int level) {
+  String _getDivisionTip(int level) {
     String content;
     switch (level) {
       case 1:
@@ -588,62 +600,6 @@ class TipDetailScreen extends StatelessWidget {
       default:
         content = 'Astuces à venir.';
     }
-    return _buildTipContent(content);
-  }
-
-  Widget _buildTipContent(String content) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: content.split('\n\n').map((paragraph) {
-          if (paragraph.startsWith('### ')) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                paragraph.substring(4),
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent),
-                textAlign: TextAlign.left,
-              ),
-            );
-          } else if (paragraph.startsWith('**Exemples:**')) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                paragraph,
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87),
-                textAlign: TextAlign.left,
-              ),
-            );
-          } else {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Text(
-                paragraph,
-                style: TextStyle(fontSize: 18, color: Colors.black87),
-                textAlign: TextAlign.left,
-              ),
-            );
-          }
-        }).toList(),
-      ),
-    );
+    return content;
   }
 }

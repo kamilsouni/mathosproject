@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/rapidity_mode_screen.dart';
 import 'package:mathosproject/screens/problem_mode_screen.dart';

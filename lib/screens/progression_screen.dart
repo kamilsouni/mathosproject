@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mathosproject/widgets/RetroCalculator.dart';
 import 'package:mathosproject/widgets/custom_keyboard.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/math_test_utils.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/progression_mode_screen.dart';
 import 'package:mathosproject/widgets/game_app_bar.dart';
+import 'package:mathosproject/widgets/level_indicator.dart';
+import 'package:mathosproject/widgets/retro_progress_bar.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 
@@ -48,6 +50,9 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   late Map<String, List<bool>> _operationResults;
   late List<Map<String, dynamic>> _errorDetails;
   late String _currentOperation;
+  bool _isAnswerCorrect = false;
+  bool _isSkipped = false;
+
 
   @override
   void initState() {
@@ -64,6 +69,7 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     _points = 0;
     _pointsChange = 0;
     _answerHistory = [];
+    _isSkipped = false;
     _operationResults = {
       'Addition': [],
       'Soustraction': [],
@@ -89,19 +95,23 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   }
 
   void _checkAnswer() {
-    if (_answerController.text.isNotEmpty &&
-        int.tryParse(_answerController.text) == _currentAnswer) {
-      submitAnswer();
+    if (_answerController.text.isNotEmpty) {
+      int? userAnswer = int.tryParse(_answerController.text);
+      if (userAnswer != null && userAnswer == _currentAnswer) {
+        submitAnswer();
+      }
     }
+    setState(() {}); // Pour forcer la mise à jour de l'affichage
   }
 
   void generateQuestion() {
-    final result = MathTestUtils.generateQuestion(_difficultyLevel, widget.mode);
+    final result = MathTestUtils.generateQuestion(widget.level, widget.mode);
     setState(() {
       _currentQuestion = result['question'];
       _currentAnswer = result['answer'];
-      _answerController.text = "";
-      _focusNode.requestFocus();
+      _isAnswerCorrect = false;
+      _isSkipped = false;
+      _answerController.clear();
     });
   }
 
@@ -118,8 +128,10 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
       onCorrect: () {
         setState(() {
           _correctAnswers++;
-          _pointsChange = 10 * _difficultyLevel;
+          _pointsChange = 10 * widget.level;
           _points += _pointsChange;
+          _isAnswerCorrect = true;
+          _isSkipped = false;
           if (_correctAnswers >= 30) {
             _showValidationMessage();
           }
@@ -131,11 +143,43 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
           _pointsChange = -10;
           _points -= 10;
           _correctAnswers = _correctAnswers >= 2 ? _correctAnswers - 2 : 0;
+          _isAnswerCorrect = false;
+          _isSkipped = false;
         });
       },
     );
-    generateQuestion();
+
+    // Réinitialiser l'état après un court délai
+    Future.delayed(Duration(milliseconds: 300), () {
+      setState(() {
+        _isAnswerCorrect = false;
+        _isSkipped = false;
+        _answerController.clear();
+      });
+      if (_correctAnswers < 30) {
+        generateQuestion();
+      }
+    });
   }
+
+  void skipQuestion() {
+    setState(() {
+      _isSkipped = true;
+      _isAnswerCorrect = false;
+      _skippedQuestions++;
+      _pointsChange = -10;
+      _points -= 10;
+    });
+
+    Future.delayed(Duration(milliseconds: 300), () {
+      setState(() {
+        _isSkipped = false;
+        _answerController.clear();
+      });
+      generateQuestion();
+    });
+  }
+
 
   Future<void> updateProfile(AppUser profile) async {
     if (await ConnectivityManager().isConnected()) {
@@ -216,7 +260,7 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     );
   }
 
-  void endTest() {
+  void _endTest() {
     if (_correctAnswers < 30) {
       _showEncouragementMessage();
     } else {
@@ -263,136 +307,52 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: GameAppBar(points: _points, lastChange: _pointsChange),
       body: Stack(
         children: [
           Positioned.fill(
-            child: SvgPicture.asset(
-              'assets/fond_d_ecran.svg',
-              fit: BoxFit.cover,
-              color: Colors.white.withOpacity(0.15),
-              colorBlendMode: BlendMode.modulate,
+            child: Container(
+              color: Color(0xFF564560), // Fond violet
             ),
           ),
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 30.0, left: 16.0, right: 16.0),
-              child: Column(
-                children: [
-                  SizedBox(height: screenHeight * 0.125),
-                  Container(
-                    width: screenWidth * 1,
-                    height: screenHeight * 0.02,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                    ),
-                    child: LinearPercentIndicator(
-                      lineHeight: screenHeight * 0.02,
-                      percent: _correctAnswers / 30.0,
-                      backgroundColor: Colors.grey,
-                      progressColor: Colors.green,
-                    ),
-                  ),
-                  SizedBox(height: screenHeight * 0.03),
-                  CountdownTimer(
-                    duration: widget.duration,
-                    onCountdownComplete: endTest,
-                    textStyle: TextStyle(fontSize: screenHeight * 0.03),
-                    progressColor: Colors.black.withOpacity(0.7),
-                    height: screenHeight * 0.02,
-                  ),
-                ],
+          Column(
+            children: [
+              SizedBox(height: 20),
+              RetroProgressBar(
+                currentValue: _correctAnswers,
+                maxValue: 30,
+                height: 20,
+                fillColor: Colors.green,
+                backgroundColor: Colors.black,
               ),
-            ),
-          ),
-          Positioned.fill(
-            top: 150,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          _currentQuestion,
-                          style: TextStyle(
-                              fontSize: screenHeight * 0.05,
-                              fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: screenHeight * 0.02),
-                        Container(
-                          width: screenWidth * 0.6,
-                          child: TextField(
-                            focusNode: _focusNode,
-                            controller: _answerController,
-                            keyboardType: TextInputType.none,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: screenHeight * 0.05,
-                              color: Colors.black,
-                            ),
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Colors.grey.shade200,
-                              contentPadding: EdgeInsets.symmetric(vertical: 10),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 2.0,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 2.0,
-                                ),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(
-                                  color: Colors.black,
-                                  width: 2.0,
-                                ),
-                              ),
-                            ),
-                            onSubmitted: (value) {
-                              submitAnswer();
-                              _focusNode.requestFocus();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                CustomKeyboard(
+              SizedBox(height: 20),
+              CountdownTimer(
+                duration: 60,
+                onCountdownComplete: _endTest,
+                progressColor: Colors.green,
+                height: 20,
+              ),
+              SizedBox(height: 40),
+              Expanded(
+                child: RetroCalculator(
+                  question: _currentQuestion,
+                  answer: _answerController.text,
                   controller: _answerController,
-                  onSubmit: submitAnswer,
+                  onSubmit: skipQuestion,  // Changez ceci de submitAnswer à skipQuestion
                   onDelete: () {
                     if (_answerController.text.isNotEmpty) {
                       setState(() {
-                        _answerController.text = _answerController.text
-                            .substring(0, _answerController.text.length - 1);
+                        _answerController.text = _answerController.text.substring(0, _answerController.text.length - 1);
                       });
                     }
                   },
+                  isCorrectAnswer: _isAnswerCorrect,
+                  isSkipped: _isSkipped,
+                  isProgressMode: true,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),

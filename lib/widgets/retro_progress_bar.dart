@@ -11,7 +11,7 @@ class RetroProgressBar extends StatelessWidget {
     required this.currentValue,
     required this.maxValue,
     this.height = 20,
-    this.fillColor = Colors.green,
+    this.fillColor = Colors.yellow,
     this.backgroundColor = Colors.black,
   });
 
