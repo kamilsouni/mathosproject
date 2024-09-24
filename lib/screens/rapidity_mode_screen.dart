@@ -238,6 +238,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
                   },
                   isCorrectAnswer: _isAnswerCorrect,
                   isSkipped: _isSkipped,
+                  isRapidMode: true,
                 ),
               ),
             ],

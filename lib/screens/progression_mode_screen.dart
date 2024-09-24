@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mathosproject/models/app_user.dart'; // Import AppUser
 import 'package:mathosproject/screens/progression_screen.dart';
 import 'package:mathosproject/screens/reward_mode_screen.dart'; // Importer l'écran de récompense
@@ -59,12 +58,8 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Opacity(
-              opacity: 0.15,
-              child: SvgPicture.asset(
-                'assets/fond_d_ecran.svg',
-                fit: BoxFit.cover,
-              ),
+            child: Container(
+              color: Color(0xFF564560), // Couleur de fond pour un effet rétro
             ),
           ),
           Center(
@@ -80,10 +75,10 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
                     for (int level = 1; level <= 10; level++) ...[
                       Card(
                         margin: EdgeInsets.symmetric(vertical: 10),
-                        color: Colors.white.withOpacity(0.8),
+                        color: Colors.white.withOpacity(0.5),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
-                          side: BorderSide(color: Colors.black, width: 2),
+                          side: BorderSide(color: Colors.yellow, width: 2),
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
@@ -92,8 +87,10 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
                               Text(
                                 'Niveau $level',
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontFamily: 'PixelFont', // Utiliser une police pixel art
+                                  fontSize: screenWidth * 0.04, // Taille adaptée au style rétro
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.yellow
                                 ),
                               ),
                               SizedBox(height: 10),
@@ -137,11 +134,11 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
 
     Color buttonColor;
     if (!isAccessible) {
-      buttonColor = Colors.grey;
+      buttonColor = Colors.red;
     } else if (isValidated) {
-      buttonColor = Colors.green;
+      buttonColor = Color(0xFF00FF00);
     } else {
-      buttonColor = Colors.black.withOpacity(0.7);
+      buttonColor = Colors.yellow.withOpacity(0.7);
     }
 
     return Expanded(
@@ -152,8 +149,9 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
           child: Text(
             _getOperationSymbol(operation),
             style: TextStyle(
-              fontSize: 24,
-              color: Colors.white,
+              fontSize: screenWidth * 0.035,
+                fontFamily: 'PixelFont',
+              color: Colors.black,
             ),
           ),
           style: ElevatedButton.styleFrom(
@@ -194,7 +192,7 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MentalMathTestScreen(
+        builder: (context) => ProgressionScreen(
           mode: operation,
           level: level,
           duration: 60,
@@ -254,7 +252,7 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Nouvelle Astuce Disponible!'),
-          content: Text('Une nouvelle astuce est disponible dans le mode récompense.'),
+          content: Text('Une nouvelle astuce est disponible.'),
           actions: <Widget>[
             TextButton(
               child: Text('OK'),

@@ -11,7 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 
-class MentalMathTestScreen extends StatefulWidget {
+class ProgressionScreen extends StatefulWidget {
   final String mode;
   final AppUser profile;
   final bool isInitialTest;
@@ -19,7 +19,7 @@ class MentalMathTestScreen extends StatefulWidget {
   final int duration;
   final int level;
 
-  MentalMathTestScreen({
+  ProgressionScreen({
     required this.mode,
     required this.profile,
     required this.isInitialTest,
@@ -29,10 +29,10 @@ class MentalMathTestScreen extends StatefulWidget {
   });
 
   @override
-  _MentalMathTestScreenState createState() => _MentalMathTestScreenState();
+  _ProgressionScreenState createState() => _ProgressionScreenState();
 }
 
-class _MentalMathTestScreenState extends State<MentalMathTestScreen> {
+class _ProgressionScreenState extends State<ProgressionScreen> {
   late int _difficultyLevel;
   late int _currentAnswer;
   late String _currentQuestion;
