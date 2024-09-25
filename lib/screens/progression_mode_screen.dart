@@ -3,6 +3,7 @@ import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/models/app_user.dart'; // Import AppUser
 import 'package:mathosproject/screens/progression_screen.dart';
 import 'package:mathosproject/screens/reward_mode_screen.dart'; // Importer l'écran de récompense
+import 'package:mathosproject/sound_manager.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 import 'package:mathosproject/user_preferences.dart';
@@ -146,12 +147,16 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 2.0),
         child: ElevatedButton(
-          onPressed: isAccessible ? () => startTest(operation, level) : null,
+          onPressed: isAccessible ? () async {
+            // Play sound on button click
+            await SoundManager.playButtonClickSound();
+            startTest(operation, level);
+          } : null,
           child: Text(
             _getOperationSymbol(operation),
             style: TextStyle(
               fontSize: screenWidth * 0.035,
-                fontFamily: 'PixelFont',
+              fontFamily: 'PixelFont',
               color: Colors.black,
             ),
           ),
@@ -166,6 +171,7 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
       ),
     );
   }
+
 
   void calculateAndAddPointsProgression(AppUser user, int level, bool isCorrect) {
     int points = isCorrect ? 10 * level : -10; // 10 points par niveau pour les bonnes réponses, -10 points pour les mauvaises réponses

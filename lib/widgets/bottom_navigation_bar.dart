@@ -4,6 +4,7 @@ import 'package:mathosproject/screens/mode_selection_screen.dart';
 import 'package:mathosproject/screens/stats_screen.dart';
 import 'package:mathosproject/screens/profile_detail_screen.dart';
 import 'package:mathosproject/screens/settings_screen.dart';
+import 'package:mathosproject/sound_manager.dart';  // Import the SoundManager
 
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
@@ -43,12 +44,12 @@ class CustomBottomNavigationBar extends StatelessWidget {
     );
   }
 
-
   Widget _buildNavItem(BuildContext context, int index, String label, Widget icon) {
     bool isSelected = selectedIndex == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () {
+        onTap: () async {
+          await SoundManager.playButtonClickSound(); // Play sound when item is selected
           onTap(index);
           _navigateToScreen(context, index);
         },
@@ -89,7 +90,6 @@ class CustomBottomNavigationBar extends StatelessWidget {
       ),
     );
   }
-
 
   void _navigateToScreen(BuildContext context, int index) {
     switch (index) {
