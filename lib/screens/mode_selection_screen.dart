@@ -8,6 +8,7 @@ import 'package:mathosproject/screens/problem_mode_screen.dart';
 import 'package:mathosproject/screens/equations_mode_screen.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
+import 'package:mathosproject/widgets/pixel_circle.dart';
 
 class ModeSelectionScreen extends StatefulWidget {
   final AppUser profile;
@@ -253,18 +254,9 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
           builder: (context, child) {
             return Transform.scale(
               scale: _animations[index].value,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: modes[index]['color'],
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: modes[index]['color'].withOpacity(0.3),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
+              child: PixelCircle(
+                color: modes[index]['color'],
+                size: MediaQuery.of(context).size.width / 2.5,
                 child: Stack(
                   children: [
                     Center(
@@ -281,7 +273,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
                             modes[index]['name'],
                             style: TextStyle(
                               fontFamily: 'PixelFont',
-                              fontSize: 14,
+                              fontSize: 11,
                               color: Colors.white,
                               shadows: [
                                 Shadow(

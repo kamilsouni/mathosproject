@@ -67,6 +67,7 @@ flutter:
     - assets/users.png
     - assets/equation.png
     - assets/jouer.png
+    - assets/gameboy_pixel.png
     - assets/problems_by_level.json
 
   fonts:

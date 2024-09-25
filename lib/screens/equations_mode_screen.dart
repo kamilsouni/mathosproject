@@ -162,8 +162,9 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   }
 
   void submitAnswer(String selectedAnswer) {
-    bool isCorrect = selectedAnswer == _correctAnswer;
+    bool isCorrect = selectedAnswer == _correctAnswer; // Vérifie si la réponse est correcte
     setState(() {
+      _isCorrect = isCorrect; // Met à jour l'état avec la bonne ou mauvaise réponse
       if (isCorrect) {
         _correctAnswersInRow++;
         _pointsChange = 10 * _currentLevel;
@@ -183,13 +184,19 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
         }
       }
     });
+
+    // Après un délai de 500ms, passer à la prochaine question
     Future.delayed(Duration(milliseconds: 500), () {
       setState(() {
-        _isCorrect = null;
+        _isCorrect = null; // Réinitialise l'état de la couleur
       });
       generateQuestion();
     });
   }
+
+
+
+
 
   Future<void> _endTest() async {
     if (widget.isCompetition && widget.competitionId != null) {
