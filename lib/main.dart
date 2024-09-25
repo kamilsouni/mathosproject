@@ -6,6 +6,7 @@ import 'package:mathosproject/screens/home_screen.dart';
 import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
 import 'package:mathosproject/screens/competition_screen.dart';
 import 'package:mathosproject/models/app_user.dart';
+import 'package:mathosproject/sound_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,10 @@ void main() async {
 
   // Initialisation de Hive
   await Hive.initFlutter();
+
+  // Précharger tous les sons avant le lancement de l'application
+  await SoundManager.preLoadAllSounds();
+
 
   runApp(Mathos());
 }

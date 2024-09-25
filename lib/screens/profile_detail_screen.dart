@@ -12,6 +12,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/user_preferences.dart';
+import 'package:mathosproject/dialog_manager.dart';
+
+
 
 class ProfileDetailScreen extends StatefulWidget {
   final AppUserModel.AppUser profile;
@@ -82,28 +85,29 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       'assets/maroc.png',
       'assets/lgbt.png'
     ];
-    String? selectedFlag = await showDialog<String>(
+
+    // Appel à showCustomDialogWithWidget avec contentWidget
+    String? selectedFlag = await DialogManager.showCustomDialogWithWidget<String>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Changer le drapeau'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: flags.map((flag) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop(flag);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(flag, width: 50, height: 50),
-                  ),
-                );
-              }).toList(),
-            ),
-          ),
-        );
-      },
+      title: 'Changer le drapeau',
+      contentWidget: SingleChildScrollView(
+        child: ListBody(
+          children: flags.map((flag) {
+            return GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop(flag);  // Sélectionner le drapeau et fermer le dialogue
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(flag, width: 50, height: 50),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+      confirmText: '',  // Pas de bouton de confirmation ici car la sélection se fait directement
+      cancelText: 'Annuler',
+      onConfirm: () {},  // Action vide, pas nécessaire dans ce cas
     );
 
     if (selectedFlag != null) {
@@ -119,45 +123,20 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     }
   }
 
+
   void _showConfirmationDialog(String action, VoidCallback onConfirm) {
-    showDialog(
+    DialogManager.showCustomDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFF564560),
-          title: Text(
-            'Confirmation',
-            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont'),
-          ),
-          content: Text(
-            action == 'delete'
-                ? 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.'
-                : 'Êtes-vous sûr de vouloir vous déconnecter ?',
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'Annuler',
-                style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
-              ),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text(
-                action == 'delete' ? 'Supprimer' : 'Déconnecter',
-                style: TextStyle(color: Colors.red, fontFamily: 'PixelFont'),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                onConfirm();
-              },
-            ),
-          ],
-        );
-      },
+      title: 'Confirmation',  // Titre du dialogue
+      content: action == 'delete'
+          ? 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.'
+          : 'Êtes-vous sûr de vouloir vous déconnecter ?',  // Message dynamique
+      confirmText: action == 'delete' ? 'Supprimer' : 'Déconnecter',  // Texte du bouton de confirmation
+      cancelText: 'Annuler',  // Texte du bouton d'annulation
+      onConfirm: onConfirm,  // Action à exécuter après confirmation
     );
   }
+
 
   void _deleteProfile() {
     _showConfirmationDialog('delete', () async {
@@ -436,38 +415,28 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   }
 
   void _showBadgeDetails(String currentBadge) {
-    showDialog(
+    DialogManager.showCustomDialogWithWidget(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Vos Badges'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildBadgeRow('Diamant', _profile.points >= 100000),
-              _buildBadgeRow('Or', _profile.points >= 20000),
-              _buildBadgeRow('Argent', _profile.points >= 10000),
-              _buildBadgeRow('Bronze', _profile.points >= 9999),
-              _buildBadgeRow('Chocolat', _profile.points >= 999),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: Text('Fermer'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text('Partager'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _shareBadgeOnWhatsApp(currentBadge);
-              },
-            ),
-          ],
-        );
+      title: 'Vos Badges',
+      contentWidget: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _buildBadgeRow('Diamant', _profile.points >= 100000),
+          _buildBadgeRow('Or', _profile.points >= 20000),
+          _buildBadgeRow('Argent', _profile.points >= 10000),
+          _buildBadgeRow('Bronze', _profile.points >= 9999),
+          _buildBadgeRow('Chocolat', _profile.points >= 999),
+        ],
+      ),
+      confirmText: 'Partager',  // Bouton "Partager"
+      cancelText: 'Fermer',     // Bouton "Fermer"
+      onConfirm: () {
+        Navigator.of(context).pop();
+        _shareBadgeOnWhatsApp(currentBadge);  // Partage du badge
       },
     );
   }
+
 
   Widget _buildBadgeRow(String badgeName, bool isUnlocked) {
     return Row(

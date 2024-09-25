@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/widgets/RetroCalculator.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
@@ -179,26 +180,20 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
       message = "Vous avez obtenu $_points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
     }
 
-    showDialog(
+    // Utilisation du DialogManager pour afficher la popup de fin de jeu
+    DialogManager.showCustomDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
+      title: title,  // Titre dynamique en fonction des points
+      content: message,  // Message dynamique en fonction des points
+      confirmText: 'OK',  // Bouton pour fermer
+      cancelText: '',  // Pas de bouton "Annuler"
+      onConfirm: () {
+        Navigator.of(context).pop();  // Fermer le dialogue
+        Navigator.of(context).pop(true);  // Fermer le jeu ou retourner à l'écran précédent
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

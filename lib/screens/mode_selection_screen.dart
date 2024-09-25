@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
 import 'package:mathosproject/screens/progression_mode_screen.dart';
@@ -149,28 +150,14 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
   }
 
   void _showStartConfirmation(BuildContext context, String mode, VoidCallback onConfirm) {
-    showDialog(
+    // Utilisation du DialogManager pour afficher la confirmation
+    DialogManager.showCustomDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFF564560),
-        title: Text('$mode',
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 18)),
-        content: Text(modes.firstWhere((m) => m['name'] == mode)['description'],
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              onConfirm();
-            },
-            child: Text('Commencer', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          ),TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Annuler', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          ),
-
-        ],
-      ),
+      title: mode,  // Le mode passé en paramètre sera le titre du dialogue
+      content: modes.firstWhere((m) => m['name'] == mode)['description'],  // Description du mode
+      confirmText: 'Commencer',  // Texte du bouton de confirmation
+      cancelText: 'Annuler',  // Texte du bouton d'annulation
+      onConfirm: onConfirm,  // Exécuter l'action lorsque l'utilisateur confirme
     );
   }
 
@@ -188,21 +175,19 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
   }
 
   void _showNoConnectionDialog() {
-    showDialog(
+    // Utilisation du DialogManager pour afficher un message de connexion
+    DialogManager.showCustomDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Color(0xFF2E0854),
-        title: Text('NO CONNECTION', style: TextStyle(color: Color(0xFFFF0000), fontFamily: 'PixelFont')),
-        content: Text('Internet connection required for competition mode.', style: TextStyle(color: Color(0xFFF0F0F0), fontFamily: 'PixelFont')),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK', style: TextStyle(color: Color(0xFF00A0FF), fontFamily: 'PixelFont')),
-          ),
-        ],
-      ),
+      title: 'NO CONNECTION',  // Titre du dialogue
+      content: 'Internet connection required for competition mode.',  // Message du dialogue
+      confirmText: 'OK',  // Texte du bouton de confirmation
+      cancelText: '',  // Pas de bouton "Annuler" dans ce cas
+      onConfirm: () {
+        Navigator.pop(context);  // Fermer le dialogue lorsque l'utilisateur appuie sur "OK"
+      },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

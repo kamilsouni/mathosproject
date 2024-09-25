@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/models/app_user.dart'; // Import AppUser
 import 'package:mathosproject/screens/progression_screen.dart';
 import 'package:mathosproject/screens/reward_mode_screen.dart'; // Importer l'écran de récompense
@@ -219,56 +220,44 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
   }
 
   void _showLevelUnlockedMessage() {
-    showDialog(
+    // Utilisation du DialogManager pour afficher le message de niveau débloqué
+    DialogManager.showCustomDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Niveau débloqué!'),
-          content: Text('Vous avez débloqué le niveau suivant.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProgressionModeScreen(profile: widget.profile),
-                  ),
-                );
-              },
-            ),
-          ],
+      title: 'Niveau débloqué!',  // Titre du dialogue
+      content: 'Vous avez débloqué le niveau suivant.',  // Contenu du message
+      confirmText: 'OK',  // Texte du bouton de confirmation
+      cancelText: '',  // Pas de bouton "Annuler"
+      onConfirm: () {
+        Navigator.of(context).pop();  // Fermer le dialogue
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProgressionModeScreen(profile: widget.profile),  // Naviguer vers l'écran de progression
+          ),
         );
       },
     );
   }
 
+
   void _showNewTipMessage() {
-    showDialog(
+    // Utilisation du DialogManager pour afficher le message d'astuce débloquée
+    DialogManager.showCustomDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Nouvelle Astuce Disponible!'),
-          content: Text('Une nouvelle astuce est disponible.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => RewardModeScreen(profile: widget.profile), // Naviguer vers l'écran de récompense
-                  ),
-                );
-              },
-            ),
-          ],
+      title: 'Nouvelle Astuce Disponible!',  // Titre du dialogue
+      content: 'Une nouvelle astuce est disponible.',  // Contenu du message
+      confirmText: 'OK',  // Texte du bouton de confirmation
+      cancelText: '',  // Pas de bouton "Annuler"
+      onConfirm: () {
+        Navigator.of(context).pop();  // Fermer le dialogue
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => RewardModeScreen(profile: widget.profile),  // Naviguer vers l'écran de récompense
+          ),
         );
       },
     );
   }
+
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/widgets/arcade_console.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/widgets/level_indicator.dart';
@@ -60,7 +61,7 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       CurvedAnimation(parent: _equationController, curve: Curves.easeInOut),
     );
     generateQuestion();
-    _showStartDialog();
+
   }
 
   @override
@@ -262,60 +263,22 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       message = "Vous avez obtenu $_points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
     }
 
-    showDialog(
+    // Utilisation du DialogManager pour afficher la popup de fin de jeu
+    DialogManager.showCustomDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFF564560),
-          title: Text(title, style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          content: Text(message, style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
+      title: title,  // Titre dynamique en fonction des points
+      content: message,  // Message dynamique en fonction des points
+      confirmText: 'OK',  // Bouton pour fermer
+      cancelText: '',  // Pas de bouton "Annuler"
+      onConfirm: () {
+        Navigator.of(context).pop();  // Fermer le dialogue
+        Navigator.of(context).pop(true);  // Retour à l'écran précédent ou fermer la partie
       },
     );
   }
 
-  Future<void> _showStartDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFF564560),
-          title: Text('Prêt à commencer ?', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Lorsque vous commencerez, vous aurez 60 secondes pour répondre à un maximum de questions.',
-                    style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-                Text('Bonne chance !', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Commencer', style: TextStyle(color: Colors.white, fontFamily: 'PixelFont')),
-              onPressed: () {
-                Navigator.of(context).pop();
-                if (!hasTestStarted) {
-                  _incrementEquationTests();
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+
+
 
   Future<void> _incrementEquationTests() async {
     if (widget.isCompetition && widget.competitionId != null) {

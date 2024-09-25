@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/widgets/RetroCalculator.dart';
 import 'package:mathosproject/widgets/custom_keyboard.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
@@ -210,55 +211,40 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     widget.profile.points += _points; // Ajouter les points au profil de l'utilisateur
     updateProfile(widget.profile); // Mettre à jour le profil de l'utilisateur
 
-    showDialog(
+    // Utilisation du DialogManager pour afficher le message de validation
+    DialogManager.showCustomDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Félicitations!'),
-          content: Text(
-              'Vous avez validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                _validateLevel(); // Valider le niveau après avoir fermé le message de félicitations
-              },
-            ),
-          ],
-        );
+      title: 'Félicitations!',  // Titre du dialogue
+      content: 'Vous avez validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}.',  // Contenu dynamique
+      confirmText: 'OK',  // Texte du bouton de confirmation
+      cancelText: '',  // Pas de bouton "Annuler"
+      onConfirm: () {
+        Navigator.of(context).pop();  // Fermer le dialogue
+        _validateLevel();  // Valider le niveau après avoir fermé le message de félicitations
       },
     );
   }
 
   void _showLevelUnlockedMessage() {
-    showDialog(
+    // Utilisation du DialogManager pour afficher le message de niveau débloqué
+    DialogManager.showCustomDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Niveau débloqué!'),
-          content: Text('Vous avez débloqué le niveau ${widget.level + 1}.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ProgressionModeScreen(profile: widget.profile),
-                  ),
-                );
-              },
-            ),
-          ],
+      title: 'Niveau débloqué!',  // Titre du dialogue
+      content: 'Vous avez débloqué le niveau ${widget.level + 1}.',  // Contenu dynamique
+      confirmText: 'OK',  // Texte du bouton de confirmation
+      cancelText: '',  // Pas de bouton "Annuler"
+      onConfirm: () {
+        Navigator.of(context).pop();  // Fermer le dialogue
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProgressionModeScreen(profile: widget.profile),  // Naviguer vers l'écran de progression
+          ),
         );
       },
     );
   }
+
 
   void _endTest() {
     if (_correctAnswers < 30) {
@@ -277,33 +263,25 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   }
 
   void _showEncouragementMessage() {
-    showDialog(
+    // Utilisation du DialogManager pour afficher le message d'encouragement
+    DialogManager.showCustomDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Essayez encore!'),
-          content: Text(
-              'Vous n\'avez pas encore validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}. Essayez encore!'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        ProgressionModeScreen(profile: widget.profile),
-                  ),
-                );
-              },
-            ),
-          ],
+      title: 'Essayez encore!',  // Titre du dialogue
+      content: 'Vous n\'avez pas encore validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}. Essayez encore!',  // Contenu dynamique
+      confirmText: 'OK',  // Texte du bouton de confirmation
+      cancelText: '',  // Pas de bouton "Annuler"
+      onConfirm: () {
+        Navigator.of(context).pop();  // Fermer le dialogue
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProgressionModeScreen(profile: widget.profile),  // Naviguer vers l'écran de progression
+          ),
         );
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

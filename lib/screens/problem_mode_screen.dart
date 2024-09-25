@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/widgets/RetroCalculator.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
@@ -217,26 +218,20 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> with WidgetsBindi
       message = "Vous avez obtenu $_points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
     }
 
-    showDialog(
+    // Utilisation du DialogManager pour afficher la popup de fin de jeu
+    DialogManager.showCustomDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
+      title: title,  // Titre dynamique en fonction des points
+      content: message,  // Message dynamique en fonction des points
+      confirmText: 'OK',  // Texte du bouton de confirmation
+      cancelText: '',  // Pas de bouton "Annuler"
+      onConfirm: () {
+        Navigator.of(context).pop();  // Fermer le dialogue
+        Navigator.of(context).pop(true);  // Fermer l'écran du jeu ou retourner à l'écran précédent
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

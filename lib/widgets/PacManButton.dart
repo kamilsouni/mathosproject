@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mathosproject/sound_manager.dart';
+
 
 class PacManButton extends StatefulWidget {
   final String text;
@@ -29,7 +31,11 @@ class _PacManButtonState extends State<PacManButton> {
     double fontSize = buttonHeight * 0.2;
 
     return GestureDetector(
-      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapDown: (_) async {
+        setState(() => _isPressed = true);
+        // Utiliser le SoundManager pour jouer le son
+        await SoundManager.playButtonClickSound();
+      },
       onTapUp: (_) {
         setState(() => _isPressed = false);
         widget.onPressed();
