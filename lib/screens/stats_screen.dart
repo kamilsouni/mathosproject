@@ -80,7 +80,7 @@ class _StatsScreenState extends State<StatsScreen> {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-        appBar: TopAppBar(title: 'Statistiques'),
+        appBar: TopAppBar(title: 'Statistiques',showBackButton: true),
         body: Container(
           color: Color(0xFF564560),
           child: Column(

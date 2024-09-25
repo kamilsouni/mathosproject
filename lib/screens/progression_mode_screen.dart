@@ -54,7 +54,7 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: TopAppBar(title: 'Mode Progression'),
+      appBar: TopAppBar(title: 'Mode Progression', showBackButton: true),
       body: Stack(
         children: [
           Positioned.fill(

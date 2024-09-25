@@ -14,7 +14,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopAppBar(title: 'Paramètres'),
+      appBar: TopAppBar(title: 'Paramètres',showBackButton: true),
       body: Center(
         child: Text(
           'EN CONSTRUCTION',

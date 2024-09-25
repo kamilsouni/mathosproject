@@ -9,6 +9,7 @@ import 'package:mathosproject/screens/equations_mode_screen.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
 import 'package:mathosproject/widgets/pixel_circle.dart';
+import 'package:mathosproject/widgets/pixel_transition.dart';
 
 class ModeSelectionScreen extends StatefulWidget {
   final AppUser profile;
@@ -75,7 +76,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
       ),
     );
     _animations = _controllers.map((controller) =>
-        Tween<double>(begin: 1.0, end: 1.1).animate(
+        Tween<double>(begin: 1.0, end: 1.0).animate(
           CurvedAnimation(parent: controller, curve: Curves.easeInOut),
         )
     ).toList();
@@ -106,19 +107,22 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
       Future.delayed(Duration(milliseconds: 500), () {
         switch (index) {
           case 0:
-            Navigator.push(context, _createRoute(ProgressionModeScreen(profile: widget.profile)));
+          case 0:
+            print("Avant la navigation vers ProgressionModeScreen");
+            Navigator.push(context, PixelTransition(page: ProgressionModeScreen(profile: widget.profile)));
+            print("Après la navigation vers ProgressionModeScreen");
             break;
           case 1:
-            Navigator.push(context, _createRoute(RewardModeScreen(profile: widget.profile)));
+            Navigator.push(context, PixelTransition(page :RewardModeScreen(profile: widget.profile)));
             break;
           case 2:
-            Navigator.push(context, _createRoute(RapidityModeScreen(profile: widget.profile)));
+            Navigator.push(context,PixelTransition(page :RapidityModeScreen(profile: widget.profile)));
             break;
           case 3:
-            Navigator.push(context, _createRoute(ProblemModeScreen(profile: widget.profile)));
+            Navigator.push(context, PixelTransition(page :ProblemModeScreen(profile: widget.profile)));
             break;
           case 4:
-            Navigator.push(context, _createRoute(EquationsModeScreen(profile: widget.profile)));
+            Navigator.push(context, PixelTransition(page :EquationsModeScreen(profile: widget.profile)));
             break;
           case 5:
             _checkConnectionAndNavigate();
@@ -249,69 +253,47 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
       onExit: (_) => _onHover(index, false),
       child: GestureDetector(
         onTap: () => _selectMode(index),
-        child: AnimatedBuilder(
-          animation: _animations[index],
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _animations[index].value,
-              child: PixelCircle(
-                color: modes[index]['color'],
-                size: MediaQuery.of(context).size.width / 2.5,
-                child: Stack(
+        child: PixelCircle(
+          color: modes[index]['color'] as Color,
+          size: MediaQuery.of(context).size.width / 2.5,
+          onPressed: () => _selectMode(index),
+          child: Stack(
+            children: [
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            modes[index]['icon'],
-                            width: 60,
-                            height: 60,
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            modes[index]['name'],
-                            style: TextStyle(
-                              fontFamily: 'PixelFont',
-                              fontSize: 11,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  color: Colors.black54,
-                                  offset: Offset(1, 1),
-                                  blurRadius: 2,
-                                ),
-                              ],
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                    Image.asset(
+                      modes[index]['icon'] as String,
+                      width: 60,
+                      height: 60,
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      modes[index]['name'] as String,
+                      style: TextStyle(
+                        fontFamily: 'PixelFont',
+                        fontSize: 11,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black54,
+                            offset: Offset(1, 1),
+                            blurRadius: 2,
                           ),
                         ],
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    if (_hoveredIndex == index)
-                      Positioned.fill(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.3),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.play_arrow,
-                              color: Colors.white,
-                              size: 50,
-                            ),
-                          ),
-                        ),
-                      ),
                   ],
                 ),
               ),
-            );
-          },
+            ],
+          ),
         ),
       ),
     );
   }
+
 }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-// Widget personnalisé pour les boutons style Pac-Man
-class PacManButton extends StatelessWidget {
-  final String text; // Texte du bouton
-  final VoidCallback onPressed; // Fonction à exécuter lors du clic
-  final bool isLoading; // Indicateur pour afficher un chargement
+class PacManButton extends StatefulWidget {
+  final String text;
+  final VoidCallback onPressed;
+  final bool isLoading;
 
   const PacManButton({
     Key? key,
@@ -14,52 +13,75 @@ class PacManButton extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _PacManButtonState createState() => _PacManButtonState();
+}
+
+class _PacManButtonState extends State<PacManButton> {
+  bool _isPressed = false;
+
+  @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    // Taille du bouton en fonction de l'écran
     double buttonWidth = screenWidth * 0.8;
     double buttonHeight = screenHeight * 0.1;
+    double fontSize = buttonHeight * 0.2;
 
-    // Calcul de la taille de la police en fonction de la hauteur du bouton
-    double fontSize = buttonHeight * 0.2; // Ajustez ce facteur si nécessaire
-
-    return ElevatedButton(
-      onPressed: isLoading ? null : onPressed, // Désactiver le bouton si en chargement
-      child: isLoading
-          ? Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
-        ),
-      )
-          : Center(
-        child: Text(
-          text,
-          textAlign: TextAlign.center, // Centrer le texte horizontalement
-          style: TextStyle(
-            fontFamily: 'PixelFont', // Style pixel art
-            fontSize: fontSize, // Taille du texte adaptée à la taille du bouton
-            color: Colors.black,
-          ),
-        ),
-      ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.yellow, // Jaune vif pour rappeler Pac-Man
-        padding: EdgeInsets.zero, // Pas de padding excessif pour éviter le décalage
-        shape: RoundedRectangleBorder(
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onPressed();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 100),
+        width: buttonWidth,
+        height: buttonHeight,
+        decoration: BoxDecoration(
+          color: _isPressed ? Colors.orange : Colors.yellow,
           borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(100), // Forme arrondie Pac-Man
+            topLeft: Radius.circular(100),
             topRight: Radius.circular(0),
             bottomLeft: Radius.circular(100),
             bottomRight: Radius.circular(100),
           ),
+          border: Border.all(
+            color: Colors.black,
+            width: 3,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, _isPressed ? 2 : 4),
+            ),
+          ],
         ),
-        side: BorderSide(
-          color: Colors.black, // Bordure noire rétro
-          width: 3, // Bordure épaisse pour effet rétro
+        child: Center(
+          child: widget.isLoading
+              ? CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.black),
+          )
+              : Text(
+            widget.text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'PixelFont',
+              fontSize: fontSize,
+              color: Colors.black,
+              shadows: [
+                Shadow(
+                  blurRadius: 2,
+                  color: Colors.white.withOpacity(0.5),
+                  offset: Offset(1, 1),
+                ),
+              ],
+            ),
+          ),
         ),
-        fixedSize: Size(buttonWidth, buttonHeight), // Taille du bouton relative à l'écran
       ),
     );
   }

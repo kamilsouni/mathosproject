@@ -119,49 +119,98 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     }
   }
 
-  void _deleteProfile() async {
-    bool? confirmed = await showDialog<bool>(
+  void _showConfirmationDialog(String action, VoidCallback onConfirm) {
+    showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirmation'),
-          content: Text('Êtes-vous sûr de vouloir supprimer ce compte?'),
-          actions: [
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            'Confirmation',
+            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont'),
+          ),
+          content: Text(
+            action == 'delete'
+                ? 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.'
+                : 'Êtes-vous sûr de vouloir vous déconnecter ?',
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+          ),
+          actions: <Widget>[
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Annuler'),
+              child: Text(
+                'Annuler',
+                style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+              ),
+              onPressed: () => Navigator.of(context).pop(),
             ),
             TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Supprimer'),
+              child: Text(
+                action == 'delete' ? 'Supprimer' : 'Déconnecter',
+                style: TextStyle(color: Colors.red, fontFamily: 'PixelFont'),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+                onConfirm();
+              },
             ),
           ],
         );
       },
     );
-
-    if (confirmed == true) {
-      if (await ConnectivityManager().isConnected()) {
-        await UserPreferences.deleteProfileFromFirestore(_profile.id);
-      } else {
-        await UserPreferences.deleteProfileLocally(_profile.id);
-      }
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => SignInUpScreen()),
-            (Route<dynamic> route) => false,
-      );
-    }
   }
 
-  void _signOut() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => SignInUpScreen()),
-          (Route<dynamic> route) => false,
-    );
+  void _deleteProfile() {
+    _showConfirmationDialog('delete', () async {
+      try {
+        bool isConnected = await ConnectivityManager().isConnected();
+        if (isConnected) {
+          await UserPreferences.deleteProfileFromFirestore(widget.profile.id);
+          // Supprimez également l'utilisateur de Firebase Auth si nécessaire
+          await FirebaseAuth.instance.currentUser?.delete();
+        } else {
+          // Si hors ligne, sauvegardez localement l'intention de suppression
+          await UserPreferences.saveProfileLocally(widget.profile);
+          // Note: Vous devrez implémenter une logique pour traiter cette suppression
+          // lorsque la connexion sera rétablie, peut-être dans une méthode de synchronisation
+        }
+
+        // Déconnectez l'utilisateur après la suppression
+        await FirebaseAuth.instance.signOut();
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => SignInUpScreen()),
+              (Route<dynamic> route) => false,
+        );
+      } catch (e) {
+        // Gérez les erreurs, par exemple en affichant un message à l'utilisateur
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Une erreur est survenue lors de la suppression du compte.')),
+        );
+      }
+    });
+  }
+
+  void _signOut() {
+    _showConfirmationDialog('signout', () async {
+      try {
+        await FirebaseAuth.instance.signOut();
+
+        // Si vous avez des données locales à effacer lors de la déconnexion, faites-le ici
+        // Par exemple : await UserPreferences.clearLocalUserData();
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => SignInUpScreen()),
+              (Route<dynamic> route) => false,
+        );
+      } catch (e) {
+        // Gérez les erreurs, par exemple en affichant un message à l'utilisateur
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Une erreur est survenue lors de la déconnexion.')),
+        );
+      }
+    });
   }
 
   void _shareBadgeOnWhatsApp(String badgeName) async {
@@ -274,7 +323,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       style: TextStyle(
         fontFamily: 'PixelFont',
         fontSize: 24,
-        color: Colors.yellow,
+        color: Colors.white,
         shadows: [
           Shadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 0),
         ],
@@ -289,7 +338,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.yellow, width: 2),
+        border: Border.all(color: Colors.white, width: 2),
         borderRadius: BorderRadius.circular(5),
       ),
       child: FittedBox(
@@ -303,7 +352,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                 label,
                 style: TextStyle(
                   fontFamily: 'PixelFont',
-                  color: Colors.yellow,
+                  color: Colors.white,
                 ),
               ),
               SizedBox(height: 5),
@@ -331,7 +380,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.yellow, width: 2),
+          border: Border.all(color: Colors.white, width: 2),
           borderRadius: BorderRadius.circular(5),
         ),
         child: FittedBox(
@@ -345,7 +394,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
                   label,
                   style: TextStyle(
                     fontFamily: 'PixelFont',
-                    color: Colors.yellow,
+                    color: Colors.white,
                   ),
                 ),
                 SizedBox(height: 5),
@@ -374,7 +423,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   Color _getBadgeColor(String badgeName) {
     switch (badgeName) {
       case 'Diamant':
-        return Colors.yellow;
+        return Colors.white;
       case 'Or':
         return Colors.yellow;
       case 'Argent':
