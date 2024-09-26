@@ -209,26 +209,27 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       case 0:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ModeSelectionScreen(profile: _profile)),
+          MaterialPageRoute(builder: (context) => ModeSelectionScreen(profile: _profile)), // Passez 'profile'
         );
         break;
       case 1:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => StatsScreen(profile: _profile)),
+          MaterialPageRoute(builder: (context) => StatsScreen(profile: _profile)), // Passez 'profile'
         );
         break;
       case 2:
-      // Déjà sur l'écran de profil
+      // Déjà sur l'écran du profil
         break;
       case 3:
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => SettingsScreen(profile: _profile)),
+          MaterialPageRoute(builder: (context) => SettingsScreen(profile: _profile)), // Passez 'profile'
         );
         break;
     }
   }
+
 
 
 

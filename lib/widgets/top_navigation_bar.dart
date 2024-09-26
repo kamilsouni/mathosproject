@@ -30,7 +30,13 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
                       color: Colors.black,
                       size: iconSize,
                     ),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context); // Retour à la page précédente si possible
+                      } else {
+                        Navigator.pushReplacementNamed(context, '/'); // Retour à la Home si impossible
+                      }
+                    },
                   ),
                 Expanded(
                   child: Center(
@@ -49,7 +55,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 if (showBackButton)
-                  SizedBox(width: iconSize),
+                  SizedBox(width: iconSize), // Pour équilibrer l'espace avec le bouton retour
               ],
             ),
           ),

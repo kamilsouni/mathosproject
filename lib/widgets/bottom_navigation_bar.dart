@@ -37,7 +37,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             _buildNavItem(context, 0, 'JOUER', Image.asset('assets/jouer.png')),
             _buildNavItem(context, 1, 'STATS', Image.asset('assets/stats.png')),
             _buildNavItem(context, 2, 'PROFIL', Image.asset('assets/users.png')),
-            _buildNavItem(context, 3, 'OPTIONS', Image.asset('assets/settings.png')),
+            _buildNavItem(context, 3, 'PLUS', Image.asset('assets/settings.png')),
           ],
         ),
       ),

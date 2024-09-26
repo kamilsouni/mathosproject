@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:mathosproject/models/app_user.dart';
+import 'package:mathosproject/screens/mode_selection_screen.dart';
+import 'package:mathosproject/screens/profile_detail_screen.dart';
+import 'package:mathosproject/screens/settings_screen.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
@@ -113,15 +116,39 @@ class _StatsScreenState extends State<StatsScreen> {
             ],
           ),
         ),
-        bottomNavigationBar: CustomBottomNavigationBar(
+        bottomNavigationBar:CustomBottomNavigationBar(
           selectedIndex: _selectedIndex,
           profile: _profile,
           onTap: (index) {
+            switch (index) {
+              case 0:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ModeSelectionScreen(profile: _profile)), // Passez 'profile'
+                );
+                break;
+              case 1:
+              // Déjà sur l'écran des statistiques
+                break;
+              case 2:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileDetailScreen(profile: _profile)), // Passez 'profile'
+                );
+                break;
+              case 3:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen(profile: _profile)), // Passez 'profile'
+                );
+                break;
+            }
             setState(() {
               _selectedIndex = index;
             });
           },
         ),
+
       ),
     );
   }
