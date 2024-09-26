@@ -89,10 +89,10 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
                               Text(
                                 'Niveau $level',
                                 style: TextStyle(
-                                  fontFamily: 'PixelFont', // Utiliser une police pixel art
-                                  fontSize: screenWidth * 0.04, // Taille adaptée au style rétro
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.yellow
+                                    fontFamily: 'PixelFont', // Utiliser une police pixel art
+                                    fontSize: screenWidth * 0.04, // Taille adaptée au style rétro
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.yellow
                                 ),
                               ),
                               SizedBox(height: 10),

@@ -227,7 +227,6 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> with WidgetsBindi
       cancelText: '',  // Pas de bouton "Annuler"
       onConfirm: () {
         Navigator.of(context).pop();  // Fermer le dialogue
-        Navigator.of(context).pop(true);  // Fermer l'écran du jeu ou retourner à l'écran précédent
       },
     );
   }

@@ -272,7 +272,6 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       cancelText: '',  // Pas de bouton "Annuler"
       onConfirm: () {
         Navigator.of(context).pop();  // Fermer le dialogue
-        Navigator.of(context).pop(true);  // Retour à l'écran précédent ou fermer la partie
       },
     );
   }

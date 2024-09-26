@@ -189,7 +189,6 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
       cancelText: '',  // Pas de bouton "Annuler"
       onConfirm: () {
         Navigator.of(context).pop();  // Fermer le dialogue
-        Navigator.of(context).pop(true);  // Fermer le jeu ou retourner à l'écran précédent
       },
     );
   }
