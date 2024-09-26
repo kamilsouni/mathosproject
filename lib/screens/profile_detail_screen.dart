@@ -13,6 +13,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/dialog_manager.dart';
+import 'package:flutter/services.dart'; // Pour rootBundle
+import 'dart:convert'; // Pour json.decode()
+import 'package:country_flags/country_flags.dart'; // Pour afficher les drapeaux
+
+
 
 
 
@@ -28,13 +33,17 @@ class ProfileDetailScreen extends StatefulWidget {
 class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   late AppUserModel.AppUser _profile;
   int _selectedIndex = 2;
+  List<Map<String, String>> _flags = []; // Liste pour stocker les drapeaux à partir du fichier JSON
+  List<Map<String, String>> _filteredFlags = []; // Liste filtrée pour la recherche de drapeaux
 
   @override
   void initState() {
     super.initState();
     _profile = widget.profile;
     refreshProfile();
+    _loadFlags();
   }
+
 
 
   void refreshProfile() async {
@@ -79,35 +88,84 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
 
 
   void _changeFlag() async {
-    List<String> flags = [
-      'assets/france.png',
-      'assets/pirate.png',
-      'assets/maroc.png',
-      'assets/lgbt.png'
-    ];
+    if (_flags.isEmpty) {
+      await _loadFlags();
+    }
 
-    // Appel à showCustomDialogWithWidget avec contentWidget
+    List<Map<String, String>> filteredFlags = List.from(_flags);
+    TextEditingController searchController = TextEditingController();
+
     String? selectedFlag = await DialogManager.showCustomDialogWithWidget<String>(
       context: context,
       title: 'Changer le drapeau',
-      contentWidget: SingleChildScrollView(
-        child: ListBody(
-          children: flags.map((flag) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop(flag);  // Sélectionner le drapeau et fermer le dialogue
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Image.asset(flag, width: 50, height: 50),
-              ),
-            );
-          }).toList(),
-        ),
+      contentWidget: StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+          return Container(
+            width: double.maxFinite,
+            height: 400, // Hauteur fixe pour le dialogue
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    controller: searchController,
+                    style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+                    decoration: InputDecoration(
+                      hintText: 'Rechercher un pays',
+                      hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
+                      prefixIcon: Icon(Icons.search, color: Colors.white),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide(color: Colors.yellow),
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        filteredFlags = _flags
+                            .where((flag) => flag['name']!.toLowerCase().contains(value.toLowerCase()))
+                            .toList();
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: filteredFlags.length,
+                    itemBuilder: (context, index) {
+                      final flag = filteredFlags[index];
+                      return ListTile(
+                        leading: CountryFlag.fromCountryCode(
+                          flag['code']!,
+                          height: 40,
+                          width: 60,
+                        ),
+                        title: Text(
+                          flag['name']!,
+                          style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+                        ),
+                        onTap: () {
+                          Navigator.of(context).pop(flag['code']);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
-      confirmText: '',  // Pas de bouton de confirmation ici car la sélection se fait directement
+      confirmText: '',
       cancelText: 'Annuler',
-      onConfirm: () {},  // Action vide, pas nécessaire dans ce cas
+      onConfirm: () {},
     );
 
     if (selectedFlag != null) {
@@ -122,6 +180,24 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       }
     }
   }
+
+  Future<void> _loadFlags() async {
+    String jsonString = await rootBundle.loadString('assets/flags.json');
+    List<dynamic> jsonResponse = json.decode(jsonString);
+
+    setState(() {
+      _flags = jsonResponse.map((flag) => {
+        'name': flag['name'].toString(),
+        'code': flag['code'].toString(),
+      }).toList();
+    });
+  }
+
+
+
+
+
+
 
 
   void _showConfirmationDialog(String action, VoidCallback onConfirm) {
@@ -250,13 +326,18 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
               double screenWidth = constraints.maxWidth;
               double screenHeight = constraints.maxHeight;
 
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildProfileHeader(screenWidth),
-                  _buildRetroGameStats(currentLevel, currentBadge, screenWidth, screenHeight),
-                  _buildActionButtons(screenWidth),
-                ],
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: screenHeight),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildProfileHeader(screenWidth),
+                      _buildRetroGameStats(currentLevel, currentBadge, screenWidth, screenHeight),
+                      _buildActionButtons(screenWidth),
+                    ],
+                  ),
+                ),
               );
             },
           ),
@@ -474,10 +555,11 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.yellow, width: 4),
                 borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: AssetImage(_profile.flag),
-                  fit: BoxFit.cover,
-                ),
+              ),
+              child: CountryFlag.fromCountryCode(
+                _profile.flag, // Utilise le code ISO du drapeau
+                height: 100,
+                width: 100,
               ),
             ),
           ),
@@ -487,7 +569,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
             child: Text(
               _profile.name,
               style: TextStyle(
-                fontSize: 35, // Taille de base, sera ajustée automatiquement si nécessaire
+                fontSize: 35,
                 fontWeight: FontWeight.bold,
                 color: Colors.yellow,
                 shadows: [
@@ -502,6 +584,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       ),
     );
   }
+
 
 
 
@@ -549,5 +632,3 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   }
 
 }
-
-

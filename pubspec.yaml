@@ -33,6 +33,7 @@ dependencies:
   connectivity_plus: ^6.0.5
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  country_flags: ^3.0.0
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"
@@ -68,6 +69,7 @@ flutter:
     - assets/equation.png
     - assets/jouer.png
     - assets/problems_by_level.json
+    - assets/flags.json
     - assets/sounds/button.mp3
 
   fonts:

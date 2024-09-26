@@ -168,8 +168,8 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
       _isSkipped = true;
       _isAnswerCorrect = false;
       _skippedQuestions++;
-      _pointsChange = -10;
-      _points -= 10;
+      _pointsChange = -100;
+      _points -= 100;
     });
 
     Future.delayed(Duration(milliseconds: 300), () {

@@ -23,7 +23,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: TopAppBar(title: 'Infos & Paramètres', showBackButton: true),
@@ -38,8 +37,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 SizedBox(height: screenHeight * 0.02), // Espacement supérieur pour mieux respirer
                 _buildSection('Règles du jeu', [
-                  _buildSubsection('Modes de jeu', () {}),
-                  _buildSubsection('Système de points', () {}),
+                  _buildSubsection('Modes de jeu', _showGameModesDialog),
+                  _buildSubsection('Système de points', _showScoringSystemDialog),
                 ]),
                 _buildSection('Paramètres', [
                   _buildToggleSubsection('Effets sonores', _soundEffectsEnabled, (value) {
@@ -176,6 +175,119 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  // Dialog to show game modes
+  void _showGameModesDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            "Modes de jeu",
+            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("1. Mode Rapidité : Enchaîne les bonnes réponses en 60 secondes chrono pour faire grimper ton score en flèche."),
+                SizedBox(height: 10),
+                Text("2. Mode Problème : Deux minutes pour résoudre des problèmes de calcul. Chaque bonne réponse te fait monter d'un niveau."),
+                SizedBox(height: 10),
+                Text("3. Mode Équations : Trouve la pièce manquante dans l'équation pour avancer. Attention, 60 secondes seulement !"),
+                SizedBox(height: 10),
+                Text("4. Mode Progression : Enchaîne additions, soustractions, multiplications et divisions pour débloquer des astuces et grimper de niveau."),
+                SizedBox(height: 10),
+                Text("5. Mode Compétition : Affronte les autres joueurs pour prouver qui est le meilleur. Vise le sommet du classement !"),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Fermer', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Dialog to show scoring system
+  void _showScoringSystemDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            "Système de points",
+            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildScoringSystemText('Mode Rapidité', [
+                  'Réponses correctes : 10 points par réponse, multipliés par le niveau actuel.',
+                  'Multiplicateur de rapidité : +50 points après plusieurs bonnes réponses.',
+                  'Passer la question : -100 points et perte d\'un niveau.',
+                ]),
+                SizedBox(height: 10),
+                _buildScoringSystemText('Mode Problème', [
+                  'Réponses correctes : 50 points par réponse, multipliés par le niveau.',
+                  'Bonus : +50 points pour 3 bonnes réponses consécutives.',
+                  'Passer la question : -100 points et perte d\'un niveau.',
+                ]),
+                SizedBox(height: 10),
+                _buildScoringSystemText('Mode Équations', [
+                  'Réponses correctes : 10 points par réponse, multipliés par le niveau actuel.',
+                  'Bonus : +100 points à chaque niveau terminé.',
+                  'Mauvaise réponse : -5 points et perte d\'un niveau.',
+                ]),
+                SizedBox(height: 10),
+                _buildScoringSystemText('Mode Progression', [
+                  'Réponses correctes : 10 points par réponse, multipliés par le niveau.',
+                  'Bonus de niveau : +100 points pour chaque niveau terminé.',
+                  'Passer la question : -100 points.',
+                ]),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Fermer', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildScoringSystemText(String mode, List<String> pointsInfo) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          mode,
+          style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 14),
+        ),
+        SizedBox(height: 5),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: pointsInfo.map((info) {
+            return Text(
+              info,
+              style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 12),
+            );
+          }).toList(),
+        ),
+        SizedBox(height: 10),
+      ],
     );
   }
 }

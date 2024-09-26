@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Pour charger le fichier JSON
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/mode_selection_screen.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/PacManButton.dart';
+import 'package:country_flags/country_flags.dart'; // Importation du package des drapeaux
 
 class ProfileCreationScreen extends StatefulWidget {
   final String userId;
@@ -20,16 +23,53 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
   late String _name;
   late int _age;
   String _gender = '';
-  String _selectedFlag = 'assets/france.png';
+  String _selectedFlag = 'FR'; // Code ISO initial pour le drapeau
   final _formKey = GlobalKey<FormState>();
   final FocusNode _nameFocusNode = FocusNode();
   final FocusNode _ageFocusNode = FocusNode();
+
+  TextEditingController _searchController = TextEditingController();
+  List<Map<String, String>> _flags = []; // Liste des drapeaux à partir du JSON
+  List<Map<String, String>> _filteredFlags = []; // Liste filtrée pour la recherche
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFlags(); // Charger les drapeaux lors de l'initialisation
+    _searchController.addListener(_filterFlags); // Ajouter un listener pour la recherche
+  }
+
+  Future<void> _loadFlags() async {
+    String jsonString = await rootBundle.loadString('assets/flags.json');
+    List<dynamic> jsonResponse = json.decode(jsonString);
+
+    setState(() {
+      _flags = jsonResponse.map((flag) => {
+        'name': flag['name'].toString(),
+        'code': flag['code'].toString(),
+      }).toList();
+
+      _filteredFlags = _flags; // Initialise la liste filtrée avec tous les drapeaux
+    });
+  }
 
   @override
   void dispose() {
     _nameFocusNode.dispose();
     _ageFocusNode.dispose();
+    _searchController.dispose(); // Libérer le contrôleur de recherche
     super.dispose();
+  }
+
+  void _filterFlags() {
+    String query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredFlags = _flags.where((flag) {
+        String name = flag['name']!.toLowerCase();
+        String code = flag['code']!.toLowerCase();
+        return name.contains(query) || code.contains(query); // Filtrer par nom ou code
+      }).toList();
+    });
   }
 
   @override
@@ -189,7 +229,7 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Sélectionnez votre avatar',
+          'Sélectionnez votre drapeau',
           style: TextStyle(
             color: Colors.white,
             fontSize: 18,
@@ -197,26 +237,42 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
             fontFamily: 'PixelFont',
           ),
         ),
-        SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildFlagOption('assets/france.png'),
-            _buildFlagOption('assets/pirate.png'),
-            _buildFlagOption('assets/maroc.png'),
-            _buildFlagOption('assets/lgbt.png'),
-          ],
+        SizedBox(height: 8),
+        TextField(
+          controller: _searchController,
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Colors.white,
+            hintText: 'Rechercher un drapeau',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          ),
         ),
+        SizedBox(height: 16),
+        _buildFlagList(),
       ],
     );
   }
 
-  Widget _buildFlagOption(String flagPath) {
-    bool isSelected = _selectedFlag == flagPath;
+  Widget _buildFlagList() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: _filteredFlags.map((flag) => _buildFlagOption(flag['code']!, flag['name']!)).toList(),
+      ),
+    );
+  }
+
+  Widget _buildFlagOption(String countryCode, String countryName) {
+    bool isSelected = _selectedFlag == countryCode;
     return GestureDetector(
       onTap: () {
         setState(() {
-          _selectedFlag = flagPath;
+          _selectedFlag = countryCode;
         });
       },
       child: Container(
@@ -228,10 +284,19 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
           ),
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Image.asset(
-          flagPath,
-          width: 50,
-          height: 50,
+        child: Column(
+          children: [
+            CountryFlag.fromCountryCode(
+              countryCode,
+              height: 50,
+              width: 50,
+            ),
+            SizedBox(height: 4),
+            Text(
+              countryName,
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ],
         ),
       ),
     );
@@ -249,7 +314,7 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
         email: widget.email,
         age: _age,
         gender: _gender,
-        flag: _selectedFlag,
+        flag: _selectedFlag, // Sauvegarde du code ISO du drapeau
         progression: initialProgression,
       );
 
