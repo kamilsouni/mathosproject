@@ -8,6 +8,7 @@ import 'package:mathosproject/utils/hive_data_manager.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:country_flags/country_flags.dart';
 
 class CompetitionScreen extends StatefulWidget {
   final AppUser profile;
@@ -402,7 +403,11 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
                         ),
                       ),
                       SizedBox(width: 10),
-                      Image.asset(participant['flag'] ?? 'assets/default_flag.png', width: 24, height: 24),
+                      CountryFlag.fromCountryCode(
+                        participant['flag'] ?? 'XX',
+                        height: 24,
+                        width: 24,
+                      ),
                       SizedBox(width: 10),
                       Expanded(
                         child: Text(

@@ -43,8 +43,10 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
 
           await competitionRef.collection('participants').doc(widget.profile.id).set({
             'name': widget.profile.name,
+            'flag': widget.profile.flag, // Ajoutez cette ligne
             'rapidTests': 0,
             'ProblemTests': 0,
+            'equationTests': 0, // Ajoutez cette ligne si ce n'est pas déjà fait
             'totalPoints': 0,
           });
 
@@ -67,12 +69,13 @@ class _CreateCompetitionScreenState extends State<CreateCompetitionScreen> {
             'createdBy': widget.profile.id,
             'participants': {
               widget.profile.id: {
-                'name': widget.profile.name,
-                'rapidTests': 0,
-                'ProblemTests': 0,
-                'equationTests': 0,
-                'totalPoints': 0,
-              }
+          'name': widget.profile.name,
+          'flag': widget.profile.flag, // Ajoutez cette ligne
+          'rapidTests': 0,
+          'ProblemTests': 0,
+          'equationTests': 0,
+          'totalPoints': 0,
+          }
             },
           });
 

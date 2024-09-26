@@ -9,6 +9,7 @@ import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
+import 'package:country_flags/country_flags.dart';
 
 class StatsScreen extends StatefulWidget {
   final AppUser profile;
@@ -388,7 +389,11 @@ class _StatsScreenState extends State<StatsScreen> {
                         ),
                       ),
                       SizedBox(width: 10),
-                      Image.asset(participant['flag'] ?? 'assets/default_flag.png', width: 24, height: 24),
+                      CountryFlag.fromCountryCode(
+                        participant['flag'] ?? 'XX',
+                        height: 24,
+                        width: 24,
+                      ),
                       SizedBox(width: 10),
                       Expanded(
                         child: Text(
