@@ -71,6 +71,9 @@ flutter:
     - assets/problems_by_level.json
     - assets/flags.json
     - assets/sounds/button.mp3
+    - assets/sounds/yes_button.mp3
+    - assets/sounds/no_button.mp3
+    - assets/sounds/dialog_open.mp3
 
   fonts:
     - family: 'PixelFont'

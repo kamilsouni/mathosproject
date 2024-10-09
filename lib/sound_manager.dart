@@ -1,33 +1,64 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SoundManager {
-  static AudioPlayer _audioPlayer = AudioPlayer();
+  static late SharedPreferences _prefs;
+  static bool _soundEnabled = true;
+  static final AudioPlayer _buttonPlayer = AudioPlayer();
+  static final AudioPlayer _dialogPlayer = AudioPlayer();
+  static final AudioPlayer _yesPlayer = AudioPlayer();
+  static final AudioPlayer _noPlayer = AudioPlayer();
 
-  // Précharge tous les sons au lancement de l'application
+  static Future<void> initialize() async {
+    try {
+      _prefs = await SharedPreferences.getInstance();
+      _soundEnabled = _prefs.getBool('soundEnabled') ?? true;
+      await preLoadAllSounds();
+    } catch (e) {
+      print('Erreur lors de l\'initialisation du SoundManager: $e');
+      _soundEnabled = true;
+    }
+  }
+
   static Future<void> preLoadAllSounds() async {
-    await _audioPlayer.setSource(AssetSource('sounds/button.mp3')); // Précharge les sons ici
-    // Ajoute ici d'autres sons à précharger
-    //await _audioPlayer.setSource(AssetSource('sounds/another_sound.mp3'));
-    //await _audioPlayer.setSource(AssetSource('sounds/success.mp3'));
+    await Future.wait([
+      _buttonPlayer.setSource(AssetSource('sounds/button.mp3')),
+      _dialogPlayer.setSource(AssetSource('sounds/dialog_open.mp3')),
+      _yesPlayer.setSource(AssetSource('sounds/yes_button.mp3')),
+      _noPlayer.setSource(AssetSource('sounds/no_button.mp3')),
+    ]);
   }
 
-  // Méthode pour jouer un son spécifique
   static Future<void> playButtonClickSound() async {
-    await _audioPlayer.play(AssetSource('sounds/button.mp3')); // Joue le son
+    if (_soundEnabled) {
+      await _buttonPlayer.play(AssetSource('sounds/button.mp3'));
+    }
   }
 
-  // Méthode pour jouer le son lors de l'ouverture d'un dialogue
   static Future<void> playDialogOpenSound() async {
-    await _audioPlayer.play(AssetSource('sounds/button.mp3')); // Remplace par ton fichier
+    if (_soundEnabled) {
+      await _dialogPlayer.play(AssetSource('sounds/dialog_open.mp3'));
+    }
   }
 
-  // Méthode pour jouer le son du bouton "Yes" d'un dialogue
   static Future<void> playYesButtonSound() async {
-    await _audioPlayer.play(AssetSource('sounds/button.mp3')); // Remplace par ton fichier
+    if (_soundEnabled) {
+      await _yesPlayer.play(AssetSource('sounds/yes_button.mp3'));
+    }
   }
 
-  // Méthode pour jouer le son du bouton "No" d'un dialogue
   static Future<void> playNoButtonSound() async {
-    await _audioPlayer.play(AssetSource('sounds/button.mp3')); // Remplace par ton fichier
+    if (_soundEnabled) {
+      await _noPlayer.play(AssetSource('sounds/no_button.mp3'));
+    }
+  }
+
+  static void setSoundEnabled(bool enabled) {
+    _soundEnabled = enabled;
+    _prefs.setBool('soundEnabled', enabled);
+  }
+
+  static bool isSoundEnabled() {
+    return _soundEnabled;
   }
 }

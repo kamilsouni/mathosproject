@@ -5,6 +5,7 @@ import 'package:mathosproject/screens/profile_detail_screen.dart';
 import 'package:mathosproject/screens/stats_screen.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
+import 'package:mathosproject/sound_manager.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AppUser profile;
@@ -16,7 +17,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _soundEffectsEnabled = true;
+  bool _soundEffectsEnabled =  SoundManager.isSoundEnabled(); // Gère l'état des effets sonores
   bool _backgroundMusicEnabled = true;
   bool _notificationsEnabled = true;
 
@@ -30,19 +31,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
         color: Color(0xFF564560),
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12), // Réduction du padding général
+            padding: EdgeInsets.symmetric(horizontal: 12),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: screenHeight * 0.02), // Espacement supérieur pour mieux respirer
+                SizedBox(height: screenHeight * 0.02),
                 _buildSection('Règles du jeu', [
                   _buildSubsection('Modes de jeu', _showGameModesDialog),
                   _buildSubsection('Système de points', _showScoringSystemDialog),
                 ]),
                 _buildSection('Paramètres', [
                   _buildToggleSubsection('Effets sonores', _soundEffectsEnabled, (value) {
-                    setState(() => _soundEffectsEnabled = value);
+                    setState(() {
+                      _soundEffectsEnabled = value;
+                      SoundManager.setSoundEnabled(value);
+                    });
                   }),
                   _buildToggleSubsection('Musique', _backgroundMusicEnabled, (value) {
                     setState(() => _backgroundMusicEnabled = value);
@@ -66,7 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _buildSection('Mode hors-ligne', [
                   _buildSubsection('Fonctionnement', () {}),
                 ]),
-                SizedBox(height: screenHeight * 0.02), // Espacement inférieur
+                SizedBox(height: screenHeight * 0.02),
               ],
             ),
           ),
@@ -87,7 +91,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileDetailScreen(profile: widget.profile)));
               break;
             case 3:
-            // Déjà sur l'écran des paramètres
               break;
           }
         },
@@ -103,21 +106,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title,
           style: TextStyle(
             color: Colors.yellow,
-            fontSize: 16, // Taille plus uniforme
+            fontSize: 16,
             fontFamily: 'PixelFont',
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 8), // Espace standard entre titre et éléments
+        SizedBox(height: 8),
         Column(
           children: children.map((child) {
             return Container(
-              height: 50, // Définir une hauteur fixe pour uniformiser la taille des blocs
+              height: 50,
               child: child,
             );
           }).toList(),
         ),
-        SizedBox(height: 16), // Espacement standard entre les sections
+        SizedBox(height: 16),
       ],
     );
   }

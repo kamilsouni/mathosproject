@@ -6,21 +6,21 @@ class DialogManager {
   // Méthode pour afficher un dialogue avec du texte uniquement
   static Future<void> showCustomDialog({
     required BuildContext context,
-    required String title,           // Titre dynamique
-    required String content,         // Contenu du message dynamique
-    required String confirmText,     // Texte du bouton de confirmation (ex: "Supprimer" ou "Déconnecter")
-    required String cancelText,      // Texte du bouton d'annulation (ex: "Annuler")
-    required VoidCallback onConfirm, // Action à exécuter lors de la confirmation
+    required String title,
+    required String content,
+    required String confirmText,
+    required String cancelText,
+    required VoidCallback onConfirm,
   }) async {
     // Jouer le son d'ouverture du dialogue
     await SoundManager.playDialogOpenSound();
 
     return showDialog<void>(
       context: context,
-      barrierDismissible: false, // Empêche la fermeture en cliquant à l'extérieur
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Color(0xFF564560),  // Couleur de fond
+          backgroundColor: Color(0xFF564560),
           title: Text(
             title,
             style: TextStyle(
@@ -37,7 +37,8 @@ class DialogManager {
           ),
           actions: <Widget>[
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                await SoundManager.playNoButtonSound(); // Jouer le son "no_button"
                 Navigator.of(context).pop();  // Fermer le dialogue
               },
               child: Text(

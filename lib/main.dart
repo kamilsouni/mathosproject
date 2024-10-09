@@ -9,19 +9,28 @@ import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/sound_manager.dart';
 
 void main() async {
+  print('Début de l\'initialisation');
   WidgetsFlutterBinding.ensureInitialized();
+  print('WidgetsFlutterBinding initialisé');
 
-  // Initialisation de Firebase
-  await Firebase.initializeApp();
+  try {
+    // Initialisation de Firebase
+    await Firebase.initializeApp();
+    print('Firebase initialisé');
 
-  // Initialisation de Hive
-  await Hive.initFlutter();
+    // Initialisation de Hive
+    await Hive.initFlutter();
+    print('Hive initialisé');
 
-  // Précharger tous les sons avant le lancement de l'application
-  await SoundManager.preLoadAllSounds();
+    // Initialisation du SoundManager
+    await SoundManager.initialize();
+    print('SoundManager initialisé');
 
-
-  runApp(Mathos());
+    runApp(Mathos());
+  } catch (e) {
+    print('Erreur lors de l\'initialisation: $e');
+    runApp(ErrorApp(error: e.toString()));
+  }
 }
 
 class Mathos extends StatelessWidget {
@@ -65,6 +74,23 @@ class Mathos extends StatelessWidget {
           );
         },
       },
+    );
+  }
+}
+
+class ErrorApp extends StatelessWidget {
+  final String error;
+
+  ErrorApp({required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text('Une erreur s\'est produite lors de l\'initialisation: $error'),
+        ),
+      ),
     );
   }
 }
