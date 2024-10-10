@@ -6,6 +6,8 @@ import 'package:mathosproject/screens/stats_screen.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
 import 'package:mathosproject/sound_manager.dart';
+import 'package:mathosproject/utils/notification_service.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Ajout pour gérer la persistance
 
 class SettingsScreen extends StatefulWidget {
   final AppUser profile;
@@ -17,9 +19,29 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _soundEffectsEnabled =  SoundManager.isSoundEnabled(); // Gère l'état des effets sonores
+  bool _soundEffectsEnabled = SoundManager.isSoundEnabled();
   bool _backgroundMusicEnabled = true;
   bool _notificationsEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings(); // Charger les paramètres sauvegardés
+  }
+
+  // Fonction pour charger les préférences sauvegardées
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notificationsEnabled = prefs.getBool('notificationsEnabled') ?? true; // Notifications par défaut activées
+    });
+  }
+
+  // Fonction pour sauvegarder les préférences
+  Future<void> _saveSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notificationsEnabled', _notificationsEnabled);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +74,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     setState(() => _backgroundMusicEnabled = value);
                   }),
                   _buildToggleSubsection('Notifications', _notificationsEnabled, (value) {
-                    setState(() => _notificationsEnabled = value);
+                    setState(() {
+                      _notificationsEnabled = value;
+                      if (_notificationsEnabled) {
+                        NotificationService.scheduleDailyNotification();
+                      } else {
+                        NotificationService.cancelAllNotifications();
+                      }
+                      _saveSettings(); // Sauvegarde l'état des notifications
+                    });
                   }),
                 ]),
                 _buildSection('Compte', [
@@ -180,6 +210,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
+
 
   // Dialog to show game modes
   void _showGameModesDialog() {

@@ -7,30 +7,19 @@ import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
 import 'package:mathosproject/screens/competition_screen.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/sound_manager.dart';
+import 'package:mathosproject/utils/notification_service.dart';
 
 void main() async {
-  print('Début de l\'initialisation');
   WidgetsFlutterBinding.ensureInitialized();
-  print('WidgetsFlutterBinding initialisé');
+  await Firebase.initializeApp();
+  await Hive.initFlutter();
+  await SoundManager.initialize();
 
-  try {
-    // Initialisation de Firebase
-    await Firebase.initializeApp();
-    print('Firebase initialisé');
+  // Initialisation des notifications locales
+  await NotificationService.initialize();
+  await NotificationService.scheduleDailyNotification();
 
-    // Initialisation de Hive
-    await Hive.initFlutter();
-    print('Hive initialisé');
-
-    // Initialisation du SoundManager
-    await SoundManager.initialize();
-    print('SoundManager initialisé');
-
-    runApp(Mathos());
-  } catch (e) {
-    print('Erreur lors de l\'initialisation: $e');
-    runApp(ErrorApp(error: e.toString()));
-  }
+  runApp(Mathos());
 }
 
 class Mathos extends StatelessWidget {
