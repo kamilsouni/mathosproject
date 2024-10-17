@@ -326,16 +326,25 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
               double screenWidth = constraints.maxWidth;
               double screenHeight = constraints.maxHeight;
 
+              // Définir un espacement raisonnable
+              double verticalPadding = screenHeight * 0.03;
+              double elementHeight = screenHeight * 0.15; // Ajuster la hauteur des éléments
+
               return SingleChildScrollView(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: screenHeight),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildProfileHeader(screenWidth),
-                      _buildRetroGameStats(currentLevel, currentBadge, screenWidth, screenHeight),
-                      _buildActionButtons(screenWidth),
-                    ],
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround, // Pour espacer les éléments
+                      children: [
+                        _buildProfileHeader(screenWidth),
+                        SizedBox(height: verticalPadding), // Espacement entre les sections
+                        _buildRetroGameStats(currentLevel, currentBadge, screenWidth, screenHeight),
+                        SizedBox(height: verticalPadding), // Espacement entre les sections
+                        _buildActionButtons(screenWidth),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -350,6 +359,9 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       ),
     );
   }
+
+
+
 
   Widget _buildRetroGameStats(int currentLevel, String currentBadge, double screenWidth, double screenHeight) {
     return Container(
@@ -543,7 +555,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
 
   Widget _buildProfileHeader(double screenWidth) {
     return Container(
-      width: screenWidth ,
+      width: screenWidth,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -551,7 +563,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
             onTap: _changeFlag,
             child: Container(
               width: screenWidth * 0.3,
-              height: screenWidth * 0.3,
+              height: screenWidth * 0.3, // Légèrement réduit pour plus d'espace
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.yellow, width: 4),
                 borderRadius: BorderRadius.circular(10),
@@ -563,13 +575,13 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
               ),
             ),
           ),
-          SizedBox(height: 10),
+          SizedBox(height: 10), // Un petit espace ici
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               _profile.name,
               style: TextStyle(
-                fontSize: 35,
+                fontSize: 30, // Légèrement réduit
                 fontWeight: FontWeight.bold,
                 color: Colors.yellow,
                 shadows: [
@@ -610,11 +622,219 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
 
 
 
+  void _changeName() {
+    TextEditingController nameController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            'Modifier le nom',
+            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
+          ),
+          content: TextField(
+            controller: nameController,
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+            decoration: InputDecoration(
+              hintText: 'Nouveau nom',
+              hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                String newName = nameController.text.trim();
+                if (newName.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Le nom ne peut pas être vide')),
+                  );
+                  return;
+                }
+
+                bool nameExists = await FirebaseFirestore.instance
+                    .collection('profiles')
+                    .where('name', isEqualTo: newName)
+                    .get()
+                    .then((snapshot) => snapshot.docs.isNotEmpty);
+
+                if (nameExists) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Ce nom existe déjà, veuillez en choisir un autre.')),
+                  );
+                } else {
+                  setState(() {
+                    _profile.name = newName;
+                  });
+                  await UserPreferences.updateProfileInFirestore(_profile);
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Nom modifié avec succès.')),
+                  );
+                }
+              },
+              child: Text('Valider', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Annuler', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _changePassword() async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    // Vérifier si l'utilisateur est connecté via Google
+    List<UserInfo> providerData = currentUser?.providerData ?? [];
+    bool isGoogleUser = providerData.any((userInfo) => userInfo.providerId == 'google.com');
+
+    if (isGoogleUser) {
+      // Cas d'un utilisateur Google, on ne peut pas changer le mot de passe directement
+      _showGoogleUserPasswordMessage();
+    } else {
+      // Cas d'un utilisateur classique avec mot de passe
+      TextEditingController oldPasswordController = TextEditingController();
+      TextEditingController newPasswordController = TextEditingController();
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Color(0xFF564560),
+            title: Text(
+              'Modifier le mot de passe',
+              style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: oldPasswordController,
+                  obscureText: true,
+                  style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+                  decoration: InputDecoration(
+                    hintText: 'Ancien mot de passe',
+                    hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: newPasswordController,
+                  obscureText: true,
+                  style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+                  decoration: InputDecoration(
+                    hintText: 'Nouveau mot de passe',
+                    hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () async {
+                  String oldPassword = oldPasswordController.text.trim();
+                  String newPassword = newPasswordController.text.trim();
+
+                  if (newPassword.length < 6) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Le mot de passe doit contenir au moins 6 caractères.')),
+                    );
+                    return;
+                  }
+
+                  try {
+                    // Réauthentification avant modification du mot de passe
+                    AuthCredential credential = EmailAuthProvider.credential(
+                      email: currentUser!.email!,
+                      password: oldPassword,
+                    );
+                    await currentUser.reauthenticateWithCredential(credential);
+
+                    // Mise à jour du mot de passe
+                    await currentUser.updatePassword(newPassword);
+                    Navigator.of(context).pop();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Mot de passe modifié avec succès.')),
+                    );
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Erreur lors de la modification du mot de passe.')),
+                    );
+                  }
+                },
+                child: Text('Valider', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Annuler', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  void _showGoogleUserPasswordMessage() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            'Utilisateur Google',
+            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
+          ),
+          content: Text(
+            "Votre compte est lié à Google et n'a pas de mot de passe. Vous pouvez réinitialiser votre mot de passe en suivant les instructions envoyées à votre adresse e-mail.",
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                // Envoyer un email de réinitialisation de mot de passe
+                await FirebaseAuth.instance.sendPasswordResetEmail(email: FirebaseAuth.instance.currentUser!.email!);
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('E-mail de réinitialisation envoyé.')),
+                );
+              },
+              child: Text('Envoyer un e-mail', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Annuler', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildActionButtons(double screenWidth) {
     return Container(
       width: screenWidth * 0.9,
       child: Column(
         children: [
+          PacManButton(
+            text: 'Modifier son nom',
+            onPressed: _changeName,
+            isLoading: false,
+          ),
+          SizedBox(height: 8),
+          PacManButton(
+            text: 'Modifier son mot de passe',
+            onPressed: _changePassword,
+            isLoading: false,
+          ),
+          SizedBox(height: 8),
           PacManButton(
             text: 'Supprimer Compte',
             onPressed: _deleteProfile,
@@ -630,5 +850,6 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       ),
     );
   }
+
 
 }

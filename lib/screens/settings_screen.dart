@@ -20,7 +20,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _soundEffectsEnabled = SoundManager.isSoundEnabled();
-  bool _backgroundMusicEnabled = true;
   bool _notificationsEnabled = true;
 
   @override
@@ -70,9 +69,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       SoundManager.setSoundEnabled(value);
                     });
                   }),
-                  _buildToggleSubsection('Musique', _backgroundMusicEnabled, (value) {
-                    setState(() => _backgroundMusicEnabled = value);
-                  }),
                   _buildToggleSubsection('Notifications', _notificationsEnabled, (value) {
                     setState(() {
                       _notificationsEnabled = value;
@@ -85,20 +81,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     });
                   }),
                 ]),
-                _buildSection('Compte', [
-                  _buildSubsection('Modifier profil', () {}),
-                  _buildSubsection('Mot de passe', () {}),
-                ]),
                 _buildSection('Confidentialité', [
-                  _buildSubsection('Politique', () {}),
-                  _buildSubsection('Conditions', () {}),
+                  _buildSubsection('Politique', () {
+                    _showDialog('Politique', 'Vos données personnelles sont synchronisées et stockées via Firebase et Hive. Elles sont utilisées uniquement pour améliorer votre expérience de jeu et ne seront jamais partagées avec des tiers.');
+                  }),
+                  _buildSubsection('Conditions', () {
+                    _showDialog('Conditions', 'En utilisant cette application, vous acceptez de respecter les règles du jeu et de ne pas utiliser de méthodes non autorisées pour améliorer votre score.');
+                  }),
                 ]),
                 _buildSection('À propos', [
-                  _buildSubsection('Développeurs', () {}),
-                  _buildSubsection('Version', () {}),
+                  _buildSubsection('Développeurs', () {
+                    _showDialog('Développeurs', 'Cette application a été conçue avec amour, café et... quelques assistants IA. Si vous trouvez un bug, dites-vous que même les IA ne sont pas parfaites (mais elles s\'en approchent). Merci aux robots qui nous aident à calculer plus vite que jamais !');
+                  }),
+                  _buildSubsection('Version', () {
+                    _showDialog('Version', '1.0');
+                  }),
                 ]),
                 _buildSection('Mode hors-ligne', [
-                  _buildSubsection('Fonctionnement', () {}),
+                  _buildSubsection('Fonctionnement', () {
+                    _showDialog('Fonctionnement hors-ligne', 'Tout est accessible hors ligne sauf le mode compétition. Si une compétition est en cours avec une connexion instable, celle-ci fonctionne en mode dégradé.');
+                  }),
                 ]),
                 SizedBox(height: screenHeight * 0.02),
               ],
@@ -211,8 +213,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-
-  // Dialog to show game modes
   void _showGameModesDialog() {
     showDialog(
       context: context,
@@ -227,15 +227,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("1. Mode Rapidité : Enchaîne les bonnes réponses en 60 secondes chrono pour faire grimper ton score en flèche."),
+                _buildScoringSystemText('Mode Rapidité', [
+                  'Réponds correctement en 60 secondes pour faire exploser ton score. Trois réponses justes de suite te font monter de niveau, tandis que passer une question te fait descendre. Chaque niveau apporte des questions de plus en plus difficiles.',
+                  'La vitesse est ta meilleure alliée ! Plus tu réponds rapidement, plus tu gagnes de points bonus. Fais attention, chaque hésitation te coûte du temps précieux.',
+                ]),
                 SizedBox(height: 10),
-                Text("2. Mode Problème : Deux minutes pour résoudre des problèmes de calcul. Chaque bonne réponse te fait monter d'un niveau."),
+                _buildScoringSystemText('Mode Problème', [
+                  'Tu as deux minutes pour résoudre un maximum de problèmes. Trois réponses consécutives réussies te font monter d\'un niveau, avec des questions de plus en plus complexes.',
+                  'Ce mode est parfait pour tester ton raisonnement sous pression. Garde en tête qu\'une seule erreur peut te coûter des points précieux !',
+                ]),
                 SizedBox(height: 10),
-                Text("3. Mode Équations : Trouve la pièce manquante dans l'équation pour avancer. Attention, 60 secondes seulement !"),
+                _buildScoringSystemText('Mode Équations', [
+                  'Trouve la pièce manquante dans l\'équation. Parfois, c\'est un chiffre, parfois un signe mathématique. Trois bonnes réponses d\'affilée te font monter de niveau, mais passer une question te fait redescendre.',
+                  'Tu n\'as que 60 secondes pour résoudre le maximum d\'équations. Chaque seconde compte, et chaque erreur te fait reculer dans le classement. Reste concentré et avance à toute vitesse !',
+                ]),
                 SizedBox(height: 10),
-                Text("4. Mode Progression : Enchaîne additions, soustractions, multiplications et divisions pour débloquer des astuces et grimper de niveau."),
+                _buildScoringSystemText('Mode Progression', [
+                  'Enchaîne les additions, soustractions, multiplications et divisions pour débloquer des astuces et grimper de niveau.',
+                  'Pour passer au niveau suivant, tu dois valider tous les opérateurs (addition, soustraction, etc.), puis terminer par des calculs mixtes. Chaque niveau te débloque une astuce qui te rendra plus fort en calcul mental.',
+                  'Ce mode est idéal pour ceux qui veulent progresser pas à pas. Tu dois remplir une jauge de bonnes réponses, visible en haut de l\'écran, pour valider une épreuve et passer au niveau suivant.',
+                ]),
                 SizedBox(height: 10),
-                Text("5. Mode Compétition : Affronte les autres joueurs pour prouver qui est le meilleur. Vise le sommet du classement !"),
+                _buildScoringSystemText('Mode Compétition', [
+                  'Affronte tes amis pour prouver qui est le meilleur. Tu peux choisir combien de parties de chaque type tu veux inclure dans la compétition.',
+                  'Prends les commandes du classement en affrontant les autres joueurs en temps réel. Sauras-tu atteindre le sommet et dominer la compétition ?',
+                ]),
               ],
             ),
           ),
@@ -250,7 +266,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  // Dialog to show scoring system
+
+
   void _showScoringSystemDialog() {
     showDialog(
       context: context,
@@ -322,6 +339,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
         SizedBox(height: 10),
       ],
+    );
+  }
+
+  void _showDialog(String title, String content) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            title,
+            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
+          ),
+          content: Text(
+            content,
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 12),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Fermer', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+            ),
+          ],
+        );
+      },
     );
   }
 }

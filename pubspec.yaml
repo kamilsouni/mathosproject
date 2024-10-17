@@ -92,7 +92,7 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/logov2.png"
+  image_path: "assets/logov4.png"
 
 
 
