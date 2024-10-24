@@ -34,7 +34,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   late AppUserModel.AppUser _profile;
   int _selectedIndex = 2;
   List<Map<String, String>> _flags = []; // Liste pour stocker les drapeaux à partir du fichier JSON
-
+  List<Map<String, String>> _filteredFlags = []; // Liste filtrée pour la recherche de drapeaux
 
   Future<bool> _onWillPop() async {
     Navigator.pushReplacement(
@@ -323,46 +323,50 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int currentLevel = getMaxUnlockedLevel();
-    String currentBadge = getCurrentBadge(_profile.points);
+    return WillPopScope(
+      onWillPop: _onWillPop, // Gère le bouton retour physique
+      child: Scaffold(
+        appBar: TopAppBar(
+          title: 'Profil',
+          showBackButton: true,
+        ),
+        body: Container(
+          color: Color(0xFF564560),
+          child: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                double screenWidth = constraints.maxWidth;
+                double screenHeight = constraints.maxHeight;
 
-    return Scaffold(
-      appBar: TopAppBar(title: 'Profil', showBackButton: true),
-      body: Container(
-        color: Color(0xFF564560), // Fond violet étendu sur tout l'écran
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              double screenWidth = constraints.maxWidth;
-              double screenHeight = constraints.maxHeight;
-
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: screenHeight),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02, horizontal: 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        _buildCombinedProfileInfo(screenWidth, currentLevel, currentBadge),
-                        SizedBox(height: screenHeight * 0.02),
-                        _buildActionButtons(screenWidth),
-                      ],
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: screenHeight),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02, horizontal: 20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          _buildCombinedProfileInfo(screenWidth, getMaxUnlockedLevel(), getCurrentBadge(_profile.points)),
+                          SizedBox(height: screenHeight * 0.02),
+                          _buildActionButtons(screenWidth),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: _selectedIndex,
-        profile: _profile,
-        onTap: _navigateToScreen,
+        bottomNavigationBar: CustomBottomNavigationBar(
+          selectedIndex: _selectedIndex,
+          profile: _profile,
+          onTap: _navigateToScreen,
+        ),
       ),
     );
   }
+
 
   Widget _buildCombinedProfileInfo(double screenWidth, int currentLevel, String currentBadge) {
     return Container(
