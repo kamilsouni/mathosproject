@@ -132,7 +132,7 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> with WidgetsBindi
       }
     });
 
-    Future.delayed(Duration(milliseconds: 300), () {
+    Future.delayed(Duration(milliseconds: 200), () {
       generateQuestion();
     });
   }
@@ -249,7 +249,7 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> with WidgetsBindi
               LevelIndicator(currentLevel: _currentLevel, maxLevel: 5),
               SizedBox(height: 20),
               CountdownTimer(
-                duration: 120,
+                duration: 121,
                 onCountdownComplete: _endTest,
                 progressColor: Colors.green,
                 height: 20,

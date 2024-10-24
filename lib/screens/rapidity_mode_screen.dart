@@ -83,7 +83,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
       }
     });
 
-    Future.delayed(Duration(milliseconds: 300), () {
+    Future.delayed(Duration(milliseconds: 200), () {
       generateQuestion();
     });
   }
@@ -211,7 +211,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
               LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
               SizedBox(height: 20),
               CountdownTimer(
-                duration: 60,
+                duration: 61,
                 onCountdownComplete: _endTest,
                 progressColor: Colors.green,
                 height: 20,

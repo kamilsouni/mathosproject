@@ -97,7 +97,7 @@ class _StatsScreenState extends State<StatsScreen> {
                 unselectedLabelColor: Colors.white70,
                 tabs: [
                   Tab(icon: Image.asset('assets/progression.png'), text: 'Progression'),
-                  Tab(icon: Image.asset('assets/astuce.png'), text: 'Points'),
+                  Tab(icon: Image.asset('assets/dollar.png'), text: 'Points'),
                   Tab(icon: Image.asset('assets/speed.png'), text: 'Rapidité'),
                   Tab(icon: Image.asset('assets/probleme.png'), text: 'Problème'),
                   Tab(icon: Image.asset('assets/equation.png'), text: 'Équation'),

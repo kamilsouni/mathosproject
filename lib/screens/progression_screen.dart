@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/widgets/RetroCalculator.dart';
-import 'package:mathosproject/widgets/custom_keyboard.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/math_test_utils.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/progression_mode_screen.dart';
 import 'package:mathosproject/widgets/game_app_bar.dart';
-import 'package:mathosproject/widgets/level_indicator.dart';
 import 'package:mathosproject/widgets/retro_progress_bar.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 
@@ -306,7 +302,7 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
               ),
               SizedBox(height: 20),
               CountdownTimer(
-                duration: 60,
+                duration: 61,
                 onCountdownComplete: _endTest,
                 progressColor: Colors.green,
                 height: 20,

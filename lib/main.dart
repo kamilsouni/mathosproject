@@ -1,25 +1,54 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:mathosproject/models/app_user.dart';
+import 'package:mathosproject/screens/competition_screen.dart';
 import 'package:mathosproject/screens/home_screen.dart';
 import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
-import 'package:mathosproject/screens/competition_screen.dart';
-import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/sound_manager.dart';
 import 'package:mathosproject/utils/notification_service.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  await Hive.initFlutter();
-  await SoundManager.initialize();
+void main() {
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    debugPrint("WidgetsFlutterBinding initialized");
 
-  // Initialisation des notifications locales
-  await NotificationService.initialize();
-  await NotificationService.scheduleDailyNotification();
+    try {
+      await Firebase.initializeApp();
+      debugPrint("Firebase initialized");
+    } catch (e) {
+      debugPrint("Firebase initialization error: $e");
+    }
 
-  runApp(Mathos());
+    try {
+      await Hive.initFlutter();
+      debugPrint("Hive initialized");
+    } catch (e) {
+      debugPrint("Hive initialization error: $e");
+    }
+
+    try {
+      await SoundManager.initialize();
+      debugPrint("SoundManager initialized");
+    } catch (e) {
+      debugPrint("SoundManager initialization error: $e");
+    }
+
+    try {
+      await NotificationService.initialize();
+      debugPrint("NotificationService initialized");
+    } catch (e) {
+      debugPrint("NotificationService initialization error: $e");
+    }
+
+    runApp(Mathos());
+  }, (error, stack) {
+    debugPrint("Uncaught error: $error");
+    debugPrint("Stack trace: $stack");
+  });
 }
 
 class Mathos extends StatelessWidget {

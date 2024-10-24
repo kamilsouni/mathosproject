@@ -54,14 +54,13 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     _points = 0;
     _pointsChange = 0;
     _equationController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
     _equationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _equationController, curve: Curves.easeInOut),
     );
     generateQuestion();
-
   }
 
   @override
@@ -109,7 +108,9 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
 
     String question;
     List<String> choices = [];
-    final holePosition = rand.nextInt(3);
+    final holePosition = rand.nextInt(3); // 0 pour premier nombre, 1 pour deuxième, 2 pour opérateur
+
+    // Extraction des parties de l'équation
     final parts = equation['question'].split(RegExp(r'[\+\-\×\÷= ]+'));
     final a = int.parse(parts[0]);
     final b = int.parse(parts[1]);
@@ -121,6 +122,11 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
         ? '×'
         : '÷';
 
+    // Empêche des cas ambiguës (comme 0 ? 0 = 0 avec + ou -)
+    if (a == 0 && b == 0 && answer == 0) {
+      return _generateEquationWithHole(difficultyLevel); // Regénérer une nouvelle équation
+    }
+
     if (holePosition == 0) {
       question = '[ ? ] $operator $b = $answer';
       choices = _generateChoices(a.toString(), answer);
@@ -128,7 +134,11 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       question = '$a $operator [ ? ] = $answer';
       choices = _generateChoices(b.toString(), answer);
     } else {
+      // Si c'est l'opérateur à deviner, on s'assure qu'il n'y a qu'un seul opérateur possible
       question = '$a [ ? ] $b = $answer';
+      if (_isAmbiguousOperator(a, b, answer)) {
+        return _generateEquationWithHole(difficultyLevel); // Regénérer une équation si plusieurs opérateurs marchent
+      }
       choices = _generateOperatorChoices(operator);
     }
 
@@ -162,6 +172,22 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     return [correctOperator, operators[0], operators[1]]..shuffle();
   }
 
+  bool _isAmbiguousOperator(int a, int b, int result) {
+    int addition = a + b;
+    int subtraction = a - b;
+    int multiplication = a * b;
+    double division = (b != 0) ? a / b : double.infinity; // Éviter division par zéro
+
+    // Vérifie si plusieurs opérateurs donnent le même résultat
+    int countValidOperators = 0;
+    if (addition == result) countValidOperators++;
+    if (subtraction == result) countValidOperators++;
+    if (multiplication == result) countValidOperators++;
+    if (division == result) countValidOperators++;
+
+    return countValidOperators > 1;
+  }
+
   void submitAnswer(String selectedAnswer) {
     bool isCorrect = selectedAnswer == _correctAnswer; // Vérifie si la réponse est correcte
     setState(() {
@@ -187,17 +213,13 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     });
 
     // Après un délai de 500ms, passer à la prochaine question
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
         _isCorrect = null; // Réinitialise l'état de la couleur
       });
       generateQuestion();
     });
   }
-
-
-
-
 
   Future<void> _endTest() async {
     if (widget.isCompetition && widget.competitionId != null) {
@@ -276,9 +298,6 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     );
   }
 
-
-
-
   Future<void> _incrementEquationTests() async {
     if (widget.isCompetition && widget.competitionId != null) {
       var participantRef = FirebaseFirestore.instance
@@ -307,8 +326,6 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       }
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {

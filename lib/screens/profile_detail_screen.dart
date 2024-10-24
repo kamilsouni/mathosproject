@@ -34,7 +34,15 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   late AppUserModel.AppUser _profile;
   int _selectedIndex = 2;
   List<Map<String, String>> _flags = []; // Liste pour stocker les drapeaux à partir du fichier JSON
-  List<Map<String, String>> _filteredFlags = []; // Liste filtrée pour la recherche de drapeaux
+
+
+  Future<bool> _onWillPop() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => ModeSelectionScreen(profile: widget.profile)),
+    );
+    return false; // Retourne false pour empêcher le comportement par défaut
+  }
 
   @override
   void initState() {
@@ -311,6 +319,8 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
 
 
 
+
+
   @override
   Widget build(BuildContext context) {
     int currentLevel = getMaxUnlockedLevel();
@@ -319,29 +329,23 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     return Scaffold(
       appBar: TopAppBar(title: 'Profil', showBackButton: true),
       body: Container(
-        color: Color(0xFF564560), // Fond violet rétro
+        color: Color(0xFF564560), // Fond violet étendu sur tout l'écran
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
               double screenWidth = constraints.maxWidth;
               double screenHeight = constraints.maxHeight;
 
-              // Définir un espacement raisonnable
-              double verticalPadding = screenHeight * 0.03;
-              double elementHeight = screenHeight * 0.15; // Ajuster la hauteur des éléments
-
               return SingleChildScrollView(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: screenHeight),
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: verticalPadding, horizontal: 20),
+                    padding: EdgeInsets.symmetric(vertical: screenHeight * 0.02, horizontal: 20),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround, // Pour espacer les éléments
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        _buildProfileHeader(screenWidth),
-                        SizedBox(height: verticalPadding), // Espacement entre les sections
-                        _buildRetroGameStats(currentLevel, currentBadge, screenWidth, screenHeight),
-                        SizedBox(height: verticalPadding), // Espacement entre les sections
+                        _buildCombinedProfileInfo(screenWidth, currentLevel, currentBadge),
+                        SizedBox(height: screenHeight * 0.02),
                         _buildActionButtons(screenWidth),
                       ],
                     ),
@@ -360,50 +364,73 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
     );
   }
 
-
-
-
-  Widget _buildRetroGameStats(int currentLevel, String currentBadge, double screenWidth, double screenHeight) {
+  Widget _buildCombinedProfileInfo(double screenWidth, int currentLevel, String currentBadge) {
     return Container(
       width: screenWidth * 0.9,
-      height: screenHeight * 0.3,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.yellow, width: 4),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildPixelatedTitle('STATISTIQUES DU JOUEUR'),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildPixelatedStatBox('PTS', '${_profile.points}', screenWidth * 0.25),
-              _buildPixelatedStatBox('NIV', '$currentLevel', screenWidth * 0.25),
-              _buildPixelatedBadge('BADGE', currentBadge, screenWidth * 0.25),
-            ],
+      child: Padding(
+        padding: EdgeInsets.all(15),
+        child: Column(
+          children: [
+            _buildProfileHeader(screenWidth),
+            SizedBox(height: 15),
+            _buildStats(screenWidth, currentLevel, currentBadge),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileHeader(double screenWidth) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: _changeFlag,
+          child: Container(
+            width: screenWidth * 0.25,
+            height: screenWidth * 0.25,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.yellow, width: 2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: CountryFlag.fromCountryCode(
+              _profile.flag,
+              height: screenWidth * 0.25,
+              width: screenWidth * 0.25,
+            ),
           ),
-        ],
-      ),
+        ),
+        SizedBox(height: 10),
+        Text(
+          _profile.name,
+          style: TextStyle(
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: Colors.yellow,
+            shadows: [Shadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 0)],
+            fontFamily: 'PixelFont',
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStats(double screenWidth, int currentLevel, String currentBadge) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildPixelatedStatBox('PTS', '${_profile.points}', screenWidth * 0.25),
+        _buildPixelatedStatBox('NIV', '$currentLevel', screenWidth * 0.25),
+        _buildPixelatedBadge('BADGE', currentBadge, screenWidth * 0.25),
+      ],
     );
   }
 
 
-
-  Widget _buildPixelatedTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontFamily: 'PixelFont',
-        fontSize: 24,
-        color: Colors.white,
-        shadows: [
-          Shadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 0),
-        ],
-      ),
-      textAlign: TextAlign.center,
-    );
-  }
 
 
   Widget _buildPixelatedStatBox(String label, String value, double size) {
@@ -553,49 +580,6 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
 
 
 
-  Widget _buildProfileHeader(double screenWidth) {
-    return Container(
-      width: screenWidth,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          GestureDetector(
-            onTap: _changeFlag,
-            child: Container(
-              width: screenWidth * 0.3,
-              height: screenWidth * 0.3, // Légèrement réduit pour plus d'espace
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.yellow, width: 4),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: CountryFlag.fromCountryCode(
-                _profile.flag, // Utilise le code ISO du drapeau
-                height: 100,
-                width: 100,
-              ),
-            ),
-          ),
-          SizedBox(height: 10), // Un petit espace ici
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              _profile.name,
-              style: TextStyle(
-                fontSize: 30, // Légèrement réduit
-                fontWeight: FontWeight.bold,
-                color: Colors.yellow,
-                shadows: [
-                  Shadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 0),
-                ],
-                fontFamily: 'PixelFont',
-              ),
-              maxLines: 1,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
 
 

@@ -77,7 +77,7 @@ class NotificationService {
     print("Heure actuelle : $now");
 
     // Programme la notification à 12h04
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 17, 13); //19h13 en France
+    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 14, 25); //19h13 en France
 
     // Si l'heure planifiée est déjà passée aujourd'hui, la planifier pour demain
     if (scheduledDate.isBefore(now)) {
