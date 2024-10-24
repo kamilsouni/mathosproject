@@ -54,7 +54,7 @@ class DialogManager {
               },
               child: Text(
                 confirmText,
-                style: TextStyle(color: Colors.red, fontFamily: 'PixelFont'),
+                style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont'),
               ),
             ),
           ],
@@ -99,7 +99,7 @@ class DialogManager {
             TextButton(
               child: Text(
                 confirmText,
-                style: TextStyle(color: Colors.red, fontFamily: 'PixelFont'),
+                style: TextStyle(color: Color(0xFF00FF00), fontFamily: 'PixelFont'),
               ),
               onPressed: onConfirm,  // Exécuter l'action associée
             ),

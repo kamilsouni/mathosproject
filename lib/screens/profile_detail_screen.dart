@@ -574,7 +574,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
         Text(
           badgeName,
           style: TextStyle(
-            color: isUnlocked ? Colors.black : Colors.grey,
+            color: isUnlocked ? Colors.white : Colors.grey,
             fontWeight: isUnlocked ? FontWeight.bold : FontWeight.normal,
           ),
         ),
@@ -812,25 +812,25 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       child: Column(
         children: [
           PacManButton(
-            text: 'Modifier son nom',
+            text: 'Modifier mon nom',
             onPressed: _changeName,
             isLoading: false,
           ),
           SizedBox(height: 8),
           PacManButton(
-            text: 'Modifier son mot de passe',
+            text: 'Modifier mon mot de passe',
             onPressed: _changePassword,
             isLoading: false,
           ),
           SizedBox(height: 8),
           PacManButton(
-            text: 'Supprimer Compte',
+            text: 'Supprimer mon Compte',
             onPressed: _deleteProfile,
             isLoading: false,
           ),
           SizedBox(height: 8),
           PacManButton(
-            text: 'Se Déconnecter',
+            text: 'Me Déconnecter',
             onPressed: _signOut,
             isLoading: false,
           ),
