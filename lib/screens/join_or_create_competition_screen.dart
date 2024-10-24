@@ -19,126 +19,85 @@ class JoinOrCreateCompetitionScreen extends StatefulWidget {
 }
 
 class _JoinOrCreateCompetitionScreenState
-    extends State<JoinOrCreateCompetitionScreen> {
+    extends State<JoinOrCreateCompetitionScreen> with WidgetsBindingObserver {
   List<Map<String, dynamic>> _competitions = [];
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _fetchCompetitions();
   }
 
-  Future<void> _fetchCompetitions() async {
-    final userId = widget.profile.id;
-
-    bool isConnected = await ConnectivityManager().isConnected();
-
-    if (isConnected) {
-      final competitionsSnapshot =
-      await FirebaseFirestore.instance.collection('competitions').get();
-
-      final competitions = await Future.wait(
-          competitionsSnapshot.docs.map((doc) async {
-            final participantSnapshot =
-            await doc.reference.collection('participants').doc(userId).get();
-            if (participantSnapshot.exists) {
-              return {
-                'id': doc.id,
-                'name': doc['name'],
-              };
-            }
-            return null;
-          }).toList());
-
-      setState(() {
-        _competitions = competitions.whereType<Map<String, dynamic>>().toList();
-      });
-
-      // Enregistrer les compétitions localement
-      await HiveDataManager.saveData(
-          'competitions', 'user_$userId', _competitions);
-    } else {
-      // Charger les compétitions depuis le stockage local
-      List<Map<String, dynamic>>? localCompetitions = await HiveDataManager
-          .getData<List<Map<String, dynamic>>>('competitions', 'user_$userId');
-
-      setState(() {
-        _competitions = localCompetitions ?? [];
-      });
-    }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: TopAppBar(title: 'Mode Compétition', showBackButton: true),
-      body: Container(
-        color: Color(0xFF564560), // Fond violet
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 2),
-                      Text(
-                        'Créez ou rejoignez une compétition',
-                        style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 22),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildCompetitionButton(
-                        title: 'Créer',
-                        icon: Icons.add,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateCompetitionScreen(
-                                  profile: widget.profile),
-                            ),
-                          );
-                        },
-                      ),
-                      _buildCompetitionButton(
-                        title: 'Rejoindre',
-                        icon: Icons.group_add,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => JoinCompetitionScreen(
-                                  profile: widget.profile),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20), // Ajout d'un espace de 20 pixels
-                Expanded(
-                  flex: 6,
-                  child: _buildJoinedCompetitionsList(),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fetchCompetitions();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _fetchCompetitions();
+    }
+  }
+
+  Future<void> _fetchCompetitions() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final userId = widget.profile.id;
+
+    try {
+      bool isConnected = await ConnectivityManager().isConnected();
+
+      if (isConnected) {
+        final competitionsSnapshot =
+        await FirebaseFirestore.instance.collection('competitions').get();
+
+        final competitions = await Future.wait(
+            competitionsSnapshot.docs.map((doc) async {
+              final participantSnapshot =
+              await doc.reference.collection('participants').doc(userId).get();
+              if (participantSnapshot.exists) {
+                return {
+                  'id': doc.id,
+                  'name': doc.data()['name'],
+                };
+              }
+              return null;
+            }).toList());
+
+        setState(() {
+          _competitions = competitions.whereType<Map<String, dynamic>>().toList();
+          _isLoading = false;
+        });
+
+        await HiveDataManager.saveData(
+            'competitions', 'user_$userId', _competitions);
+      } else {
+        final localCompetitions = await HiveDataManager.getData<List<dynamic>>(
+            'competitions', 'user_$userId');
+
+        setState(() {
+          _competitions = localCompetitions?.map((e) => Map<String, dynamic>.from(e)).toList() ?? [];
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Erreur lors de la récupération des compétitions: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   Widget _buildCompetitionButton({
@@ -194,7 +153,11 @@ class _JoinOrCreateCompetitionScreenState
       children: [
         Text(
           'Vos compétitions',
-          style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: Colors.yellow,
+              fontFamily: 'PixelFont',
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: 8),
@@ -229,7 +192,7 @@ class _JoinOrCreateCompetitionScreenState
                           competitionId: competition['id'],
                         ),
                       ),
-                    );
+                    ).then((_) => _fetchCompetitions()); // Rafraîchir après retour
                   },
                 ),
               );
@@ -237,6 +200,83 @@ class _JoinOrCreateCompetitionScreenState
           ),
         ),
       ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: TopAppBar(title: 'Mode Compétition', showBackButton: true),
+      body: RefreshIndicator(
+        onRefresh: _fetchCompetitions,
+        child: Container(
+          color: Color(0xFF564560),
+          child: SafeArea(
+            child: _isLoading
+                ? Center(child: CircularProgressIndicator(color: Colors.yellow))
+                : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Créez ou rejoignez une compétition',
+                          style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 22),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildCompetitionButton(
+                          title: 'Créer',
+                          icon: Icons.add,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CreateCompetitionScreen(
+                                    profile: widget.profile),
+                              ),
+                            ).then((_) => _fetchCompetitions());
+                          },
+                        ),
+                        _buildCompetitionButton(
+                          title: 'Rejoindre',
+                          icon: Icons.group_add,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => JoinCompetitionScreen(
+                                    profile: widget.profile),
+                              ),
+                            ).then((_) => _fetchCompetitions());
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  Expanded(
+                    flex: 6,
+                    child: _buildJoinedCompetitionsList(),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

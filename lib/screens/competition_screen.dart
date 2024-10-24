@@ -123,6 +123,8 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
   void _updateTotalTests() {
     totalRapidTests = _competitionData['numRapidTests'] ?? 0;
     totalProblemTests = _competitionData['numProblemTests'] ?? 0;
+    totalEquationTests = _competitionData['numEquationTests'] ?? 0;
+
   }
 
   Future<void> _startTest(String type) async {
