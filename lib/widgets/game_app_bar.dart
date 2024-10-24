@@ -3,8 +3,15 @@ import 'package:flutter/material.dart';
 class GameAppBar extends StatefulWidget implements PreferredSizeWidget {
   final int points;
   final int lastChange;
+  final bool isInGame; // Nouveau paramètre pour indiquer si on est en jeu
+  final Function? onBackPressed; // Callback pour gérer le retour
 
-  GameAppBar({required this.points, required this.lastChange});
+  GameAppBar({
+    required this.points,
+    required this.lastChange,
+    this.isInGame = false,
+    this.onBackPressed,
+  });
 
   @override
   _GameAppBarState createState() => _GameAppBarState();
@@ -59,14 +66,14 @@ class _GameAppBarState extends State<GameAppBar>
     final screenSize = MediaQuery.of(context).size;
     final statusBarHeight = MediaQuery.of(context).padding.top;
     final appBarHeight = screenSize.height * 0.10;
-    final fontSize = screenSize.width * 0.045; // Taille légèrement réduite
-    final pointsFontSize = screenSize.width * 0.04; // Taille plus grande pour les points
+    final fontSize = screenSize.width * 0.045;
+    final pointsFontSize = screenSize.width * 0.04;
     final iconSize = screenSize.width * 0.08;
 
     return PreferredSize(
       preferredSize: Size.fromHeight(appBarHeight + statusBarHeight),
       child: Container(
-        color: Colors.yellow, // Jaune Pac-Man pour le fond
+        color: Colors.yellow,
         child: SafeArea(
           child: Container(
             height: appBarHeight,
@@ -79,8 +86,14 @@ class _GameAppBarState extends State<GameAppBar>
                     color: Colors.black,
                     size: iconSize,
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    if (widget.isInGame && widget.onBackPressed != null) {
+                      // Si on est en jeu, utiliser le callback personnalisé
+                      widget.onBackPressed!();
+                    } else {
+                      // Sinon, navigation normale
+                      Navigator.pop(context);
+                    }
                   },
                 ),
                 Expanded(
@@ -107,7 +120,7 @@ class _GameAppBarState extends State<GameAppBar>
                         'Points:',
                         style: TextStyle(
                           fontFamily: 'PixelFont',
-                          fontSize: fontSize, // Taille de texte réduite
+                          fontSize: fontSize,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),
@@ -117,7 +130,7 @@ class _GameAppBarState extends State<GameAppBar>
                         '${widget.points}',
                         style: TextStyle(
                           fontFamily: 'PixelFont',
-                          fontSize: pointsFontSize, // Taille de texte des points
+                          fontSize: pointsFontSize,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
                         ),

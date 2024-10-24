@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/widgets/RetroCalculator.dart';
@@ -9,7 +10,6 @@ import 'package:mathosproject/math_test_utils.dart';
 import 'package:mathosproject/widgets/game_app_bar.dart';
 import 'package:mathosproject/utils/hive_data_manager.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RapidityModeScreen extends StatefulWidget {
   final AppUser profile;
@@ -26,7 +26,7 @@ class RapidityModeScreen extends StatefulWidget {
   _RapidityModeScreenState createState() => _RapidityModeScreenState();
 }
 
-class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBindingObserver {
+class _RapidityModeScreenState extends State<RapidityModeScreen> {
   late int _currentLevel;
   late int _correctAnswersInRow;
   late int _points;
@@ -36,6 +36,12 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
   late TextEditingController _answerController;
   bool _isAnswerCorrect = false;
   bool _isSkipped = false;
+  bool _hasStarted = false;
+  bool _isGameOver = false;
+  DateTime? _gameStartTime;
+  bool _isLoading = false;  // Ajout de la variable _isLoading
+  final GlobalKey<CountdownTimerState> _countdownKey = GlobalKey<CountdownTimerState>();
+
 
   @override
   void initState() {
@@ -43,18 +49,62 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     _currentLevel = 1;
     _correctAnswersInRow = 0;
     _points = 0;
+    _currentQuestion = "";  // Initialisation de la variable
     _pointsChange = 0;
     _answerController = TextEditingController();
+    _initializeGame();
     _answerController.addListener(_checkAnswer);
+  }
+
+  Future<void> _initializeGame() async {
+    if (widget.isCompetition && widget.competitionId != null) {
+      // Incrémenter le compteur dès le début de la partie
+      await _incrementGameCount();
+      setState(() {
+        _hasStarted = true;
+        _gameStartTime = DateTime.now();
+      });
+    }
     generateQuestion();
-    WidgetsBinding.instance.addObserver(this);
+  }
+
+  Future<void> _incrementGameCount() async {
+    try {
+      var localData = await HiveDataManager.getData<Map<String, dynamic>>(
+          'competitionParticipants_${widget.competitionId}',
+          widget.profile.id) ?? {};
+
+      // Incrémenter le compteur de parties
+      localData['name'] = widget.profile.name;
+      localData['rapidTests'] = (localData['rapidTests'] ?? 0) + 1;
+      localData['flag'] = widget.profile.flag;
+      localData['lastGameStarted'] = DateTime.now().toIso8601String();
+
+      // Sauvegarder localement
+      await HiveDataManager.saveData(
+          'competitionParticipants_${widget.competitionId}',
+          widget.profile.id,
+          localData
+      );
+
+      // Synchroniser avec Firebase si possible
+      if (await ConnectivityManager().isConnected()) {
+        await FirebaseFirestore.instance
+            .collection('competitions')
+            .doc(widget.competitionId)
+            .collection('participants')
+            .doc(widget.profile.id)
+            .set(localData, SetOptions(merge: true));
+      }
+    } catch (e) {
+      print('Erreur lors de l\'incrémentation du compteur de parties: $e');
+    }
   }
 
   @override
   void dispose() {
     _answerController.removeListener(_checkAnswer);
     _answerController.dispose();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -65,10 +115,12 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
         _validateCorrectAnswer();
       }
     }
-    setState(() {}); // Pour forcer la mise à jour de l'affichage
+    setState(() {});
   }
 
   void _validateCorrectAnswer() {
+    if (_isGameOver) return;
+
     setState(() {
       _isAnswerCorrect = true;
       _isSkipped = false;
@@ -88,7 +140,22 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     });
   }
 
+  void generateQuestion() {
+    if (_isGameOver) return;
+
+    final result = MathTestUtils.generateQuestion(_currentLevel, 'Mixte');
+    setState(() {
+      _currentQuestion = result['question'];
+      _currentAnswer = result['answer'];
+      _isAnswerCorrect = false;
+      _isSkipped = false;
+      _answerController.text = "";
+    });
+  }
+
   void skipQuestion() {
+    if (_isGameOver) return;
+
     setState(() {
       _isSkipped = true;
       _isAnswerCorrect = false;
@@ -105,18 +172,102 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     });
   }
 
-  void generateQuestion() {
-    final result = MathTestUtils.generateQuestion(_currentLevel, 'Mixte');
-    setState(() {
-      _currentQuestion = result['question'];
-      _currentAnswer = result['answer'];
-      _isAnswerCorrect = false;
-      _isSkipped = false;
-      _answerController.text = "";
-    });
+  Future<void> _updateCompetitionData() async {
+    if (!widget.isCompetition || widget.competitionId == null) return;
+
+    try {
+      var localData = await HiveDataManager.getData<Map<String, dynamic>>(
+          'competitionParticipants_${widget.competitionId}',
+          widget.profile.id) ?? {};
+
+      Map<String, dynamic> updatedData = {
+        'name': widget.profile.name,
+        'flag': widget.profile.flag,
+        'rapidTests': localData['rapidTests'] ?? 1,
+        'ProblemTests': localData['ProblemTests'] ?? 0,
+        'equationTests': localData['equationTests'] ?? 0,
+        'totalPoints': (localData['totalPoints'] ?? 0) + _points,
+        'lastUpdated': DateTime.now().toIso8601String(),
+        'gameStartTime': _gameStartTime?.toIso8601String(),
+        'gameEndTime': DateTime.now().toIso8601String(),
+      };
+
+      if (_points > (localData['rapidTestRecord'] ?? 0)) {
+        updatedData['rapidTestRecord'] = _points;
+      } else {
+        updatedData['rapidTestRecord'] = localData['rapidTestRecord'] ?? 0;
+      }
+
+      // Sauvegarder localement
+      await HiveDataManager.saveData(
+          'competitionParticipants_${widget.competitionId}',
+          widget.profile.id,
+          updatedData
+      );
+
+      // Synchroniser avec Firebase si connecté
+      if (await ConnectivityManager().isConnected()) {
+        DocumentReference participantRef = FirebaseFirestore.instance
+            .collection('competitions')
+            .doc(widget.competitionId)
+            .collection('participants')
+            .doc(widget.profile.id);
+
+        await FirebaseFirestore.instance.runTransaction((transaction) async {
+          DocumentSnapshot snapshot = await transaction.get(participantRef);
+
+          if (!snapshot.exists) {
+            transaction.set(participantRef, updatedData);
+          } else {
+            Map<String, dynamic> existingData =
+            snapshot.data() as Map<String, dynamic>;
+
+            int currentRecord = existingData['rapidTestRecord'] ?? 0;
+            if (_points > currentRecord) {
+              updatedData['rapidTestRecord'] = _points;
+            } else {
+              updatedData['rapidTestRecord'] = currentRecord;
+            }
+
+            transaction.update(participantRef, updatedData);
+          }
+        });
+      }
+
+      // Mettre à jour le record personnel si nécessaire
+      if (_points > widget.profile.rapidTestRecord) {
+        widget.profile.rapidTestRecord = _points;
+        if (await ConnectivityManager().isConnected()) {
+          await UserPreferences.updateProfileInFirestore(widget.profile);
+        } else {
+          await UserPreferences.saveProfileLocally(widget.profile);
+        }
+      }
+
+    } catch (e) {
+      print('Erreur lors de la mise à jour des données de compétition: $e');
+      await HiveDataManager.saveData(
+          'pendingUpdates_${widget.competitionId}',
+          '${widget.profile.id}_${DateTime.now().millisecondsSinceEpoch}',
+          {
+            'type': 'rapidityUpdate',
+            'data': {
+              'userId': widget.profile.id,
+              'points': _points,
+              'timestamp': DateTime.now().toIso8601String(),
+            }
+          }
+      );
+    }
   }
 
   Future<void> _endTest() async {
+    if (_isGameOver) return;
+
+    setState(() {
+      _isGameOver = true;
+    });
+
     if (widget.isCompetition && widget.competitionId != null) {
       await _updateCompetitionData();
     }
@@ -140,28 +291,6 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
     });
   }
 
-  Future<void> _updateCompetitionData() async {
-    var localData = await HiveDataManager.getData<Map<String, dynamic>>(
-        'competitionParticipants_${widget.competitionId}', widget.profile.id) ?? {};
-
-    localData['name'] = widget.profile.name;
-    localData['rapidTests'] = (localData['rapidTests'] ?? 0) + 1;
-    localData['totalPoints'] = (localData['totalPoints'] ?? 0) + _points;
-    localData['flag'] = widget.profile.flag;
-
-    await HiveDataManager.saveData(
-        'competitionParticipants_${widget.competitionId}', widget.profile.id, localData);
-
-    if (await ConnectivityManager().isConnected()) {
-      await FirebaseFirestore.instance
-          .collection('competitions')
-          .doc(widget.competitionId)
-          .collection('participants')
-          .doc(widget.profile.id)
-          .set(localData, SetOptions(merge: true));
-    }
-  }
-
   void _showEndGamePopup() {
     String message;
     String title;
@@ -180,65 +309,193 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> with WidgetsBin
       message = "Vous avez obtenu $_points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
     }
 
-    // Utilisation du DialogManager pour afficher la popup de fin de jeu
     DialogManager.showCustomDialog(
       context: context,
-      title: title,  // Titre dynamique en fonction des points
-      content: message,  // Message dynamique en fonction des points
-      confirmText: 'OK',  // Bouton pour fermer
-      cancelText: '',  // Pas de bouton "Annuler"
+      title: title,
+      content: message,
+      confirmText: 'OK',
+      cancelText: '',
       onConfirm: () {
-        Navigator.of(context).pop();  // Fermer le dialogue
+        Navigator.of(context).pop();
       },
     );
   }
 
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GameAppBar(points: _points, lastChange: _pointsChange),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              color: Color(0xFF564560),
+  void _setLoading(bool value) {
+    if (mounted) {
+      setState(() {
+        _isLoading = value;
+      });
+    }
+  }
+
+
+// Méthode de gestion du retour
+  Future<bool> _handleBackPress() async {
+    if (!_hasStarted || _isGameOver) return true;
+
+    // Mettre le timer en pause avant d'afficher le dialogue
+    _countdownKey.currentState?.pauseTimer();
+
+    bool shouldPop = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            'Abandonner la partie ?',
+            style: TextStyle(
+              color: Colors.yellow,
+              fontFamily: 'PixelFont',
+              fontSize: 20,
             ),
           ),
-          Column(
-            children: [
-              SizedBox(height: 20),
-              LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
-              SizedBox(height: 20),
-              CountdownTimer(
-                duration: 61,
-                onCountdownComplete: _endTest,
-                progressColor: Colors.green,
-                height: 20,
-              ),
-              SizedBox(height: 40),
-              Expanded(
-                child: RetroCalculator(
-                  question: _currentQuestion,
-                  answer: _answerController.text,
-                  controller: _answerController,
-                  onSubmit: skipQuestion,
-                  onDelete: () {
-                    if (_answerController.text.isNotEmpty) {
-                      setState(() {
-                        _answerController.text = _answerController.text.substring(0, _answerController.text.length - 1);
-                      });
-                    }
-                  },
-                  isCorrectAnswer: _isAnswerCorrect,
-                  isSkipped: _isSkipped,
-                  isRapidMode: true,
+          content: Text(
+            'Cette partie sera comptée comme perdue et ne pourra pas être rejouée.',
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'PixelFont',
+              fontSize: 16,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Continuer la partie',
+                style: TextStyle(
+                  color: Colors.yellow,
+                  fontFamily: 'PixelFont',
+                  fontSize: 16,
                 ),
               ),
-            ],
-          ),
-        ],
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Abandonner',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontFamily: 'PixelFont',
+                  fontSize: 16,
+                ),
+              ),
+              onPressed: () async {
+                setState(() {
+                  _isLoading = true;
+                  _isGameOver = true;
+                });
+
+                // Mettre à jour les points gagnés avant l'abandon
+                if (widget.isCompetition && widget.competitionId != null) {
+                  await _updateCompetitionData();
+                }
+
+                setState(() {
+                  _isLoading = false;
+                });
+
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+
+    // Reprendre le timer si on continue la partie
+    if (!shouldPop) {
+      _countdownKey.currentState?.resumeTimer();
+    }
+
+    return shouldPop;
+  }
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _handleBackPress,
+      child: Scaffold(
+        appBar: GameAppBar(
+          points: _points,
+          lastChange: _pointsChange,
+          isInGame: _hasStarted && !_isGameOver,
+          onBackPressed: () async {
+            bool shouldExit = await _handleBackPress();
+            if (shouldExit) {
+              Navigator.of(context).pop();
+            }
+          },
+        ),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Container(
+                color: Color(0xFF564560),
+              ),
+            ),
+            Column(
+              children: [
+                SizedBox(height: 20),
+                LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
+                SizedBox(height: 20),
+                CountdownTimer(
+                  key: _countdownKey,  // Ajouter la clé ici
+                  duration: 61,
+                  onCountdownComplete: _endTest,
+                  progressColor: Colors.green,
+                  height: 20,
+                ),
+                SizedBox(height: 40),
+                Expanded(
+                  child: RetroCalculator(
+                    question: _currentQuestion,
+                    answer: _answerController.text,
+                    controller: _answerController,
+                    onSubmit: skipQuestion,
+                    onDelete: () {
+                      if (_answerController.text.isNotEmpty) {
+                        setState(() {
+                          _answerController.text = _answerController.text.substring(
+                              0,
+                              _answerController.text.length - 1
+                          );
+                        });
+                      }
+                    },
+                    isCorrectAnswer: _isAnswerCorrect,
+                    isSkipped: _isSkipped,
+                    isRapidMode: true,
+                  ),
+                ),
+              ],
+            ),
+            if (_isLoading)
+              Container(
+                color: Colors.black54,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.yellow,
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
 }
+
+
+
+
+
+
+
+

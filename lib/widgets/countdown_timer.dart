@@ -6,22 +6,26 @@ class CountdownTimer extends StatefulWidget {
   final TextStyle? textStyle;
   final Color progressColor;
   final double height;
+  final Key? key; // Ajout de key dans les paramètres
 
   CountdownTimer({
+    this.key, // Ajout ici
     required this.duration,
     required this.onCountdownComplete,
     this.textStyle,
     this.progressColor = Colors.blue,
     this.height = 20.0,
-  });
+  }) : super(key: key); // Passer la clé au constructeur parent
 
   @override
-  _CountdownTimerState createState() => _CountdownTimerState();
+  CountdownTimerState createState() => CountdownTimerState();
 }
 
-class _CountdownTimerState extends State<CountdownTimer>
+// Rendre l'état public en le déclarant hors de la classe
+class CountdownTimerState extends State<CountdownTimer>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
+  bool _isPaused = false;
 
   @override
   void initState() {
@@ -39,10 +43,18 @@ class _CountdownTimerState extends State<CountdownTimer>
     });
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  void pauseTimer() {
+    if (!_isPaused) {
+      _controller.stop();
+      _isPaused = true;
+    }
+  }
+
+  void resumeTimer() {
+    if (_isPaused) {
+      _controller.reverse(from: _controller.value);
+      _isPaused = false;
+    }
   }
 
   String get timerString {
@@ -51,12 +63,13 @@ class _CountdownTimerState extends State<CountdownTimer>
   }
 
   @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final barWidth = screenWidth - 32;
-    final segmentWidth = (barWidth - 4 - 19) / 20;
-    final segmentHeight = segmentWidth < widget.height ? segmentWidth : widget.height;
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: AnimatedBuilder(
         animation: _controller,
@@ -75,8 +88,8 @@ class _CountdownTimerState extends State<CountdownTimer>
               ),
               SizedBox(height: 10),
               Container(
-                width: barWidth,
-                height: segmentHeight + 4,
+                width: MediaQuery.of(context).size.width - 32,
+                height: widget.height + 4,
                 decoration: BoxDecoration(
                   color: Colors.black,
                   border: Border.all(color: Colors.white, width: 2),
@@ -84,19 +97,23 @@ class _CountdownTimerState extends State<CountdownTimer>
                 child: Row(
                   children: List.generate(20, (index) {
                     final isRed = index < elapsedSegments;
-                    return Row(
-                      children: [
-                        Container(
-                          width: segmentWidth,
-                          height: segmentHeight,
-                          color: isRed ? Colors.red : Color(0xFF02C200),
-                        ),
-                        if (index < 19) Container(
-                          width: 1,
-                          height: segmentHeight,
-                          color: Colors.white,
-                        ),
-                      ],
+                    return Expanded(
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: widget.height,
+                              color: isRed ? Colors.red : Color(0xFF02C200),
+                            ),
+                          ),
+                          if (index < 19)
+                            Container(
+                              width: 1,
+                              height: widget.height,
+                              color: Colors.white,
+                            ),
+                        ],
+                      ),
                     );
                   }),
                 ),

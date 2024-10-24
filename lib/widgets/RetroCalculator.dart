@@ -12,6 +12,8 @@ class RetroCalculator extends StatelessWidget {
   final bool isEquationMode;
   final bool isRapidMode;
   final bool isProgressMode;
+  final bool isProblemMode;
+
 
   RetroCalculator({
     required this.question,
@@ -21,8 +23,9 @@ class RetroCalculator extends StatelessWidget {
     required this.onDelete,
     this.isCorrectAnswer = false,
     this.isSkipped = false,
-    this.isEquationMode = false,
     this.isRapidMode = false,
+    this.isProblemMode = false,
+    this.isEquationMode = false,
     this.isProgressMode = false,
   });
 
@@ -33,9 +36,8 @@ class RetroCalculator extends StatelessWidget {
         double screenHeight = constraints.maxHeight;
         double screenWidth = constraints.maxWidth;
 
-        // Déterminer la taille de police en fonction de la longueur du texte
         double fontSizeForQuestion = _calculateFontSize(question, screenHeight, screenWidth);
-        double fontSizeForAnswer = screenHeight * 0.08; // Taille fixe pour la réponse
+        double fontSizeForAnswer = screenHeight * 0.08;
 
         return Container(
           margin: EdgeInsets.all(16),
@@ -136,15 +138,21 @@ class RetroCalculator extends StatelessWidget {
   }
 
   double _calculateFontSize(String text, double height, double width) {
-    if (text.length <= 25) {
-      // Pour les opérations courtes (mode Rapidity)
-      return height * 0.1; // Grande taille de police
-    } else if (text.length <= 50) {
-      // Pour les textes de longueur moyenne
-      return height * 0.055;
+    if (isProblemMode) {
+      return height * 0.04; // Plus petite taille pour les problèmes longs
+    } else if (isRapidMode) {
+      return height * 0.1; // Grande taille pour les calculs rapides
+    } else if (isEquationMode) {
+      return height * 0.08; // Taille moyenne pour les équations
     } else {
-      // Pour les longs textes (mode Problem)
-      return height * 0.040; // Taille de police plus petite
+      // Mode progression ou autre
+      if (text.length <= 25) {
+        return height * 0.1;
+      } else if (text.length <= 50) {
+        return height * 0.055;
+      } else {
+        return height * 0.040;
+      }
     }
   }
 }

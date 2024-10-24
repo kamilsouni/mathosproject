@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/widgets/arcade_console.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
@@ -7,7 +8,6 @@ import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/math_test_utils.dart';
 import 'package:mathosproject/widgets/game_app_bar.dart';
 import 'package:mathosproject/user_preferences.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/utils/hive_data_manager.dart';
 import 'dart:math';
@@ -37,67 +37,60 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   late String _correctAnswer;
   late List<String> _answerChoices;
   late int _holePosition;
-  bool hasTestStarted = false;
+  bool _hasStarted = false;
+  bool _isGameOver = false;
+  bool _isLoading = false;
   bool? _isCorrect;
-
-  late AnimationController _equationController;
-  late Animation<double> _equationAnimation;
-
-  List<AnimationController> _buttonControllers = [];
-  List<Animation<double>> _buttonAnimations = [];
+  DateTime? _gameStartTime;
+  final GlobalKey<CountdownTimerState> _countdownKey = GlobalKey<CountdownTimerState>();
 
   @override
   void initState() {
     super.initState();
     _currentLevel = 1;
     _correctAnswersInRow = 0;
+    _currentQuestion = "";
+    _answerChoices = [];
     _points = 0;
     _pointsChange = 0;
-    _equationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _equationAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _equationController, curve: Curves.easeInOut),
-    );
+    _initializeGame();
+  }
+
+  Future<void> _initializeGame() async {
+    if (widget.isCompetition && widget.competitionId != null) {
+      setState(() => _hasStarted = true);
+      await _incrementGameCount();
+      _gameStartTime = DateTime.now();
+    }
     generateQuestion();
   }
 
-  @override
-  void dispose() {
-    _equationController.dispose();
-    for (var controller in _buttonControllers) {
-      controller.dispose();
-    }
-    super.dispose();
-  }
+  Future<void> _incrementGameCount() async {
+    try {
+      var localData = await HiveDataManager.getData<Map<String, dynamic>>(
+          'competitionParticipants_${widget.competitionId}',
+          widget.profile.id) ?? {};
 
-  void generateQuestion() {
-    final result = _generateEquationWithHole(_currentLevel);
-    setState(() {
-      _currentQuestion = result['question'];
-      _correctAnswer = result['answer'];
-      _answerChoices = result['choices'];
-      _holePosition = result['holePosition'];
-    });
+      localData['name'] = widget.profile.name;
+      localData['equationTests'] = (localData['equationTests'] ?? 0) + 1;
+      localData['flag'] = widget.profile.flag;
 
-    _equationController.reset();
-    _equationController.forward();
-
-    _buttonControllers.clear();
-    _buttonAnimations.clear();
-    for (int i = 0; i < _answerChoices.length; i++) {
-      final controller = AnimationController(
-        duration: Duration(milliseconds: 200 + (i * 100)),
-        vsync: this,
+      await HiveDataManager.saveData(
+          'competitionParticipants_${widget.competitionId}',
+          widget.profile.id,
+          localData
       );
-      _buttonControllers.add(controller);
-      _buttonAnimations.add(
-        Tween<double>(begin: 0.0, end: 1.0).animate(
-          CurvedAnimation(parent: controller, curve: Curves.easeOut),
-        ),
-      );
-      controller.forward();
+
+      if (await ConnectivityManager().isConnected()) {
+        await FirebaseFirestore.instance
+            .collection('competitions')
+            .doc(widget.competitionId)
+            .collection('participants')
+            .doc(widget.profile.id)
+            .set(localData, SetOptions(merge: true));
+      }
+    } catch (e) {
+      print('Erreur lors de l\'incrémentation du compteur de parties: $e');
     }
   }
 
@@ -108,9 +101,8 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
 
     String question;
     List<String> choices = [];
-    final holePosition = rand.nextInt(3); // 0 pour premier nombre, 1 pour deuxième, 2 pour opérateur
+    final holePosition = rand.nextInt(3); // 0: premier nombre, 1: deuxième, 2: opérateur
 
-    // Extraction des parties de l'équation
     final parts = equation['question'].split(RegExp(r'[\+\-\×\÷= ]+'));
     final a = int.parse(parts[0]);
     final b = int.parse(parts[1]);
@@ -122,9 +114,8 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
         ? '×'
         : '÷';
 
-    // Empêche des cas ambiguës (comme 0 ? 0 = 0 avec + ou -)
     if (a == 0 && b == 0 && answer == 0) {
-      return _generateEquationWithHole(difficultyLevel); // Regénérer une nouvelle équation
+      return _generateEquationWithHole(difficultyLevel);
     }
 
     if (holePosition == 0) {
@@ -134,10 +125,9 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       question = '$a $operator [ ? ] = $answer';
       choices = _generateChoices(b.toString(), answer);
     } else {
-      // Si c'est l'opérateur à deviner, on s'assure qu'il n'y a qu'un seul opérateur possible
       question = '$a [ ? ] $b = $answer';
       if (_isAmbiguousOperator(a, b, answer)) {
-        return _generateEquationWithHole(difficultyLevel); // Regénérer une équation si plusieurs opérateurs marchent
+        return _generateEquationWithHole(difficultyLevel);
       }
       choices = _generateOperatorChoices(operator);
     }
@@ -176,9 +166,8 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     int addition = a + b;
     int subtraction = a - b;
     int multiplication = a * b;
-    double division = (b != 0) ? a / b : double.infinity; // Éviter division par zéro
+    double division = (b != 0) ? a / b : double.infinity;
 
-    // Vérifie si plusieurs opérateurs donnent le même résultat
     int countValidOperators = 0;
     if (addition == result) countValidOperators++;
     if (subtraction == result) countValidOperators++;
@@ -188,16 +177,29 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     return countValidOperators > 1;
   }
 
-  void submitAnswer(String selectedAnswer) {
-    bool isCorrect = selectedAnswer == _correctAnswer; // Vérifie si la réponse est correcte
+  void generateQuestion() {
+    if (_isGameOver) return;
+
+    final result = _generateEquationWithHole(_currentLevel);
     setState(() {
-      _isCorrect = isCorrect; // Met à jour l'état avec la bonne ou mauvaise réponse
+      _currentQuestion = result['question'];
+      _correctAnswer = result['answer'];
+      _answerChoices = result['choices'];
+      _holePosition = result['holePosition'];
+      _isCorrect = null;
+    });
+  }
+
+  void submitAnswer(String selectedAnswer) {
+    bool isCorrect = selectedAnswer == _correctAnswer;
+    setState(() {
+      _isCorrect = isCorrect;
       if (isCorrect) {
         _correctAnswersInRow++;
         _pointsChange = 10 * _currentLevel;
         _points += _pointsChange;
         if (_correctAnswersInRow >= 3) {
-          _currentLevel++;
+          _currentLevel = _currentLevel < 10 ? _currentLevel + 1 : 10;
           _correctAnswersInRow = 0;
           _pointsChange += 50;
           _points += 50;
@@ -212,16 +214,84 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       }
     });
 
-    // Après un délai de 500ms, passer à la prochaine question
     Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
-        _isCorrect = null; // Réinitialise l'état de la couleur
+        _isCorrect = null;
       });
       generateQuestion();
     });
   }
 
+  Future<void> _updateCompetitionData() async {
+    if (!widget.isCompetition || widget.competitionId == null) return;
+
+    try {
+      var localData = await HiveDataManager.getData<Map<String, dynamic>>(
+          'competitionParticipants_${widget.competitionId}',
+          widget.profile.id) ?? {};
+
+      Map<String, dynamic> updatedData = {
+        'name': widget.profile.name,
+        'flag': widget.profile.flag,
+        'equationTests': localData['equationTests'] ?? 1,
+        'rapidTests': localData['rapidTests'] ?? 0,
+        'ProblemTests': localData['ProblemTests'] ?? 0,
+        'totalPoints': (localData['totalPoints'] ?? 0) + _points,
+        'lastUpdated': DateTime.now().toIso8601String(),
+        'gameStartTime': _gameStartTime?.toIso8601String(),
+        'gameEndTime': DateTime.now().toIso8601String(),
+      };
+
+      if (_points > (localData['equationTestRecord'] ?? 0)) {
+        updatedData['equationTestRecord'] = _points;
+      } else {
+        updatedData['equationTestRecord'] = localData['equationTestRecord'] ?? 0;
+      }
+
+      await HiveDataManager.saveData(
+          'competitionParticipants_${widget.competitionId}',
+          widget.profile.id,
+          updatedData
+      );
+
+      if (await ConnectivityManager().isConnected()) {
+        DocumentReference participantRef = FirebaseFirestore.instance
+            .collection('competitions')
+            .doc(widget.competitionId)
+            .collection('participants')
+            .doc(widget.profile.id);
+
+        await FirebaseFirestore.instance.runTransaction((transaction) async {
+          DocumentSnapshot snapshot = await transaction.get(participantRef);
+
+          if (!snapshot.exists) {
+            transaction.set(participantRef, updatedData);
+          } else {
+            transaction.update(participantRef, updatedData);
+          }
+        });
+      }
+
+      if (_points > widget.profile.equationTestRecord) {
+        widget.profile.equationTestRecord = _points;
+        if (await ConnectivityManager().isConnected()) {
+          await UserPreferences.updateProfileInFirestore(widget.profile);
+        } else {
+          await UserPreferences.saveProfileLocally(widget.profile);
+        }
+      }
+    } catch (e) {
+      print('Erreur lors de la mise à jour des données de compétition: $e');
+    }
+  }
+
   Future<void> _endTest() async {
+    if (_isGameOver) return;
+
+    setState(() {
+      _isGameOver = true;
+    });
+
     if (widget.isCompetition && widget.competitionId != null) {
       await _updateCompetitionData();
     }
@@ -236,34 +306,10 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
 
     _showEndGamePopup();
 
-    Future.delayed(Duration.zero, () async {
-      if (await widget.profile.isOnline()) {
-        await UserPreferences.updateProfileInFirestore(widget.profile);
-      } else {
-        await widget.profile.saveToLocalStorage();
-      }
-    });
-  }
-
-  Future<void> _updateCompetitionData() async {
-    var localData = await HiveDataManager.getData<Map<String, dynamic>>(
-        'competitionParticipants_${widget.competitionId}', widget.profile.id) ?? {};
-
-    localData['name'] = widget.profile.name;
-    localData['equationTests'] = (localData['equationTests'] ?? 0) + 1;
-    localData['totalPoints'] = (localData['totalPoints'] ?? 0) + _points;
-    localData['flag'] = widget.profile.flag;
-
-    await HiveDataManager.saveData(
-        'competitionParticipants_${widget.competitionId}', widget.profile.id, localData);
-
-    if (await ConnectivityManager().isConnected()) {
-      await FirebaseFirestore.instance
-          .collection('competitions')
-          .doc(widget.competitionId)
-          .collection('participants')
-          .doc(widget.profile.id)
-          .set(localData, SetOptions(merge: true));
+    if (await widget.profile.isOnline()) {
+      await UserPreferences.updateProfileInFirestore(widget.profile);
+    } else {
+      await widget.profile.saveToLocalStorage();
     }
   }
 
@@ -285,78 +331,138 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       message = "Vous avez obtenu $_points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
     }
 
-    // Utilisation du DialogManager pour afficher la popup de fin de jeu
     DialogManager.showCustomDialog(
       context: context,
-      title: title,  // Titre dynamique en fonction des points
-      content: message,  // Message dynamique en fonction des points
-      confirmText: 'OK',  // Bouton pour fermer
-      cancelText: '',  // Pas de bouton "Annuler"
+      title: title,
+      content: message,
+      confirmText: 'OK',
+      cancelText: '',
       onConfirm: () {
-        Navigator.of(context).pop();  // Fermer le dialogue
+        Navigator.of(context).pop();
       },
     );
   }
 
-  Future<void> _incrementEquationTests() async {
-    if (widget.isCompetition && widget.competitionId != null) {
-      var participantRef = FirebaseFirestore.instance
-          .collection('competitions')
-          .doc(widget.competitionId)
-          .collection('participants')
-          .doc(widget.profile.id);
+  Future<bool> _handleBackPress() async {
+    if (!_hasStarted || _isGameOver) return true;
 
-      if (await ConnectivityManager().isConnected()) {
-        await FirebaseFirestore.instance.runTransaction((transaction) async {
-          var snapshot = await transaction.get(participantRef);
-          if (!snapshot.exists) {
-            throw Exception("Participant does not exist!");
-          }
+    _countdownKey.currentState?.pauseTimer();
 
-          int newEquationTests = (snapshot.data()!['equationTests'] ?? 0) + 1;
+    bool shouldPop = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            'Abandonner la partie ?',
+            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 20),
+          ),
+          content: Text(
+            'Cette partie sera comptée comme perdue et ne pourra pas être rejouée.',
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'Continuer la partie',
+                style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            TextButton(
+              child: Text(
+                'Abandonner',
+                style: TextStyle(color: Colors.red, fontFamily: 'PixelFont', fontSize: 16),
+              ),
+              onPressed: () async {
+                setState(() {
+                  _isLoading = true;
+                  _isGameOver = true;
+                });
 
-          transaction.update(participantRef, {
-            'equationTests': newEquationTests,
-          });
+                // Mettre à jour les points gagnés avant l'abandon
+                if (widget.isCompetition && widget.competitionId != null) {
+                  await _updateCompetitionData();
+                }
 
-          hasTestStarted = true;
-        });
-      } else {
-        hasTestStarted = true;
-      }
+                setState(() {
+                  _isLoading = false;
+                });
+
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+
+    if (!shouldPop) {
+      _countdownKey.currentState?.resumeTimer();
     }
+
+    return shouldPop;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF564560),
-      appBar: GameAppBar(points: _points, lastChange: _pointsChange),
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
-            SizedBox(height: 20),
-            CountdownTimer(
-              duration: 60,
-              onCountdownComplete: _endTest,
-              progressColor: Colors.green,
-              height: 20,
-            ),
-            SizedBox(height: 40),
-            Expanded(
-              child: Center(
-                child: ArcadeConsole(
-                  question: _currentQuestion,
-                  choices: _answerChoices,
-                  onAnswer: submitAnswer,
-                  isCorrect: _isCorrect,
+    return WillPopScope(
+      onWillPop: _handleBackPress,
+      child: Scaffold(
+          appBar: GameAppBar(
+            points: _points,
+            lastChange: _pointsChange,
+            isInGame: _hasStarted && !_isGameOver,
+            onBackPressed: () async {
+              bool shouldExit = await _handleBackPress();
+              if (shouldExit) {
+                Navigator.of(context).pop();
+              }
+            },
+          ),
+          body: Stack(
+              children: [
+          Positioned.fill(
+          child: Container(color: Color(0xFF564560)),
+    ),Column(
+                  children: [
+                    SizedBox(height: 20),
+                    LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
+                    SizedBox(height: 20),
+                    CountdownTimer(
+                      key: _countdownKey,
+                      duration: 61,
+                      onCountdownComplete: _endTest,
+                      progressColor: Colors.green,
+                      height: 20,
+                    ),
+                    SizedBox(height: 40),
+                    Expanded(
+                      child: Center(
+                        child: ArcadeConsole(
+                          question: _currentQuestion,
+                          choices: _answerChoices,
+                          onAnswer: submitAnswer,
+                          isCorrect: _isCorrect,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-          ],
-        ),
+                if (_isLoading)
+                  Container(
+                    color: Colors.black54,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.yellow,
+                      ),
+                    ),
+                  ),
+              ],
+          ),
       ),
     );
   }
