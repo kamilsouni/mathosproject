@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/dialog_manager.dart';
+import 'package:mathosproject/screens/problem_mode_screen.dart';
+import 'package:mathosproject/screens/rapidity_mode_screen.dart';
 import 'package:mathosproject/widgets/arcade_console.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/widgets/level_indicator.dart';
@@ -29,6 +31,7 @@ class EquationsModeScreen extends StatefulWidget {
 
 class _EquationsModeScreenState extends State<EquationsModeScreen>
     with TickerProviderStateMixin {
+  late int _initialRecord;  // Nouveau
   late int _currentLevel;
   late int _correctAnswersInRow;
   late int _points;
@@ -54,6 +57,8 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     _points = 0;
     _pointsChange = 0;
     _initializeGame();
+    _initialRecord = widget.profile.equationTestRecord;  // Stocke le record initial
+
   }
 
   Future<void> _initializeGame() async {
@@ -99,6 +104,15 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     final equation = MathTestUtils.generateQuestion(difficultyLevel, 'Mixte');
     final answer = equation['answer'] as int;
 
+    // Si on obtient une équation avec 0 / x = 0, on en génère une nouvelle
+    if (equation['question'].contains('÷') &&
+        equation['question'].startsWith('0') &&
+        answer == 0) {
+      return _generateEquationWithHole(difficultyLevel);
+    }
+
+
+
     String question;
     List<String> choices = [];
     final holePosition = rand.nextInt(3); // 0: premier nombre, 1: deuxième, 2: opérateur
@@ -114,9 +128,15 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
         ? '×'
         : '÷';
 
+    // Si on a une division et que a est 0, on génère une nouvelle équation
+    if (operator == '÷' && a == 0) {
+      return _generateEquationWithHole(difficultyLevel);
+    }
+
     if (a == 0 && b == 0 && answer == 0) {
       return _generateEquationWithHole(difficultyLevel);
     }
+
 
     if (holePosition == 0) {
       question = '[ ? ] $operator $b = $answer';
@@ -314,34 +334,61 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   }
 
   void _showEndGamePopup() {
-    String message;
-    String title;
+    print("Record initial : $_initialRecord");
+    print("Points actuels : $_points");
 
-    if (_points > 1500) {
-      title = "Félicitations !";
-      message = "Wow ! Vous avez obtenu $_points points 🎉. Vous êtes un vrai champion ! Continuez comme ça !";
-    } else if (_points > 1000) {
-      title = "Excellent travail !";
-      message = "Bravo, vous avez obtenu $_points points 👍. Vous progressez très bien !";
-    } else if (_points > 500) {
-      title = "Bien joué !";
-      message = "Bon travail ! Vous avez obtenu $_points points. Continuez à vous améliorer !";
-    } else {
-      title = "Continuez à essayer !";
-      message = "Vous avez obtenu $_points points. Ne vous découragez pas, vous pouvez faire encore mieux 💪.";
+    String title;
+    String message;
+
+    // Cas d'une première partie
+    if (_initialRecord == 0) {
+      title = "🎮 Première Partie !";
+      message = "Bienvenue dans l'aventure ! Vous venez d'établir votre score de référence avec $_points points. "
+          "C'est un excellent début ! Voyons jusqu'où vous pourrez aller...";
+    }
+    // Cas d'un nouveau record
+    else if (_points > _initialRecord) {
+      int improvement = _points - _initialRecord;
+      title = "🎉 NOUVEAU RECORD ! 🎉";
+      message = "INCROYABLE ! Vous avez pulvérisé votre record personnel de $improvement points ! "
+          "Votre nouveau record est maintenant de $_points points. Vous êtes en progression constante !";
+    }
+    // Autres cas (égalité ou score inférieur)
+    else {
+      double percentageOfRecord = (_points / _initialRecord) * 100;
+
+      if (percentageOfRecord >= 90) {
+        title = "Presque !";
+        message = "Vous y étiez presque ! Avec $_points points, vous n'êtes qu'à ${(_initialRecord - _points)} "
+            "points de votre record. Ne lâchez rien !";
+      } else if (percentageOfRecord >= 75) {
+        title = "Belle Performance !";
+        message = "Bon score ! Vous vous rapprochez de votre record personnel de $_initialRecord points. "
+            "Continuez sur cette lancée !";
+      } else if (percentageOfRecord >= 50) {
+        title = "Bien joué !";
+        message = "Vous progressez bien ! Votre record de $_initialRecord points n'est pas si loin. "
+            "Encore un peu d'entraînement et vous y arriverez !";
+      } else {
+        title = "Continuez vos efforts !";
+        message = "N'abandonnez pas ! Chaque partie vous rapproche de votre record de $_initialRecord points. "
+            "La pratique fait la perfection !";
+      }
     }
 
     DialogManager.showCustomDialog(
       context: context,
       title: title,
       content: message,
-      confirmText: 'OK',
+      confirmText: 'Continuer',
       cancelText: '',
       onConfirm: () {
         Navigator.of(context).pop();
       },
     );
   }
+
+
 
   Future<bool> _handleBackPress() async {
     if (!_hasStarted || _isGameOver) return true;

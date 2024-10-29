@@ -170,23 +170,33 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
     if (isConnected) {
       Navigator.push(context, _createRoute(JoinOrCreateCompetitionScreen(profile: widget.profile)));
     } else {
-      _showNoConnectionDialog();
+      if (!mounted) return;
+
+      // Afficher le dialogue sans navigation ensuite
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => AlertDialog(
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            'NO CONNECTION',
+            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont'),
+          ),
+          content: Text(
+            'Internet connection required for competition mode.',
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+          ),
+          actions: [
+            TextButton(
+              child: Text('OK', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
     }
   }
 
-  void _showNoConnectionDialog() {
-    // Utilisation du DialogManager pour afficher un message de connexion
-    DialogManager.showCustomDialog(
-      context: context,
-      title: 'NO CONNECTION',  // Titre du dialogue
-      content: 'Internet connection required for competition mode.',  // Message du dialogue
-      confirmText: 'OK',  // Texte du bouton de confirmation
-      cancelText: '',  // Pas de bouton "Annuler" dans ce cas
-      onConfirm: () {
-        Navigator.pop(context);  // Fermer le dialogue lorsque l'utilisateur appuie sur "OK"
-      },
-    );
-  }
 
 
   @override
