@@ -10,6 +10,7 @@ import 'package:mathosproject/screens/home_screen.dart';
 import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
 import 'package:mathosproject/sound_manager.dart';
 import 'package:mathosproject/utils/notification_service.dart';
+import 'firebase_options.dart'; // Assurez-vous que ce fichier existe et a été généré par FlutterFire CLI.
 
 void main() {
   runZonedGuarded(() async {
@@ -17,7 +18,9 @@ void main() {
     debugPrint("WidgetsFlutterBinding initialized");
 
     try {
-      await Firebase.initializeApp();
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform, // Configure Firebase pour iOS et Android
+      );
       debugPrint("Firebase initialized");
     } catch (e) {
       debugPrint("Firebase initialization error: $e");

@@ -35,7 +35,7 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.mathosproject" // Ajout du namespace ici
+        namespace "com.example.mathosproject" // Ajout du namespace ici
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 

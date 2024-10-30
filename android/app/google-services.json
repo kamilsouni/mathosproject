@@ -37,6 +37,13 @@
             {
               "client_id": "906508848480-ovls1rf3cba6r6o44rm91cjop7jig3vh.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "906508848480-7bj02o473bch0kiv08at0f2mbjlijf82.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mathosproject"
+              }
             }
           ]
         }
