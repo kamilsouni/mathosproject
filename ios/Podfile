@@ -4,10 +4,19 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
-
+  # Pods for Runner
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Firestore'
+
+  # Flutter pods
+  flutter_pods_dir = File.dirname(File.realpath(__FILE__))
+  load File.join(flutter_pods_dir, '.symlinks', 'plugins', 'flutter.podspec')
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+  end
 end
