@@ -2,14 +2,10 @@ platform :ios, '13.0'
 
 target 'Runner' do
   use_frameworks!
-  use_modular_headers!
-
-  # Dépendances Firebase
   pod 'Firebase/Core'
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/Firestore'
-
 end
 
 post_install do |installer|
