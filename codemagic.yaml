@@ -1,31 +1,24 @@
 workflows:
-  ios-release:
-    name: iOS Release
+  ios-basic:
+    name: iOS Basic Build
     instance_type: mac_mini_m1
     environment:
       ios_signing:
-        distribution_type: app_store
+        distribution_type: development
         bundle_identifier: com.example.mathosproject
       flutter: stable
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Set up Flutter
-        script: |
-          flutter clean
-          flutter pub get
-      - name: Pod install
+      - name: Flutter packages
+        script: flutter pub get
+      - name: Install pods
         script: |
           cd ios
-          pod cache clean --all
-          rm -rf Pods
-          rm -rf Podfile.lock
-          pod repo update
           pod install
       - name: Build iOS
         script: |
-          flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist
+          flutter build ios --no-codesign
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
