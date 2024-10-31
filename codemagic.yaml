@@ -1,6 +1,6 @@
 workflows:
-  ios-basic:
-    name: iOS Basic Build
+  ios-firebase:
+    name: iOS Firebase Distribution
     instance_type: mac_mini_m1
     environment:
       ios_signing:
@@ -9,6 +9,8 @@ workflows:
       flutter: stable
       xcode: latest
       cocoapods: default
+      vars:
+        FIREBASE_APP_ID: "1:906508848480:ios:3eed7bc23c7801e7562205" # Vous remplirez ça depuis Firebase Console
     scripts:
       - name: Clean and get dependencies
         script: |
@@ -28,7 +30,16 @@ workflows:
         script: |
           flutter build ios --release --no-codesign
 
+      - name: Upload to Firebase
+        script: |
+          # Installation de l'outil Firebase
+          curl -sL https://firebase.tools | bash
+          # Distribution sur Firebase
+          firebase appdistribution:distribute "build/ios/ipa/mathosproject.ipa" \
+            --app "$FIREBASE_APP_ID" \
+            --groups "testers" \
+            --release-notes "Nouvelle version test de Mathos"
+
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - ios/build/Logs/Build/*.xcactivitylog
