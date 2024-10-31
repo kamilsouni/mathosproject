@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>teamID</key>
+    <string>B52A7MB8CX</string>
+    <key>method</key>
+    <string>development</string>
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>com.example.mathosproject</key>
+        <string>Kamil</string> <!-- Remplacez par le nom exact de votre profil d’approvisionnement -->
+    </dict>
+    <key>signingStyle</key>
+    <string>manual</string>
+    <key>stripSwiftSymbols</key>
+    <true/>
+    <key>compileBitcode</key>
+    <false/>
+</dict>
+</plist>
