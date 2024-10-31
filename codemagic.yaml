@@ -7,15 +7,25 @@ workflows:
         distribution_type: app_store
         bundle_identifier: com.example.mathosproject
       flutter: stable
+      xcode: latest
+      cocoapods: default
     scripts:
-      - name: Get Flutter packages
-        script: flutter pub get
+      - name: Set up Flutter
+        script: |
+          flutter clean
+          flutter pub get
+      - name: Pod install
+        script: |
+          cd ios
+          pod cache clean --all
+          rm -rf Pods
+          rm -rf Podfile.lock
+          pod repo update
+          pod install
       - name: Build iOS
         script: |
-          flutter build ios --release --no-codesign
-          cd ios
-          pod install
-          xcodebuild build -workspace Runner.xcworkspace -scheme Runner -configuration Release
+          flutter build ipa --release \
+            --export-options-plist=/Users/builder/export_options.plist
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log

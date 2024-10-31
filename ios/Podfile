@@ -1,12 +1,13 @@
 platform :ios, '13.0'
 
-require_relative '../flutter/packages/flutter_tools/bin/podhelper'
+# Version corrigée du chemin pour Codemagic
+load File.join(File.dirname(__FILE__), '.symlinks', 'flutter', 'ios', 'Flutter', 'podhelper.rb')
 
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  install_all_flutter_pods(File.dirname(File.realpath(__FILE__)))
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 post_install do |installer|
