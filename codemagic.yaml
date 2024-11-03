@@ -15,7 +15,12 @@ workflows:
       - name: Clean and get dependencies
         script: |
           flutter clean
+          flutter pub cache clean
           flutter pub get
+
+      - name: Check dependencies
+        script: |
+          flutter pub deps
 
       - name: Pod clean and install
         script: |
@@ -24,13 +29,11 @@ workflows:
           rm -rf Podfile.lock
           pod cache clean --all
           pod repo update
-          pod install --repo-update
+          pod install
 
       - name: Build iOS
         script: |
-          cd ios
-          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath build/Runner.xcarchive archive COMPILER_INDEX_STORE_ENABLE=NO
-          xcodebuild -exportArchive -archivePath build/Runner.xcarchive -exportOptionsPlist /Users/builder/export_options.plist -exportPath build/ios/ipa
+          flutter build ios --release --no-codesign
 
       - name: Upload to Firebase
         script: |
