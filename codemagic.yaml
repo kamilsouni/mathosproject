@@ -10,18 +10,19 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        FIREBASE_APP_ID: "1:906508848480:ios:3eed7bc23c7801e7562205" # Vous remplirez ça depuis Firebase Console
+        FIREBASE_APP_ID: "1:906508848480:ios:3eed7bc23c7801e7562205"
     scripts:
       - name: Clean and get dependencies
         script: |
           flutter clean
           flutter pub get
 
-      - name: Pod clean and install
+      - name: Fix Abseil and Pod install
         script: |
           cd ios
           rm -rf Pods/
           rm -rf Podfile.lock
+          echo "pod 'abseil', '1.20211102.0'" >> Podfile
           pod cache clean --all
           pod repo update
           pod install
@@ -32,9 +33,7 @@ workflows:
 
       - name: Upload to Firebase
         script: |
-          # Installation de l'outil Firebase
           curl -sL https://firebase.tools | bash
-          # Distribution sur Firebase
           firebase appdistribution:distribute "build/ios/ipa/mathosproject.ipa" \
             --app "$FIREBASE_APP_ID" \
             --groups "testers" \
