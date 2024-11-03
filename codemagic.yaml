@@ -10,13 +10,11 @@ workflows:
       xcode: latest
       cocoapods: default
       vars:
-        FIREBASE_APP_ID: "1:906508848480:ios:3eed7bc23c7801e7562205"
+        FIREBASE_APP_ID: "1:906508848480:ios:3eed7bc23c7801e7562205" # Vous remplirez ça depuis Firebase Console
     scripts:
       - name: Clean and get dependencies
         script: |
-          rm -rf $HOME/.pub-cache
           flutter clean
-          flutter pub cache repair
           flutter pub get
 
       - name: Pod clean and install
@@ -34,7 +32,9 @@ workflows:
 
       - name: Upload to Firebase
         script: |
+          # Installation de l'outil Firebase
           curl -sL https://firebase.tools | bash
+          # Distribution sur Firebase
           firebase appdistribution:distribute "build/ios/ipa/mathosproject.ipa" \
             --app "$FIREBASE_APP_ID" \
             --groups "testers" \
