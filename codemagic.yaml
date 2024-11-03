@@ -8,7 +8,7 @@ workflows:
         bundle_identifier: com.example.mathosproject
       flutter: stable
       xcode: latest
-      cocoapods: default
+      cocoapods: 1.12.1
       vars:
         FIREBASE_APP_ID: "1:906508848480:ios:3eed7bc23c7801e7562205"
     scripts:
@@ -17,12 +17,11 @@ workflows:
           flutter clean
           flutter pub get
 
-      - name: Fix Abseil and Pod install
+      - name: Pod clean and install
         script: |
           cd ios
           rm -rf Pods/
           rm -rf Podfile.lock
-          echo "pod 'abseil', '1.20211102.0'" >> Podfile
           pod cache clean --all
           pod repo update
           pod install
