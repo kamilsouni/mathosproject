@@ -8,7 +8,7 @@ workflows:
         bundle_identifier: com.example.mathosproject
       flutter: stable
       xcode: latest
-      cocoapods: 1.12.1
+      cocoapods: default
       vars:
         FIREBASE_APP_ID: "1:906508848480:ios:3eed7bc23c7801e7562205"
     scripts:
@@ -24,11 +24,13 @@ workflows:
           rm -rf Podfile.lock
           pod cache clean --all
           pod repo update
-          pod install
+          pod install --repo-update
 
       - name: Build iOS
         script: |
-          flutter build ios --release --no-codesign
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -archivePath build/Runner.xcarchive archive COMPILER_INDEX_STORE_ENABLE=NO
+          xcodebuild -exportArchive -archivePath build/Runner.xcarchive -exportOptionsPlist /Users/builder/export_options.plist -exportPath build/ios/ipa
 
       - name: Upload to Firebase
         script: |
