@@ -14,13 +14,10 @@ workflows:
     scripts:
       - name: Clean and get dependencies
         script: |
+          rm -rf $HOME/.pub-cache
           flutter clean
-          flutter pub cache clean
+          flutter pub cache repair
           flutter pub get
-
-      - name: Check dependencies
-        script: |
-          flutter pub deps
 
       - name: Pod clean and install
         script: |
