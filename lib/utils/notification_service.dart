@@ -5,7 +5,7 @@ import 'dart:math';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   static List<String> messages = [
     "Les défis mathématiques t'attendent ! Viens prouver que tu es le roi des calculs !",
@@ -25,16 +25,13 @@ class NotificationService {
   ];
 
   static Future<void> initialize() async {
-    // Initialisation du fuseau horaire
     tz.initializeTimeZones();
 
-    // Initialisation des paramètres Android et iOS (désormais Darwin pour iOS)
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('ic_launcher'); // Utilise le nom de l'icône générée (souvent 'ic_launcher')
-
+        AndroidInitializationSettings('ic_launcher');
 
     const DarwinInitializationSettings initializationSettingsDarwin =
-    DarwinInitializationSettings();
+        DarwinInitializationSettings();
 
     final InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -65,21 +62,19 @@ class NotificationService {
         ),
         iOS: DarwinNotificationDetails(),
       ),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 
   static tz.TZDateTime _nextInstanceOfDailyNotification() {
-    // Vérifie l'heure actuelle et le fuseau horaire
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     print("Heure actuelle : $now");
 
-    // Programme la notification à 12h04
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 14, 25); //19h13 en France
+    tz.TZDateTime scheduledDate =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, 14, 25);
 
-    // Si l'heure planifiée est déjà passée aujourd'hui, la planifier pour demain
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
@@ -87,9 +82,6 @@ class NotificationService {
     print("Notification programmée à : $scheduledDate");
     return scheduledDate;
   }
-
-
-
 
   static String _getRandomMessage() {
     final random = Random();
@@ -102,7 +94,8 @@ class NotificationService {
 
   static Future<void> requestIOSPermissions() async {
     final bool? granted = await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
       alert: true,
       badge: true,
