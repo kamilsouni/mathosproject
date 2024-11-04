@@ -1,6 +1,5 @@
 platform :ios, '13.0'
 
-# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
 
 project 'Runner', {
@@ -28,33 +27,28 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  # Spécifier explicitement les dépendances Firebase
-  pod 'Firebase', :modular_headers => true
-  pod 'FirebaseCore', :modular_headers => true
-  pod 'FirebaseAuth', :modular_headers => true
-  pod 'FirebaseFirestore', :modular_headers => true
-  pod 'GoogleUtilities', :modular_headers => true
-
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 post_install do |installer|
-  # Gérer les configurations de build pour chaque target
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
 
+    # Fix spécifique pour Abseil avec CocoaPods 1.16.1
+    if target.name == 'abseil'
+      puts "Configuring abseil to use gnu++14 language standard for cocoapods 1.16+ compatibility"
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++14'
+      end
+    end
+
     target.build_configurations.each do |config|
-      # Configuration de base
       config.build_settings['ENABLE_BITCODE'] = 'NO'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
 
-      # Configurations pour résoudre les problèmes de compilation
-      config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
+      # Autres configurations importantes
       config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
-
-      # Configurations pour les architectures
-      config.build_settings['VALID_ARCHS'] = 'arm64 x86_64'
-      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+      config.build_settings['ONLY_ACTIVE_ARCH'] = 'YES'
 
       # Fix pour Xcode 15
       if config.base_configuration_reference
@@ -62,15 +56,6 @@ post_install do |installer|
         xcconfig = File.read(xcconfig_path)
         xcconfig_mod = xcconfig.gsub(/DT_TOOLCHAIN_DIR/, "TOOLCHAIN_DIR")
         File.open(xcconfig_path, "w") { |file| file << xcconfig_mod }
-      end
-    end
-  end
-
-  # Configuration spécifique pour les modules Firebase
-  installer.pods_project.targets.each do |target|
-    if target.name.start_with?('Firebase')
-      target.build_configurations.each do |config|
-        config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
       end
     end
   end

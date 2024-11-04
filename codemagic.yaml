@@ -22,11 +22,9 @@ workflows:
         script: |
           cd ios
           rm -rf Pods Podfile.lock
-          pod repo update
           pod cache clean --all
-          
-          # Forcer CocoaPods à utiliser les versions les plus récentes
-          pod update --no-repo-update
+          pod repo remove trunk
+          pod setup --verbose
           pod install --repo-update --verbose
 
       - name: Build iOS
@@ -34,8 +32,7 @@ workflows:
           flutter build ipa \
             --release \
             --export-options-plist=/Users/builder/export_options.plist \
-            --no-codesign \
-            --verbose
+            --no-codesign
 
       - name: Upload to Firebase
         script: |
@@ -48,8 +45,3 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-
-    publishing:
-      email:
-        recipients:
-          - your.email@example.com
