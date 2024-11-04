@@ -12,48 +12,20 @@ workflows:
       vars:
         FIREBASE_APP_ID: "1:906508848480:ios:3eed7bc23c7801e7562205"
     scripts:
-      - name: Clean and get dependencies
+      - name: Set up project
         script: |
-          # Clean Flutter
           flutter clean
-          
-          # Remove Flutter cache
-          rm -rf $HOME/.pub-cache
-          rm -rf build
-          
-          # Clean Pods
-          cd ios
-          rm -rf Pods
-          rm -rf Podfile.lock
-          rm -rf .symlinks
-          rm -rf Flutter/Flutter.framework
-          rm -rf Flutter/Flutter.podspec
-          cd ..
-          
-          # Get dependencies
-          flutter pub cache repair
           flutter pub get
 
-      - name: Pod setup and install
+      - name: Install pods
         script: |
           cd ios
-          
-          # Remove and setup CocoaPods
-          pod deintegrate
-          pod cache clean --all
-          pod repo remove trunk
-          pod repo add trunk https://cdn.cocoapods.org/
-          pod setup
-          
-          # Install pods with verbose logging
-          pod install --repo-update --verbose
+          pod repo update
+          pod install
 
-      - name: Build iOS
+      - name: Flutter build
         script: |
-          flutter build ipa --release \
-            --export-options-plist=/Users/builder/export_options.plist \
-            --obfuscate \
-            --split-debug-info=build/app/outputs/symbols
+          flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist
 
       - name: Upload to Firebase
         script: |
@@ -66,4 +38,3 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-      - build/app/outputs/symbols/*
