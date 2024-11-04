@@ -14,26 +14,46 @@ workflows:
     scripts:
       - name: Clean and get dependencies
         script: |
-          rm -rf $HOME/.pub-cache
+          # Clean Flutter
           flutter clean
+          
+          # Remove Flutter cache
+          rm -rf $HOME/.pub-cache
+          rm -rf build
+          
+          # Clean Pods
+          cd ios
+          rm -rf Pods
+          rm -rf Podfile.lock
+          rm -rf .symlinks
+          rm -rf Flutter/Flutter.framework
+          rm -rf Flutter/Flutter.podspec
+          cd ..
+          
+          # Get dependencies
           flutter pub cache repair
           flutter pub get
 
-      - name: Pod clean and install
+      - name: Pod setup and install
         script: |
           cd ios
-          rm -rf Pods/
-          rm -rf Podfile.lock
-          gem install cocoapods
+          
+          # Remove and setup CocoaPods
+          pod deintegrate
+          pod cache clean --all
           pod repo remove trunk
           pod repo add trunk https://cdn.cocoapods.org/
-          pod cache clean --all
-          pod repo update --verbose
-          pod install
+          pod setup
+          
+          # Install pods with verbose logging
+          pod install --repo-update --verbose
 
       - name: Build iOS
         script: |
-          flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist
+          flutter build ipa --release \
+            --export-options-plist=/Users/builder/export_options.plist \
+            --obfuscate \
+            --split-debug-info=build/app/outputs/symbols
 
       - name: Upload to Firebase
         script: |
@@ -46,3 +66,4 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
+      - build/app/outputs/symbols/*
