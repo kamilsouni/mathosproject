@@ -51,5 +51,27 @@
     <array>
         <string>remote-notification</string>
     </array>
+
+    <!-- Configuration Google Sign In -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>com.googleusercontent.apps.906508848480-7bj02o473bch0kiv08at0f2mbjlijf82</string>
+            </array>
+        </dict>
+    </array>
+    <key>GIDClientID</key>
+    <string>906508848480-7bj02o473bch0kiv08at0f2mbjlijf82.apps.googleusercontent.com</string>
+
+    <!-- Configuration pour la gestion des URLs -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>https</string>
+        <string>http</string>
+    </array>
 </dict>
 </plist>
