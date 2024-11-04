@@ -16,7 +16,9 @@ class SignInUpScreen extends StatefulWidget {
 class _SignInUpScreenState extends State<SignInUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
+  bool _isSignUpMode = false;
   auth.User? _currentUser;
 
   @override
@@ -39,11 +41,77 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
     );
   }
 
+  Future<void> _resetPassword() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      _showErrorSnackBar('Veuillez entrer votre e-mail pour réinitialiser le mot de passe.');
+      return;
+    }
+
+    try {
+      await auth.FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      _showErrorSnackBar('Un lien de réinitialisation a été envoyé à votre adresse e-mail.');
+    } on auth.FirebaseAuthException catch (e) {
+      _showErrorSnackBar(e.message ?? 'Une erreur s\'est produite.');
+    }
+  }
+
+  Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      _showErrorSnackBar('Veuillez remplir tous les champs.');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showErrorSnackBar('Les mots de passe ne correspondent pas.');
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      auth.UserCredential userCredential = await auth.FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => ProfileCreationScreen(
+          userId: userCredential.user!.uid,
+          email: userCredential.user!.email ?? '',
+        )),
+      );
+    } on auth.FirebaseAuthException catch (e) {
+      String message = 'Une erreur s\'est produite.';
+      if (e.code == 'email-already-in-use') {
+        message = 'Cet e-mail est déjà utilisé.';
+      } else if (e.code == 'weak-password') {
+        message = 'Le mot de passe est trop faible. Choisissez un mot de passe plus sécurisé.';
+      } else if (e.code == 'invalid-email') {
+        message = 'L\'email est invalide. Veuillez vérifier votre adresse e-mail.';
+      } else {
+        message = e.message ?? 'Une erreur s\'est produite.';
+      }
+
+      _showErrorSnackBar(message);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   Future<void> _signInWithEmail() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
-    // Vérification locale avant de lancer la requête
     if (email.isEmpty || password.isEmpty) {
       _showErrorSnackBar('Veuillez entrer votre e-mail et mot de passe.');
       return;
@@ -97,52 +165,6 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
     }
   }
 
-  Future<void> _signUp() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      _showErrorSnackBar('Veuillez entrer votre e-mail et mot de passe.');
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      auth.UserCredential userCredential = await auth.FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => ProfileCreationScreen(
-          userId: userCredential.user!.uid,
-          email: userCredential.user!.email ?? '',
-        )),
-      );
-    } on auth.FirebaseAuthException catch (e) {
-      String message = 'Une erreur s\'est produite.';
-      if (e.code == 'email-already-in-use') {
-        message = 'Cet e-mail est déjà utilisé.';
-      } else if (e.code == 'weak-password') {
-        message = 'Le mot de passe est trop faible. Choisissez un mot de passe plus sécurisé.';
-      } else if (e.code == 'invalid-email') {
-        message = 'L\'email est invalide. Veuillez vérifier votre adresse e-mail.';
-      } else {
-        message = e.message ?? 'Une erreur s\'est produite.';
-      }
-
-      _showErrorSnackBar(message);
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
   Future<void> _signInWithGoogle() async {
     setState(() {
       _isLoading = true;
@@ -153,7 +175,6 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
       await googleSignIn.signOut(); // Force the user to choose an account
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       if (googleUser == null) {
-        // L'utilisateur a annulé la connexion
         setState(() {
           _isLoading = false;
         });
@@ -195,93 +216,133 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
     }
   }
 
-  Future<void> _signOut() async {
-    await auth.FirebaseAuth.instance.signOut();
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-    await googleSignIn.signOut(); // Force sign out from Google account
-    _checkCurrentUser();
-  }
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    double cmToPixels = 0.393701 * 160; // Conversion approximative de cm en pixels pour un écran de densité moyenne (160 dpi)
-    double verticalPadding = cmToPixels * 1; // 1 cm en pixels
+    double cmToPixels = 0.393701 * 160;
+    double verticalPadding = cmToPixels * 1;
 
     return Scaffold(
-      appBar: TopAppBar(title: 'Inscription / Connexion', showBackButton: true), // Ajouter la flèche de retour
+      appBar: TopAppBar(title: 'Inscription / Connexion', showBackButton: true),
       body: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              color: Color(0xFF564560), // Couleur de fond pour un effet rétro
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1).copyWith(top: verticalPadding),
-            child: Column(
-              children: [
-                SizedBox(height: verticalPadding * 0.2), // 0.5 cm de marge supplémentaire
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            labelStyle: TextStyle(fontFamily: 'PixelFont'),
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
+          children: [
+      Positioned.fill(
+      child: Container(
+      color: Color(0xFF564560),
+    ),
+    ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1).copyWith(top: verticalPadding),
+              child: Column(
+                children: [
+                  SizedBox(height: verticalPadding * 0.2),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                              labelStyle: TextStyle(fontFamily: 'PixelFont'),
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(),
+                            ),
                           ),
-                        ),
-                        SizedBox(height: screenHeight * 0.05),
-                        TextFormField(
-                          controller: _passwordController,
-                          decoration: InputDecoration(
-                            labelText: 'Mot de passe',
-                            labelStyle: TextStyle(fontFamily: 'PixelFont'),
-                            filled: true,
-                            fillColor: Colors.white,
-                            border: OutlineInputBorder(),
+                          SizedBox(height: screenHeight * 0.05),
+                          TextFormField(
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                              labelText: 'Mot de passe',
+                              labelStyle: TextStyle(fontFamily: 'PixelFont'),
+                              filled: true,
+                              fillColor: Colors.white,
+                              border: OutlineInputBorder(),
+                            ),
+                            obscureText: true,
                           ),
-                          obscureText: true,
-                        ),
-                        SizedBox(height: screenHeight * 0.07),
-                        if (_isLoading)
-                          CircularProgressIndicator()
-                        else
-                          Column(
-                            children: [
-                              PacManButton(
-                                text: 'Connexion',
-                                onPressed: _signInWithEmail,
-                                isLoading: _isLoading,
+                          if (_isSignUpMode)
+                            SizedBox(height: screenHeight * 0.05),
+                          if (_isSignUpMode)
+                            TextFormField(
+                              controller: _confirmPasswordController,
+                              decoration: InputDecoration(
+                                labelText: 'Confirmez le mot de passe',
+                                labelStyle: TextStyle(fontFamily: 'PixelFont'),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(),
                               ),
-                              SizedBox(height: screenHeight * 0.02),
-                              PacManButton(
-                                text: 'Inscription',
-                                onPressed: _signUp,
-                                isLoading: _isLoading,
-                              ),
-                              SizedBox(height: screenHeight * 0.02),
-                              PacManButton(
-                                text: 'Connexion avec Google',
-                                onPressed: _signInWithGoogle,
-                                isLoading: _isLoading,
-                              ),
-                            ],
-                          ),
-                      ],
+                              obscureText: true,
+                            ),
+                          SizedBox(height: screenHeight * 0.07),
+                          if (_isLoading)
+                            CircularProgressIndicator()
+                          else
+                            Column(
+                              children: [
+                                PacManButton(
+                                  text: 'Connexion',
+                                  onPressed: () {
+                                    setState(() {
+                                      _isSignUpMode = false;
+                                    });
+                                    _signInWithEmail();
+                                  },
+                                  isLoading: _isLoading,
+                                ),
+                                SizedBox(height: screenHeight * 0.02),
+                                PacManButton(
+                                  text: 'Inscription',
+                                  onPressed: () {
+                                    setState(() {
+                                      _isSignUpMode = true;
+                                    });
+                                    _signUp();
+                                  },
+                                  isLoading: _isLoading,
+                                ),
+                                SizedBox(height: screenHeight * 0.02),
+                                PacManButton(
+                                  text: 'Connexion avec Google',
+                                  onPressed: _signInWithGoogle,
+                                  isLoading: _isLoading,
+                                ),
+                                SizedBox(height: screenHeight * 0.02),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                      child: TextButton(
+                                        onPressed: _resetPassword,
+                                        child: Text(
+                                          'Mot de passe oublié?',
+                                          overflow: TextOverflow.ellipsis, // Pour éviter un débordement si le texte est trop long
+                                          style: TextStyle(
+                                            fontFamily: 'PixelFont',
+                                            color: Colors.white,
+                                            decoration: TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+
+
+                              ],
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
       ),
     );
   }
