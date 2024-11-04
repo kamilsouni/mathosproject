@@ -12,20 +12,29 @@ workflows:
       vars:
         FIREBASE_APP_ID: "1:906508848480:ios:3eed7bc23c7801e7562205"
     scripts:
-      - name: Set up project
+      - name: Set up project and clean
         script: |
           flutter clean
+          rm -rf ios/Pods
+          rm -rf ios/Podfile.lock
+          rm -rf ios/.symlinks
+          rm -rf ios/Flutter/Flutter.podspec
+          flutter pub cache repair
           flutter pub get
 
       - name: Install pods
         script: |
           cd ios
           pod repo update
-          pod install
+          pod cache clean --all
+          pod install --repo-update
 
       - name: Flutter build
         script: |
-          flutter build ipa --release --export-options-plist=/Users/builder/export_options.plist
+          flutter build ipa \
+            --release \
+            --export-options-plist=/Users/builder/export_options.plist \
+            --no-codesign
 
       - name: Upload to Firebase
         script: |
