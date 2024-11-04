@@ -267,6 +267,8 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
     }
   }
 
+// Dans RapidityModeScreen.dart, modifiez la méthode _endTest :
+
   Future<void> _endTest() async {
     if (_isGameOver) return;
 
@@ -293,6 +295,10 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
           score: _points,
           operationsHistory: _operationsHistory,
           initialRecord: _initialRecord,
+          gameMode: 'rapid', // ou 'problem' ou 'equation' selon le mode
+          isCompetition: widget.isCompetition,
+          competitionId: widget.competitionId,
+          profile: widget.profile, // Ajout du profile
         ),
       ),
     );
@@ -305,6 +311,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
       }
     });
   }
+
 
   Future<bool> _handleBackPress() async {
     if (!_hasStarted || _isGameOver) return true;

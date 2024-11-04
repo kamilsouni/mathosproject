@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mathosproject/dialog_manager.dart';
-import 'package:mathosproject/screens/problem_mode_screen.dart';
-import 'package:mathosproject/screens/rapidity_mode_screen.dart';
+import 'package:mathosproject/screens/end_game_analysis_screen.dart';
 import 'package:mathosproject/widgets/arcade_console.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/widgets/level_indicator.dart';
@@ -46,6 +45,8 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   bool? _isCorrect;
   DateTime? _gameStartTime;
   final GlobalKey<CountdownTimerState> _countdownKey = GlobalKey<CountdownTimerState>();
+  final List<Map<String, dynamic>> _operationsHistory = [];
+
 
   @override
   void initState() {
@@ -197,6 +198,8 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     return countValidOperators > 1;
   }
 
+
+
   void generateQuestion() {
     if (_isGameOver) return;
 
@@ -210,8 +213,11 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     });
   }
 
+
+
   void submitAnswer(String selectedAnswer) {
     bool isCorrect = selectedAnswer == _correctAnswer;
+
     setState(() {
       _isCorrect = isCorrect;
       if (isCorrect) {
@@ -232,6 +238,13 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
           _currentLevel--;
         }
       }
+
+      // Ajouter l'opération à l'historique
+      _operationsHistory.add({
+        'question': _currentQuestion,
+        'answer': selectedAnswer,
+        'isCorrect': isCorrect,
+      });
     });
 
     Future.delayed(Duration(milliseconds: 200), () {
@@ -241,6 +254,9 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       generateQuestion();
     });
   }
+
+
+
 
   Future<void> _updateCompetitionData() async {
     if (!widget.isCompetition || widget.competitionId == null) return;
@@ -324,14 +340,36 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
 
     widget.profile.points += _points;
 
-    _showEndGamePopup();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EndGameAnalysisScreen(
+          score: _points,
+          operationsHistory: _operationsHistory,
+          initialRecord: _initialRecord,
+          gameMode: 'equation', // ou 'problem' ou 'equation' selon le mode
+          isCompetition: widget.isCompetition,
+          competitionId: widget.competitionId,
+          profile: widget.profile, // Ajout du profile
+        ),
+      ),
+    );
 
-    if (await widget.profile.isOnline()) {
-      await UserPreferences.updateProfileInFirestore(widget.profile);
-    } else {
-      await widget.profile.saveToLocalStorage();
-    }
+
+    Future.delayed(Duration.zero, () async {
+      if (await widget.profile.isOnline()) {
+        await UserPreferences.updateProfileInFirestore(widget.profile);
+      } else {
+        await widget.profile.saveToLocalStorage();
+      }
+    });
   }
+
+
+
+
+
+
 
   void _showEndGamePopup() {
     print("Record initial : $_initialRecord");
@@ -389,7 +427,6 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   }
 
 
-
   Future<bool> _handleBackPress() async {
     if (!_hasStarted || _isGameOver) return true;
 
@@ -430,7 +467,6 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
                   _isGameOver = true;
                 });
 
-                // Mettre à jour les points gagnés avant l'abandon
                 if (widget.isCompetition && widget.competitionId != null) {
                   await _updateCompetitionData();
                 }
@@ -453,6 +489,8 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
 
     return shouldPop;
   }
+
+
 
   @override
   Widget build(BuildContext context) {

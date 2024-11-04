@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:mathosproject/dialog_manager.dart';
+import 'package:mathosproject/screens/end_game_analysis_screen.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/widgets/RetroCalculator.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
@@ -44,6 +45,9 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
   DateTime? _gameStartTime;
   bool _isLoading = false;
   final GlobalKey<CountdownTimerState> _countdownKey = GlobalKey<CountdownTimerState>();
+  final List<Map<String, dynamic>> _operationsHistory = [];
+
+
 
   @override
   void initState() {
@@ -132,12 +136,21 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
         _pointsChange += 50;
         _points += 50;
       }
+
+      // Ajouter l'opération à l'historique
+      _operationsHistory.add({
+        'question': _currentQuestion,
+        'answer': _currentAnswer.toString(),
+        'isCorrect': true,
+      });
     });
 
     Future.delayed(Duration(milliseconds: 200), () {
       generateQuestion();
     });
   }
+
+
 
   void generateQuestion() {
     if (_isGameOver) return;
@@ -194,12 +207,21 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
       if (_currentLevel > 1) {
         _currentLevel--;
       }
+
+      // Ajouter l'opération à l'historique
+      _operationsHistory.add({
+        'question': _currentQuestion,
+        'answer': _currentAnswer.toString(),
+        'isCorrect': false,
+      });
     });
 
     Future.delayed(Duration(milliseconds: 300), () {
       generateQuestion();
     });
   }
+
+
 
   Future<void> _updateCompetitionData() async {
     if (!widget.isCompetition || widget.competitionId == null) return;
@@ -250,6 +272,7 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
     }
   }
 
+
   Future<void> _endTest() async {
     if (_isGameOver) return;
 
@@ -269,7 +292,20 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
 
     widget.profile.points += _points;
 
-    _showEndGamePopup();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EndGameAnalysisScreen(
+          score: _points,
+          operationsHistory: _operationsHistory,
+          initialRecord: _initialRecord,
+          gameMode: 'problem', // ou 'problem' ou 'equation' selon le mode
+          isCompetition: widget.isCompetition,
+          competitionId: widget.competitionId,
+          profile: widget.profile, // Ajout du profile
+        ),
+      ),
+    );
 
     Future.delayed(Duration.zero, () async {
       if (await widget.profile.isOnline()) {
@@ -279,6 +315,8 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
       }
     });
   }
+
+
 
   void _showEndGamePopup() {
     print("Record initial : $_initialRecord");
