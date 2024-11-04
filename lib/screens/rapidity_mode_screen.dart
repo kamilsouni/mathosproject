@@ -10,6 +10,7 @@ import 'package:mathosproject/math_test_utils.dart';
 import 'package:mathosproject/widgets/game_app_bar.dart';
 import 'package:mathosproject/utils/hive_data_manager.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
+import 'package:mathosproject/screens/end_game_analysis_screen.dart';
 
 class RapidityModeScreen extends StatefulWidget {
   final AppUser profile;
@@ -27,7 +28,7 @@ class RapidityModeScreen extends StatefulWidget {
 }
 
 class _RapidityModeScreenState extends State<RapidityModeScreen> {
-  late int _initialRecord;  // Nouveau
+  late int _initialRecord;
   late int _currentLevel;
   late int _correctAnswersInRow;
   late int _points;
@@ -40,9 +41,9 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
   bool _hasStarted = false;
   bool _isGameOver = false;
   DateTime? _gameStartTime;
-  bool _isLoading = false;  // Ajout de la variable _isLoading
+  bool _isLoading = false;
   final GlobalKey<CountdownTimerState> _countdownKey = GlobalKey<CountdownTimerState>();
-
+  final List<Map<String, dynamic>> _operationsHistory = [];
 
   @override
   void initState() {
@@ -50,18 +51,16 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
     _currentLevel = 1;
     _correctAnswersInRow = 0;
     _points = 0;
-    _currentQuestion = "";  // Initialisation de la variable
+    _currentQuestion = "";
     _pointsChange = 0;
     _answerController = TextEditingController();
     _initializeGame();
     _answerController.addListener(_checkAnswer);
-    _initialRecord = widget.profile.rapidTestRecord;  // Stocke le record initial
-
+    _initialRecord = widget.profile.rapidTestRecord;
   }
 
   Future<void> _initializeGame() async {
     if (widget.isCompetition && widget.competitionId != null) {
-      // Incrémenter le compteur dès le début de la partie
       await _incrementGameCount();
       setState(() {
         _hasStarted = true;
@@ -77,20 +76,17 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
           'competitionParticipants_${widget.competitionId}',
           widget.profile.id) ?? {};
 
-      // Incrémenter le compteur de parties
       localData['name'] = widget.profile.name;
       localData['rapidTests'] = (localData['rapidTests'] ?? 0) + 1;
       localData['flag'] = widget.profile.flag;
       localData['lastGameStarted'] = DateTime.now().toIso8601String();
 
-      // Sauvegarder localement
       await HiveDataManager.saveData(
           'competitionParticipants_${widget.competitionId}',
           widget.profile.id,
           localData
       );
 
-      // Synchroniser avec Firebase si possible
       if (await ConnectivityManager().isConnected()) {
         await FirebaseFirestore.instance
             .collection('competitions')
@@ -136,6 +132,11 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
         _pointsChange += 50;
         _points += 50;
       }
+      _operationsHistory.add({
+        'question': _currentQuestion,
+        'answer': _currentAnswer,
+        'isCorrect': true,
+      });
     });
 
     Future.delayed(Duration(milliseconds: 200), () {
@@ -168,6 +169,11 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
       if (_currentLevel > 1) {
         _currentLevel--;
       }
+      _operationsHistory.add({
+        'question': _currentQuestion,
+        'answer': _currentAnswer,
+        'isCorrect': false,
+      });
     });
 
     Future.delayed(Duration(milliseconds: 300), () {
@@ -201,14 +207,12 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
         updatedData['rapidTestRecord'] = localData['rapidTestRecord'] ?? 0;
       }
 
-      // Sauvegarder localement
       await HiveDataManager.saveData(
           'competitionParticipants_${widget.competitionId}',
           widget.profile.id,
           updatedData
       );
 
-      // Synchroniser avec Firebase si connecté
       if (await ConnectivityManager().isConnected()) {
         DocumentReference participantRef = FirebaseFirestore.instance
             .collection('competitions')
@@ -237,7 +241,6 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
         });
       }
 
-      // Mettre à jour le record personnel si nécessaire
       if (_points > widget.profile.rapidTestRecord) {
         widget.profile.rapidTestRecord = _points;
         if (await ConnectivityManager().isConnected()) {
@@ -283,7 +286,16 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
 
     widget.profile.points += _points;
 
-    _showEndGamePopup();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EndGameAnalysisScreen(
+          score: _points,
+          operationsHistory: _operationsHistory,
+          initialRecord: _initialRecord,
+        ),
+      ),
+    );
 
     Future.delayed(Duration.zero, () async {
       if (await widget.profile.isOnline()) {
@@ -294,69 +306,9 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
     });
   }
 
-  void _showEndGamePopup() {
-    print("Record initial : $_initialRecord");
-    print("Points actuels : $_points");
-
-    String title;
-    String message;
-
-    // Cas d'une première partie
-    if (_initialRecord == 0) {
-      title = "🎮 Première Partie !";
-      message = "Bienvenue dans l'aventure ! Vous venez d'établir votre score de référence avec $_points points. "
-          "C'est un excellent début ! Voyons jusqu'où vous pourrez aller...";
-    }
-    // Cas d'un nouveau record
-    else if (_points > _initialRecord) {
-      int improvement = _points - _initialRecord;
-      title = "🎉 NOUVEAU RECORD ! 🎉";
-      message = "INCROYABLE ! Vous avez pulvérisé votre record personnel de $improvement points ! "
-          "Votre nouveau record est maintenant de $_points points. Vous êtes en progression constante !";
-    }
-    // Autres cas (égalité ou score inférieur)
-    else {
-      double percentageOfRecord = (_points / _initialRecord) * 100;
-
-      if (percentageOfRecord >= 90) {
-        title = "Presque !";
-        message = "Vous y étiez presque ! Avec $_points points, vous n'êtes qu'à ${(_initialRecord - _points)} "
-            "points de votre record. Ne lâchez rien !";
-      } else if (percentageOfRecord >= 75) {
-        title = "Belle Performance !";
-        message = "Bon score ! Vous vous rapprochez de votre record personnel de $_initialRecord points. "
-            "Continuez sur cette lancée !";
-      } else if (percentageOfRecord >= 50) {
-        title = "Bien joué !";
-        message = "Vous progressez bien ! Votre record de $_initialRecord points n'est pas si loin. "
-            "Encore un peu d'entraînement et vous y arriverez !";
-      } else {
-        title = "Continuez vos efforts !";
-        message = "N'abandonnez pas ! Chaque partie vous rapproche de votre record de $_initialRecord points. "
-            "La pratique fait la perfection !";
-      }
-    }
-
-    DialogManager.showCustomDialog(
-      context: context,
-      title: title,
-      content: message,
-      confirmText: 'Continuer',
-      cancelText: '',
-      onConfirm: () {
-        Navigator.of(context).pop();
-      },
-    );
-  }
-
-
-
-
-// Méthode de gestion du retour
   Future<bool> _handleBackPress() async {
     if (!_hasStarted || _isGameOver) return true;
 
-    // Mettre le timer en pause avant d'afficher le dialogue
     _countdownKey.currentState?.pauseTimer();
 
     bool shouldPop = await showDialog<bool>(
@@ -367,29 +319,17 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
           backgroundColor: Color(0xFF564560),
           title: Text(
             'Abandonner la partie ?',
-            style: TextStyle(
-              color: Colors.yellow,
-              fontFamily: 'PixelFont',
-              fontSize: 20,
-            ),
+            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 20),
           ),
           content: Text(
             'Cette partie sera comptée comme perdue et ne pourra pas être rejouée.',
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'PixelFont',
-              fontSize: 16,
-            ),
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
           ),
           actions: <Widget>[
             TextButton(
               child: Text(
                 'Continuer la partie',
-                style: TextStyle(
-                  color: Colors.yellow,
-                  fontFamily: 'PixelFont',
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
               ),
               onPressed: () {
                 Navigator.of(context).pop(false);
@@ -398,11 +338,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
             TextButton(
               child: Text(
                 'Abandonner',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontFamily: 'PixelFont',
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.red, fontFamily: 'PixelFont', fontSize: 16),
               ),
               onPressed: () async {
                 setState(() {
@@ -410,7 +346,6 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
                   _isGameOver = true;
                 });
 
-                // Mettre à jour les points gagnés avant l'abandon
                 if (widget.isCompetition && widget.competitionId != null) {
                   await _updateCompetitionData();
                 }
@@ -427,16 +362,12 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
       },
     ) ?? false;
 
-    // Reprendre le timer si on continue la partie
     if (!shouldPop) {
       _countdownKey.currentState?.resumeTimer();
     }
 
     return shouldPop;
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -467,7 +398,7 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
                 LevelIndicator(currentLevel: _currentLevel, maxLevel: 10),
                 SizedBox(height: 20),
                 CountdownTimer(
-                  key: _countdownKey,  // Ajouter la clé ici
+                  key: _countdownKey,
                   duration: 61,
                   onCountdownComplete: _endTest,
                   progressColor: Colors.green,
@@ -512,11 +443,3 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
     );
   }
 }
-
-
-
-
-
-
-
-
