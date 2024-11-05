@@ -25,6 +25,11 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
   void initState() {
     super.initState();
     _checkCurrentUser();
+    _setPersistence();
+  }
+
+  Future<void> _setPersistence() async {
+    await auth.FirebaseAuth.instance.setPersistence(auth.Persistence.LOCAL);
   }
 
   void _checkCurrentUser() {
@@ -226,36 +231,50 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
     return Scaffold(
       appBar: TopAppBar(title: 'Inscription / Connexion', showBackButton: true),
       body: Stack(
-          children: [
-      Positioned.fill(
-      child: Container(
-      color: Color(0xFF564560),
-    ),
-    ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1).copyWith(top: verticalPadding),
-              child: Column(
-                children: [
-                  SizedBox(height: verticalPadding * 0.2),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          TextFormField(
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              labelText: 'Email',
-                              labelStyle: TextStyle(fontFamily: 'PixelFont'),
-                              filled: true,
-                              fillColor: Colors.white,
-                              border: OutlineInputBorder(),
-                            ),
+        children: [
+          Positioned.fill(
+            child: Container(
+              color: Color(0xFF564560),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.1).copyWith(top: verticalPadding),
+            child: Column(
+              children: [
+                SizedBox(height: verticalPadding * 0.2),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            labelStyle: TextStyle(fontFamily: 'PixelFont'),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
                           ),
+                        ),
+                        SizedBox(height: screenHeight * 0.05),
+                        TextFormField(
+                          controller: _passwordController,
+                          decoration: InputDecoration(
+                            labelText: 'Mot de passe',
+                            labelStyle: TextStyle(fontFamily: 'PixelFont'),
+                            filled: true,
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(),
+                          ),
+                          obscureText: true,
+                        ),
+                        if (_isSignUpMode)
                           SizedBox(height: screenHeight * 0.05),
+                        if (_isSignUpMode)
                           TextFormField(
-                            controller: _passwordController,
+                            controller: _confirmPasswordController,
                             decoration: InputDecoration(
-                              labelText: 'Mot de passe',
+                              labelText: 'Confirmez le mot de passe',
                               labelStyle: TextStyle(fontFamily: 'PixelFont'),
                               filled: true,
                               fillColor: Colors.white,
@@ -263,86 +282,69 @@ class _SignInUpScreenState extends State<SignInUpScreen> {
                             ),
                             obscureText: true,
                           ),
-                          if (_isSignUpMode)
-                            SizedBox(height: screenHeight * 0.05),
-                          if (_isSignUpMode)
-                            TextFormField(
-                              controller: _confirmPasswordController,
-                              decoration: InputDecoration(
-                                labelText: 'Confirmez le mot de passe',
-                                labelStyle: TextStyle(fontFamily: 'PixelFont'),
-                                filled: true,
-                                fillColor: Colors.white,
-                                border: OutlineInputBorder(),
+                        SizedBox(height: screenHeight * 0.07),
+                        if (_isLoading)
+                          CircularProgressIndicator()
+                        else
+                          Column(
+                            children: [
+                              PacManButton(
+                                text: 'Connexion',
+                                onPressed: () {
+                                  setState(() {
+                                    _isSignUpMode = false;
+                                  });
+                                  _signInWithEmail();
+                                },
+                                isLoading: _isLoading,
                               ),
-                              obscureText: true,
-                            ),
-                          SizedBox(height: screenHeight * 0.07),
-                          if (_isLoading)
-                            CircularProgressIndicator()
-                          else
-                            Column(
-                              children: [
-                                PacManButton(
-                                  text: 'Connexion',
-                                  onPressed: () {
-                                    setState(() {
-                                      _isSignUpMode = false;
-                                    });
-                                    _signInWithEmail();
-                                  },
-                                  isLoading: _isLoading,
-                                ),
-                                SizedBox(height: screenHeight * 0.02),
-                                PacManButton(
-                                  text: 'Inscription',
-                                  onPressed: () {
-                                    setState(() {
-                                      _isSignUpMode = true;
-                                    });
-                                    _signUp();
-                                  },
-                                  isLoading: _isLoading,
-                                ),
-                                SizedBox(height: screenHeight * 0.02),
-                                PacManButton(
-                                  text: 'Connexion avec Google',
-                                  onPressed: _signInWithGoogle,
-                                  isLoading: _isLoading,
-                                ),
-                                SizedBox(height: screenHeight * 0.02),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Flexible(
-                                      child: TextButton(
-                                        onPressed: _resetPassword,
-                                        child: Text(
-                                          'Mot de passe oublié?',
-                                          overflow: TextOverflow.ellipsis, // Pour éviter un débordement si le texte est trop long
-                                          style: TextStyle(
-                                            fontFamily: 'PixelFont',
-                                            color: Colors.white,
-                                            decoration: TextDecoration.underline,
-                                          ),
+                              SizedBox(height: screenHeight * 0.02),
+                              PacManButton(
+                                text: 'Inscription',
+                                onPressed: () {
+                                  setState(() {
+                                    _isSignUpMode = true;
+                                  });
+                                  _signUp();
+                                },
+                                isLoading: _isLoading,
+                              ),
+                              SizedBox(height: screenHeight * 0.02),
+                              PacManButton(
+                                text: 'Connexion avec Google',
+                                onPressed: _signInWithGoogle,
+                                isLoading: _isLoading,
+                              ),
+                              SizedBox(height: screenHeight * 0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Flexible(
+                                    child: TextButton(
+                                      onPressed: _resetPassword,
+                                      child: Text(
+                                        'Mot de passe oublié?',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontFamily: 'PixelFont',
+                                          color: Colors.white,
+                                          decoration: TextDecoration.underline,
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
-
-
-
-                              ],
-                            ),
-                        ],
-                      ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
+        ],
       ),
     );
   }
