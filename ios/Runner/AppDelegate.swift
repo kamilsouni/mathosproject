@@ -2,6 +2,7 @@ import UIKit
 import Flutter
 import flutter_local_notifications
 import GoogleSignIn
+import Firebase
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
@@ -11,6 +12,8 @@ import GoogleSignIn
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        FirebaseApp.configure() // Initialise Firebase
+
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
         }
