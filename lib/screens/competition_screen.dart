@@ -217,7 +217,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> with WidgetsBindi
       return;
     }
 
-    bool? dataChanged = await Navigator.push(
+    Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) {

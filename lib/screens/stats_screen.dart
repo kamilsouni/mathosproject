@@ -84,7 +84,18 @@ class _StatsScreenState extends State<StatsScreen> {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-        appBar: TopAppBar(title: 'Statistiques',showBackButton: true),
+        appBar: TopAppBar(
+          title: 'Statistiques',
+          showBackButton: true,
+          onBackPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ModeSelectionScreen(profile: _profile),
+              ),
+            );
+          },
+        ),
         body: Container(
           color: Color(0xFF564560),
           child: Column(

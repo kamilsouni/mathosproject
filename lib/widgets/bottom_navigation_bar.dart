@@ -5,7 +5,6 @@ import 'package:mathosproject/screens/stats_screen.dart';
 import 'package:mathosproject/screens/profile_detail_screen.dart';
 import 'package:mathosproject/screens/settings_screen.dart';
 import 'package:mathosproject/sound_manager.dart';  // Import the SoundManager
-
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
   final AppUser profile;
@@ -49,7 +48,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: () async {
-          await SoundManager.playButtonClickSound(); // Play sound when item is selected
+          await SoundManager.playButtonClickSound();
           onTap(index);
           _navigateToScreen(context, index);
         },
@@ -70,7 +69,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Flexible(
-                child: icon,  // Utilise Flexible pour permettre à l'icône de s'adapter
+                child: icon,
               ),
               SizedBox(height: 2),
               Text(
@@ -92,19 +91,30 @@ class CustomBottomNavigationBar extends StatelessWidget {
   }
 
   void _navigateToScreen(BuildContext context, int index) {
+    Widget nextScreen;
     switch (index) {
       case 0:
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ModeSelectionScreen(profile: profile)));
+        nextScreen = ModeSelectionScreen(profile: profile);
         break;
       case 1:
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StatsScreen(profile: profile)));
+        nextScreen = StatsScreen(profile: profile);
         break;
       case 2:
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProfileDetailScreen(profile: profile)));
+        nextScreen = ProfileDetailScreen(profile: profile);
         break;
       case 3:
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SettingsScreen(profile: profile)));
+        nextScreen = SettingsScreen(profile: profile);
         break;
+      default:
+        nextScreen = ModeSelectionScreen(profile: profile);
     }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => nextScreen,
+        settings: RouteSettings(name: '/${nextScreen.runtimeType.toString().toLowerCase()}'),
+      ),
+    );
   }
 }

@@ -329,6 +329,14 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
         appBar: TopAppBar(
           title: 'Profil',
           showBackButton: true,
+          onBackPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ModeSelectionScreen(profile: _profile),
+              ),
+            );
+          },
         ),
         body: Container(
           color: Color(0xFF564560),

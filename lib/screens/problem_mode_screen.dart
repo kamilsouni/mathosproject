@@ -60,7 +60,8 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
     _answerController = TextEditingController();
     _initializeGame();
     _answerController.addListener(_checkAnswer);
-    _initialRecord = widget.profile.ProblemTestRecord;  // Stocke le record initial
+    _initialRecord = widget.profile.ProblemTestRecord;
+    // Stocke le record initial
 
   }
 

@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:mathosproject/models/app_user.dart';
+import 'package:mathosproject/screens/mode_selection_screen.dart';
+import 'package:mathosproject/screens/profile_detail_screen.dart';
+import 'package:mathosproject/screens/settings_screen.dart';
+import 'package:mathosproject/screens/stats_screen.dart';
 
 class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBackButton;
+  final Function? onBackPressed;
 
-  TopAppBar({required this.title, this.showBackButton = false});
+  TopAppBar({
+    required this.title,
+    this.showBackButton = false,
+    this.onBackPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +41,39 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
                       size: iconSize,
                     ),
                     onPressed: () {
-                      if (Navigator.canPop(context)) {
-                        Navigator.pop(context); // Retour à la page précédente si possible
+                      if (onBackPressed != null) {
+                        onBackPressed!();
+                        return;
+                      }
+
+                      String? currentRoute = ModalRoute.of(context)?.settings.name;
+                      Widget? currentWidget = context.widget;
+                      AppUser? profile;
+
+                      // Récupérer le profil en fonction de l'écran actuel
+                      if (currentWidget is StatsScreen) {
+                        profile = (currentWidget).profile;
+                      } else if (currentWidget is ProfileDetailScreen) {
+                        profile = (currentWidget).profile;
+                      } else if (currentWidget is SettingsScreen) {
+                        profile = (currentWidget).profile;
+                      }
+
+                      // Si on a un profil et qu'on est sur un des écrans spéciaux
+                      if (profile != null && (
+                          currentRoute?.contains('statsscreen') == true ||
+                              currentRoute?.contains('profiledetailscreen') == true ||
+                              currentRoute?.contains('settingsscreen') == true)) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ModeSelectionScreen(profile: profile!),
+                            settings: RouteSettings(name: '/modeselectionscreen'),
+                          ),
+                        );
                       } else {
-                        Navigator.pushReplacementNamed(context, '/'); // Retour à la Home si impossible
+                        // Comportement par défaut pour les autres écrans
+                        Navigator.maybePop(context);
                       }
                     },
                   ),

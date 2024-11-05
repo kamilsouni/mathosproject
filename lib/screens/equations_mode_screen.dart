@@ -58,7 +58,8 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     _points = 0;
     _pointsChange = 0;
     _initializeGame();
-    _initialRecord = widget.profile.equationTestRecord;  // Stocke le record initial
+    _initialRecord = widget.profile.equationTestRecord;
+    // Stocke le record initial
 
   }
 

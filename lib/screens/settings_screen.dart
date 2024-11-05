@@ -22,6 +22,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _soundEffectsEnabled = SoundManager.isSoundEnabled();
   bool _notificationsEnabled = true;
 
+
   @override
   void initState() {
     super.initState();
@@ -47,7 +48,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: TopAppBar(title: 'Infos & Paramètres', showBackButton: true),
+      appBar: TopAppBar(
+        title: 'Infos & Paramètres',
+        showBackButton: true,
+        onBackPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ModeSelectionScreen(profile: widget.profile),
+            ),
+          );
+        },
+      ),
       body: Container(
         color: Color(0xFF564560),
         child: SingleChildScrollView(

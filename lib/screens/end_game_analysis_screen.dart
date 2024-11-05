@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/competition_screen.dart';
-import 'package:mathosproject/sound_manager.dart';
 import 'package:mathosproject/widgets/pacmanbutton.dart';
 
 class EndGameAnalysisScreen extends StatefulWidget {
@@ -216,11 +215,22 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen>
           color: Colors.black.withOpacity(0.3),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-              color: Colors.yellow.withOpacity(0.3), // Changé de _modeColor à Colors.yellow
+              color: Colors.yellow.withOpacity(0.3),
               width: 2
           ),
         ),
-        child: ListView.builder(
+        child: widget.operationsHistory.isEmpty
+            ? Center(
+          child: Text(
+            'Aucune opération effectuée',
+            style: TextStyle(
+              fontFamily: 'PixelFont',
+              fontSize: 18,
+              color: Colors.white,
+            ),
+          ),
+        )
+            : ListView.builder(
           controller: _scrollController,
           padding: EdgeInsets.all(16),
           itemCount: _currentOperationIndex + 1,
@@ -294,7 +304,7 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen>
       duration: Duration(milliseconds: 500),
       child: Container(
         margin: EdgeInsets.symmetric(vertical: 16),
-        child: PacManButton(
+        child:PacManButton(
           text: 'Retour',
           onPressed: () {
             if (widget.isCompetition) {
@@ -302,13 +312,13 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen>
                 context,
                 MaterialPageRoute(
                   builder: (context) => CompetitionScreen(
-                    profile: widget.profile, // Maintenant on a accès au profile
+                    profile: widget.profile,
                     competitionId: widget.competitionId!,
                   ),
                 ),
               );
             } else {
-              Navigator.of(context).popUntil((route) => route.isFirst);
+              Navigator.pop(context);
             }
           },
         ),
