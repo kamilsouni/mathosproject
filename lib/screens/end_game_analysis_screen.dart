@@ -337,7 +337,7 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen>
     } else if (widget.score == widget.initialRecord) {
       return "Égalité avec votre record !\nContinuez comme ça !";
     } else {
-      return "Record à battre: ${widget.initialRecord}\nVous y êtes presque !";
+      return "Record à battre: ${widget.initialRecord}\nTon score ? Juste un obstacle sur le chemin du champion!";
     }
   }
 

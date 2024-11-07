@@ -106,14 +106,11 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
     final equation = MathTestUtils.generateQuestion(difficultyLevel, 'Mixte');
     final answer = equation['answer'] as int;
 
-    // Si on obtient une équation avec 0 / x = 0, on en génère une nouvelle
-    if (equation['question'].contains('÷') &&
-        equation['question'].startsWith('0') &&
-        answer == 0) {
+    // Si on obtient une équation avec 0 dans une multiplication ou division par 0, on en génère une nouvelle
+    if ((equation['question'].contains('×') || equation['question'].contains('÷')) &&
+        (equation['question'].startsWith('0') || answer == 0)) {
       return _generateEquationWithHole(difficultyLevel);
     }
-
-
 
     String question;
     List<String> choices = [];
@@ -130,15 +127,10 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
         ? '×'
         : '÷';
 
-    // Si on a une division et que a est 0, on génère une nouvelle équation
-    if (operator == '÷' && a == 0) {
+    // Vérifier si l'opérateur est ambigu (c'est-à-dire que plusieurs opérateurs peuvent mener au même résultat)
+    if (_isAmbiguousOperator(a, b, answer)) {
       return _generateEquationWithHole(difficultyLevel);
     }
-
-    if (a == 0 && b == 0 && answer == 0) {
-      return _generateEquationWithHole(difficultyLevel);
-    }
-
 
     if (holePosition == 0) {
       question = '[ ? ] $operator $b = $answer';
@@ -148,9 +140,6 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       choices = _generateChoices(b.toString(), answer);
     } else {
       question = '$a [ ? ] $b = $answer';
-      if (_isAmbiguousOperator(a, b, answer)) {
-        return _generateEquationWithHole(difficultyLevel);
-      }
       choices = _generateOperatorChoices(operator);
     }
 
@@ -161,6 +150,7 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
       'holePosition': holePosition,
     };
   }
+
 
   List<String> _generateChoices(String correctAnswer, int answer) {
     final rand = Random();
