@@ -11,6 +11,7 @@ import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
 import 'package:mathosproject/widgets/pixel_circle.dart';
 import 'package:mathosproject/widgets/pixel_transition.dart';
+import 'dart:math' as math; // Ajoutez cet import en haut du fichier
 
 class ModeSelectionScreen extends StatefulWidget {
   final AppUser profile;
@@ -204,23 +205,99 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
     return Scaffold(
       backgroundColor: Color(0xFF564560),
       body: SafeArea(
-        child: Column(
-          children: [
-            _buildLogo(),
-            Expanded(
-              child: GridView.builder(
-                padding: EdgeInsets.all(16),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final safeAreaHeight = constraints.maxHeight;
+            final safeAreaWidth = constraints.maxWidth;
+            final availableHeight = safeAreaHeight * 0.9;
+            final logoHeight = availableHeight * 0.15;
+            final buttonSize = math.min(
+                (safeAreaWidth * 0.85) / 2,
+                (availableHeight * 0.78) / 3
+            );
+
+            return Column(
+              children: [
+                // Logo section avec espace ajusté
+                SizedBox(
+                  height: logoHeight,
+                  child: Center(
+                    child: Image.asset(
+                      'assets/logov3.png',
+                      height: logoHeight * 0.9, // Réduit légèrement la taille du logo
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
-                itemCount: modes.length,
-                itemBuilder: (context, index) => _buildModeButton(index),
-              ),
-            ),
-          ],
+                // Ajout d'un espace supplémentaire après le logo
+                SizedBox(height: buttonSize * 0.2), // Espace supplémentaire
+                // Grid section
+                Expanded(
+                  child: Center(
+                    child: Container(
+                      width: buttonSize * 2.2,
+                      child: GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 1,
+                          crossAxisSpacing: buttonSize * 0.1,
+                          mainAxisSpacing: buttonSize * 0.1,
+                        ),
+                        itemCount: modes.length,
+                        itemBuilder: (context, index) => MouseRegion(
+                          onEnter: (_) => _onHover(index, true),
+                          onExit: (_) => _onHover(index, false),
+                          child: PixelCircle(
+                            color: modes[index]['color'] as Color,
+                            size: buttonSize,
+                            onPressed: () => _selectMode(index),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: buttonSize * 0.4,
+                                  child: Image.asset(
+                                    modes[index]['icon'],
+                                    fit: BoxFit.contain,
+                                  ),
+                                ),
+                                SizedBox(height: buttonSize * 0.05),
+                                // Texte avec taille réduite
+                                Container(
+                                  height: buttonSize * 0.2,
+                                  width: buttonSize * 0.8, // Limite la largeur du texte
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown, // Change à scaleDown pour éviter le débordement
+                                    child: Text(
+                                      modes[index]['name'],
+                                      style: TextStyle(
+                                        fontFamily: 'PixelFont',
+                                        fontSize: buttonSize * 0.08, // Taille de police proportionnelle au bouton
+                                        color: Colors.white,
+                                        shadows: [
+                                          Shadow(
+                                            color: Colors.black54,
+                                            offset: Offset(1, 1),
+                                            blurRadius: 2,
+                                          ),
+                                        ],
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         ),
       ),
       bottomNavigationBar: CustomBottomNavigationBar(
