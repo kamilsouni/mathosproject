@@ -45,7 +45,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
+    final Size screenSize = MediaQuery.of(context).size;
+    final double verticalSpacing = screenSize.height * 0.015;
+    final double horizontalPadding = screenSize.width * 0.04;
 
     return Scaffold(
       appBar: TopAppBar(
@@ -62,59 +64,70 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: Container(
         color: Color(0xFF564560),
+        height: screenSize.height, // Force le conteneur à prendre toute la hauteur
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                SizedBox(height: screenHeight * 0.02),
+                SizedBox(height: verticalSpacing),
                 _buildSection('Règles du jeu', [
-                  _buildSubsection('Modes de jeu', _showGameModesDialog),
-                  _buildSubsection('Système de points', _showScoringSystemDialog),
-                ]),
+                  _buildSubsection('Modes de jeu', _showGameModesDialog, screenSize),
+                  _buildSubsection('Système de points', _showScoringSystemDialog, screenSize),
+                ], screenSize),
                 _buildSection('Paramètres', [
-                  _buildToggleSubsection('Effets sonores', _soundEffectsEnabled, (value) {
-                    setState(() {
-                      _soundEffectsEnabled = value;
-                      SoundManager.setSoundEnabled(value);
-                    });
-                  }),
-                  _buildToggleSubsection('Notifications', _notificationsEnabled, (value) {
-                    setState(() {
-                      _notificationsEnabled = value;
-                      if (_notificationsEnabled) {
-                        NotificationService.scheduleDailyNotification();
-                      } else {
-                        NotificationService.cancelAllNotifications();
-                      }
-                      _saveSettings(); // Sauvegarde l'état des notifications
-                    });
-                  }),
-                ]),
+                  _buildToggleSubsection(
+                    'Effets sonores',
+                    _soundEffectsEnabled,
+                        (value) {
+                      setState(() {
+                        _soundEffectsEnabled = value;
+                        SoundManager.setSoundEnabled(value);
+                      });
+                    },
+                    screenSize,
+                  ),
+                  _buildToggleSubsection(
+                    'Notifications',
+                    _notificationsEnabled,
+                        (value) {
+                      setState(() {
+                        _notificationsEnabled = value;
+                        if (_notificationsEnabled) {
+                          NotificationService.scheduleDailyNotification();
+                        } else {
+                          NotificationService.cancelAllNotifications();
+                        }
+                        _saveSettings();
+                      });
+                    },
+                    screenSize,
+                  ),
+                ], screenSize),
                 _buildSection('Confidentialité', [
                   _buildSubsection('Politique', () {
-                    _showDialog('Politique', 'Vos données personnelles sont synchronisées et stockées via Firebase et Hive. Elles sont utilisées uniquement pour améliorer votre expérience de jeu et ne seront jamais partagées avec des tiers.');
-                  }),
+                    _showDialog('Politique', 'Vos données personnelles sont synchronisées et stockées via Firebase et Hive. Elles sont utilisées uniquement pour améliorer votre expérience de jeu et ne seront jamais partagées avec des tiers.', screenSize);
+                  }, screenSize),
                   _buildSubsection('Conditions', () {
-                    _showDialog('Conditions', 'En utilisant cette application, vous acceptez de respecter les règles du jeu et de ne pas utiliser de méthodes non autorisées pour améliorer votre score.');
-                  }),
-                ]),
+                    _showDialog('Conditions', 'En utilisant cette application, vous acceptez de respecter les règles du jeu et de ne pas utiliser de méthodes non autorisées pour améliorer votre score.', screenSize);
+                  }, screenSize),
+                ], screenSize),
                 _buildSection('À propos', [
                   _buildSubsection('Développeurs', () {
-                    _showDialog('Développeurs', 'Cette application a été conçue avec amour, café et... quelques assistants IA. Si vous trouvez un bug, dites-vous que même les IA ne sont pas parfaites (mais elles s\'en approchent). Merci aux robots qui nous aident à calculer plus vite que jamais !');
-                  }),
+                    _showDialog('Développeurs', 'Cette application a été conçue avec amour, café et... quelques assistants IA. Si vous trouvez un bug, dites-vous que même les IA ne sont pas parfaites (mais elles s\'en approchent). Merci aux robots qui nous aident à calculer plus vite que jamais !', screenSize);
+                  }, screenSize),
                   _buildSubsection('Version', () {
-                    _showDialog('Version', '1.0');
-                  }),
-                ]),
+                    _showDialog('Version', '1.0', screenSize);
+                  }, screenSize),
+                ], screenSize),
                 _buildSection('Mode hors-ligne', [
                   _buildSubsection('Fonctionnement', () {
-                    _showDialog('Fonctionnement hors-ligne', 'Tout est accessible hors ligne sauf le mode compétition. Si une compétition est en cours avec une connexion instable, celle-ci fonctionne en mode dégradé.');
-                  }),
-                ]),
-                SizedBox(height: screenHeight * 0.02),
+                    _showDialog('Fonctionnement hors-ligne', 'Tout est accessible hors ligne sauf le mode compétition. Si une compétition est en cours avec une connexion instable, celle-ci fonctionne en mode dégradé.', screenSize);
+                  }, screenSize),
+                ], screenSize),
+                SizedBox(height: verticalSpacing * 2),
               ],
             ),
           ),
@@ -142,7 +155,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Widget _buildSection(String title, List<Widget> children) {
+  Widget _buildSection(String title, List<Widget> children, Size screenSize) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -150,34 +163,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
           title,
           style: TextStyle(
             color: Colors.yellow,
-            fontSize: 16,
+            fontSize: screenSize.height * 0.02,
             fontFamily: 'PixelFont',
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(height: 8),
-        Column(
-          children: children.map((child) {
-            return Container(
-              height: 50,
-              child: child,
-            );
-          }).toList(),
-        ),
-        SizedBox(height: 16),
+        SizedBox(height: screenSize.height * 0.008),
+        ...children,
+        SizedBox(height: screenSize.height * 0.005),
       ],
     );
   }
 
-  Widget _buildSubsection(String title, VoidCallback onTap) {
+
+  Widget _buildSubsection(String title, VoidCallback onTap, Size screenSize) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        margin: EdgeInsets.only(bottom: 8),
+        height: screenSize.height * 0.06,
+        padding: EdgeInsets.symmetric(
+          vertical: screenSize.height * 0.015,
+          horizontal: screenSize.width * 0.04,
+        ),
+        margin: EdgeInsets.only(bottom: screenSize.height * 0.01),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(screenSize.width * 0.02),
           border: Border.all(color: Colors.yellow, width: 2),
         ),
         child: Row(
@@ -186,23 +197,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
             Expanded(
               child: Text(
                 title,
-                style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 12),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'PixelFont',
+                  fontSize: screenSize.height * 0.015,
+                ),
               ),
             ),
-            Icon(Icons.chevron_right, color: Colors.yellow, size: 24),
+            Icon(Icons.chevron_right, color: Colors.yellow, size: screenSize.height * 0.03),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildToggleSubsection(String title, bool value, Function(bool) onChanged) {
+  Widget _buildToggleSubsection(String title, bool value, Function(bool) onChanged, Size screenSize) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      margin: EdgeInsets.only(bottom: 8),
+      height: screenSize.height * 0.08,
+      padding: EdgeInsets.symmetric(
+        vertical: screenSize.height * 0.015,
+        horizontal: screenSize.width * 0.04,
+      ),
+      margin: EdgeInsets.only(bottom: screenSize.height * 0.01),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(screenSize.width * 0.02),
         border: Border.all(color: Colors.yellow, width: 2),
       ),
       child: Row(
@@ -211,7 +230,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Expanded(
             child: Text(
               title,
-              style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 12),
+              style: TextStyle(
+                color: Colors.white,
+                fontFamily: 'PixelFont',
+                fontSize: screenSize.height * 0.015,
+              ),
             ),
           ),
           Switch(
@@ -222,6 +245,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  void _showDialog(String title, String content, Size screenSize) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Color(0xFF564560),
+          title: Text(
+            title,
+            style: TextStyle(
+              color: Colors.yellow,
+              fontFamily: 'PixelFont',
+              fontSize: screenSize.height * 0.025,
+            ),
+          ),
+          content: Text(
+            content,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'PixelFont',
+              fontSize: screenSize.height * 0.02,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Fermer',
+                style: TextStyle(
+                  color: Colors.yellow,
+                  fontFamily: 'PixelFont',
+                  fontSize: screenSize.height * 0.02,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -354,28 +417,5 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showDialog(String title, String content) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFF564560),
-          title: Text(
-            title,
-            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
-          ),
-          content: Text(
-            content,
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 12),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Fermer', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 }

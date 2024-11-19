@@ -207,28 +207,27 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     widget.profile.points += _points; // Ajouter les points au profil de l'utilisateur
     updateProfile(widget.profile); // Mettre à jour le profil de l'utilisateur
 
-    // Utilisation du DialogManager pour afficher le message de validation
+    // Utilisation de showEntryDialog pour le message de validation
     DialogManager.showCustomDialog(
       context: context,
       title: 'Félicitations!',  // Titre du dialogue
       content: 'Vous avez validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}.',  // Contenu dynamique
       confirmText: 'OK',  // Texte du bouton de confirmation
-      cancelText: '',  // Pas de bouton "Annuler"
       onConfirm: () {
         Navigator.of(context).pop();  // Fermer le dialogue
         _validateLevel();  // Valider le niveau après avoir fermé le message de félicitations
-      },
+      }, buttonColor: Color(0xFF564560),
     );
   }
 
+
   void _showLevelUnlockedMessage() {
-    // Utilisation du DialogManager pour afficher le message de niveau débloqué
+    // Utilisation de showEntryDialog pour afficher le message de niveau débloqué
     DialogManager.showCustomDialog(
       context: context,
       title: 'Niveau débloqué!',  // Titre du dialogue
       content: 'Vous avez débloqué le niveau ${widget.level + 1}.',  // Contenu dynamique
       confirmText: 'OK',  // Texte du bouton de confirmation
-      cancelText: '',  // Pas de bouton "Annuler"
       onConfirm: () {
         Navigator.of(context).pop();  // Fermer le dialogue
         Navigator.pushReplacement(
@@ -237,9 +236,10 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
             builder: (context) => ProgressionModeScreen(profile: widget.profile),  // Naviguer vers l'écran de progression
           ),
         );
-      },
+      }, buttonColor: Color(0xFF564560),
     );
   }
+
 
 
   void _endTest() {
@@ -259,13 +259,12 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   }
 
   void _showEncouragementMessage() {
-    // Utilisation du DialogManager pour afficher le message d'encouragement
+    // Utilisation de showEntryDialog pour afficher le message d'encouragement
     DialogManager.showCustomDialog(
       context: context,
       title: 'Essayez encore!',  // Titre du dialogue
       content: 'Vous n\'avez pas encore validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}. Essayez encore!',  // Contenu dynamique
       confirmText: 'OK',  // Texte du bouton de confirmation
-      cancelText: '',  // Pas de bouton "Annuler"
       onConfirm: () {
         Navigator.of(context).pop();  // Fermer le dialogue
         Navigator.pushReplacement(
@@ -274,9 +273,10 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
             builder: (context) => ProgressionModeScreen(profile: widget.profile),  // Naviguer vers l'écran de progression
           ),
         );
-      },
+      }, buttonColor: Color(0xFF564560),
     );
   }
+
 
 
   @override

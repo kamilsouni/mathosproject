@@ -172,8 +172,7 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
         },
       ),
       confirmText: '',
-      cancelText: 'Annuler',
-      onConfirm: () {},
+      onConfirm: () {}, buttonColor: Colors.green,
     );
 
     if (selectedFlag != null) {
@@ -214,12 +213,12 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       title: 'Confirmation',  // Titre du dialogue
       content: action == 'delete'
           ? 'Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.'
-          : 'Êtes-vous sûr de vouloir vous déconnecter ?',  // Message dynamique
+          : 'Êtes-vous sûr de vouloir vous déconnecter ?',  // Message dynamique en fonction de l'action
       confirmText: action == 'delete' ? 'Supprimer' : 'Déconnecter',  // Texte du bouton de confirmation
-      cancelText: 'Annuler',  // Texte du bouton d'annulation
-      onConfirm: onConfirm,  // Action à exécuter après confirmation
+      onConfirm: onConfirm, buttonColor: Colors.red,  // Action à exécuter après confirmation
     );
   }
+
 
 
   void _deleteProfile() {
@@ -537,13 +536,13 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       case 'Diamant':
         return Colors.white;
       case 'Or':
-        return Colors.yellow;
+        return Colors.white;
       case 'Argent':
-        return Colors.yellow;
+        return Colors.white;
       case 'Bronze':
-        return Colors.yellow;
+        return Colors.white;
       default:
-        return Colors.yellow;
+        return Colors.white;
     }
   }
 
@@ -554,19 +553,18 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
       contentWidget: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          _buildBadgeRow('Diamant', _profile.points >= 100000),
-          _buildBadgeRow('Or', _profile.points >= 20000),
-          _buildBadgeRow('Argent', _profile.points >= 10000),
-          _buildBadgeRow('Bronze', _profile.points >= 9999),
+          _buildBadgeRow('Diamant', _profile.points >= 1000000),
+          _buildBadgeRow('Or', _profile.points >= 200000),
+          _buildBadgeRow('Argent', _profile.points >= 100000),
+          _buildBadgeRow('Bronze', _profile.points >= 99999),
           _buildBadgeRow('Chocolat', _profile.points >= 999),
         ],
       ),
       confirmText: 'Partager',  // Bouton "Partager"
-      cancelText: 'Fermer',     // Bouton "Fermer"
       onConfirm: () {
         Navigator.of(context).pop();
         _shareBadgeOnWhatsApp(currentBadge);  // Partage du badge
-      },
+      }, buttonColor: Colors.green,
     );
   }
 
@@ -620,163 +618,134 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
 
   void _changeName() {
     TextEditingController nameController = TextEditingController();
-    showDialog(
+
+    DialogManager.showCustomDialogWithWidget(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFF564560),
-          title: Text(
-            'Modifier le nom',
-            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
+      title: 'Modifier le nom',
+      contentWidget: TextField(
+        controller: nameController,
+        style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+        decoration: InputDecoration(
+          hintText: 'Nouveau nom',
+          hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(color: Colors.yellow),
           ),
-          content: TextField(
-            controller: nameController,
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
-            decoration: InputDecoration(
-              hintText: 'Nouveau nom',
-              hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
-              border: OutlineInputBorder(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                String newName = nameController.text.trim();
-                if (newName.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Le nom ne peut pas être vide')),
-                  );
-                  return;
-                }
+        ),
+      ),
+      confirmText: 'Valider',
+      onConfirm: () async {
+        String newName = nameController.text.trim();
+        if (newName.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Le nom ne peut pas être vide')),
+          );
+          return;
+        }
 
-                bool nameExists = await FirebaseFirestore.instance
-                    .collection('profiles')
-                    .where('name', isEqualTo: newName)
-                    .get()
-                    .then((snapshot) => snapshot.docs.isNotEmpty);
+        bool nameExists = await FirebaseFirestore.instance
+            .collection('profiles')
+            .where('name', isEqualTo: newName)
+            .get()
+            .then((snapshot) => snapshot.docs.isNotEmpty);
 
-                if (nameExists) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Ce nom existe déjà, veuillez en choisir un autre.')),
-                  );
-                } else {
-                  setState(() {
-                    _profile.name = newName;
-                  });
-                  await UserPreferences.updateProfileInFirestore(_profile);
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Nom modifié avec succès.')),
-                  );
-                }
-              },
-              child: Text('Valider', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Annuler', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
-            ),
-          ],
-        );
+        if (nameExists) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Ce nom existe déjà, veuillez en choisir un autre.')),
+          );
+        } else {
+          setState(() {
+            _profile.name = newName;
+          });
+          await UserPreferences.updateProfileInFirestore(_profile);
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Nom modifié avec succès.')),
+          );
+        }
       },
+      buttonColor: Colors.green, // Couleur verte pour le bouton de validation
     );
   }
 
-  void _changePassword() async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
 
-    // Vérifier si l'utilisateur est connecté via Google
-    List<UserInfo> providerData = currentUser?.providerData ?? [];
-    bool isGoogleUser = providerData.any((userInfo) => userInfo.providerId == 'google.com');
 
-    if (isGoogleUser) {
-      // Cas d'un utilisateur Google, on ne peut pas changer le mot de passe directement
-      _showGoogleUserPasswordMessage();
-    } else {
-      // Cas d'un utilisateur classique avec mot de passe
-      TextEditingController oldPasswordController = TextEditingController();
-      TextEditingController newPasswordController = TextEditingController();
 
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Color(0xFF564560),
-            title: Text(
-              'Modifier le mot de passe',
-              style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: oldPasswordController,
-                  obscureText: true,
-                  style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
-                  decoration: InputDecoration(
-                    hintText: 'Ancien mot de passe',
-                    hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextField(
-                  controller: newPasswordController,
-                  obscureText: true,
-                  style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
-                  decoration: InputDecoration(
-                    hintText: 'Nouveau mot de passe',
-                    hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () async {
-                  String oldPassword = oldPasswordController.text.trim();
-                  String newPassword = newPasswordController.text.trim();
+  void _changePassword() {
+    TextEditingController oldPasswordController = TextEditingController();
+    TextEditingController newPasswordController = TextEditingController();
 
-                  if (newPassword.length < 6) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Le mot de passe doit contenir au moins 6 caractères.')),
-                    );
-                    return;
-                  }
-
-                  try {
-                    // Réauthentification avant modification du mot de passe
-                    AuthCredential credential = EmailAuthProvider.credential(
-                      email: currentUser!.email!,
-                      password: oldPassword,
-                    );
-                    await currentUser.reauthenticateWithCredential(credential);
-
-                    // Mise à jour du mot de passe
-                    await currentUser.updatePassword(newPassword);
-                    Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Mot de passe modifié avec succès.')),
-                    );
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Erreur lors de la modification du mot de passe.')),
-                    );
-                  }
-                },
-                child: Text('Valider', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+    DialogManager.showCustomDialogWithWidget(
+      context: context,
+      title: 'Modifier le mot de passe',
+      contentWidget: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: oldPasswordController,
+            obscureText: true,
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+            decoration: InputDecoration(
+              hintText: 'Ancien mot de passe',
+              hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: Colors.yellow),
               ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Annuler', style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont')),
+            ),
+          ),
+          SizedBox(height: 10),
+          TextField(
+            controller: newPasswordController,
+            obscureText: true,
+            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
+            decoration: InputDecoration(
+              hintText: 'Nouveau mot de passe',
+              hintStyle: TextStyle(color: Colors.white54, fontFamily: 'PixelFont'),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.zero,
+                borderSide: BorderSide(color: Colors.yellow),
               ),
-            ],
+            ),
+          ),
+        ],
+      ),
+      confirmText: 'Valider',
+      onConfirm: () async {
+        String oldPassword = oldPasswordController.text.trim();
+        String newPassword = newPasswordController.text.trim();
+
+        if (newPassword.length < 6) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Le mot de passe doit contenir au moins 6 caractères.')),
           );
-        },
-      );
-    }
+          return;
+        }
+
+        try {
+          User? currentUser = FirebaseAuth.instance.currentUser!;
+          AuthCredential credential = EmailAuthProvider.credential(
+            email: currentUser.email!,
+            password: oldPassword,
+          );
+
+          await currentUser.reauthenticateWithCredential(credential);
+          await currentUser.updatePassword(newPassword);
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Mot de passe modifié avec succès.')),
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erreur lors de la modification du mot de passe.')),
+          );
+        }
+      },
+      buttonColor: Colors.green, // Couleur verte pour le bouton de validation
+    );
   }
+
 
   void _showGoogleUserPasswordMessage() {
     showDialog(

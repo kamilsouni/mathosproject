@@ -157,9 +157,9 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
       title: mode,  // Le mode passé en paramètre sera le titre du dialogue
       content: modes.firstWhere((m) => m['name'] == mode)['description'],  // Description du mode
       confirmText: 'Commencer',  // Texte du bouton de confirmation
-      cancelText: 'Annuler',  // Texte du bouton d'annulation
-      onConfirm: onConfirm,  // Exécuter l'action lorsque l'utilisateur confirme
+      onConfirm: onConfirm, buttonColor:Colors.yellow,  // Exécuter l'action lorsque l'utilisateur confirme
     );
+
   }
 
   void _showButtonAnimation(int index) {

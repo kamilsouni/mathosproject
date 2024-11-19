@@ -6,6 +6,7 @@ import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 import 'package:mathosproject/widgets/PacManButton.dart';
+import 'package:mathosproject/dialog_manager.dart'; // Import du DialogManager
 
 class JoinCompetitionScreen extends StatefulWidget {
   final AppUser profile;
@@ -24,6 +25,18 @@ class _JoinCompetitionScreenState extends State<JoinCompetitionScreen> {
   void dispose() {
     _competitionIdController.dispose();
     super.dispose();
+  }
+
+  // Méthode pour afficher un dialogue d'erreur
+  Future<void> _showErrorDialog(String message) async {
+    await DialogManager.showCustomDialog(
+      context: context,
+      title: 'Erreur',
+      content: message,
+      confirmText: 'OK',
+      onConfirm: () {},
+      buttonColor: Colors.red, // Bouton rouge pour signaler une erreur
+    );
   }
 
   Future<void> _joinCompetition() async {
@@ -66,31 +79,23 @@ class _JoinCompetitionScreenState extends State<JoinCompetitionScreen> {
               ),
             );
           } else {
-            _showErrorSnackBar('Compétition non trouvée');
+            await _showErrorDialog('Compétition non trouvée');
           }
         } else {
           await UserPreferences.saveProfileLocally(widget.profile);
-          _showErrorSnackBar('Hors ligne. Les données seront synchronisées une fois la connexion rétablie.');
+          await _showErrorDialog(
+              'Hors ligne. Les données seront synchronisées une fois la connexion rétablie.');
         }
       } catch (e) {
-        _showErrorSnackBar('Erreur lors de la jointure : $e');
+        await _showErrorDialog('Erreur lors de la jointure : $e');
       }
     } else {
-      _showErrorSnackBar('Veuillez entrer un ID de compétition');
+      await _showErrorDialog('Veuillez entrer un ID de compétition');
     }
 
     setState(() {
       _isLoading = false;
     });
-  }
-
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
   }
 
   @override

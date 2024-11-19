@@ -253,52 +253,24 @@ class _CompetitionScreenState extends State<CompetitionScreen> with WidgetsBindi
 
   Widget _buildTestButton(String label, IconData icon, VoidCallback onPressed, int completedTests, int totalTests) {
     bool isEnabled = completedTests < totalTests;
+
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
         child: ElevatedButton(
-          onPressed: isEnabled ? () async {
-            bool shouldStart = await showDialog(
+          onPressed: isEnabled
+              ? () async {
+            // Afficher le même dialogue que dans ModeSelectionScreen
+            DialogManager.showCustomDialog(
               context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor: Color(0xFF564560),
-                  title: Text(
-                    'Commencer le test',
-                    style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont'),
-                  ),
-                  content: Text(
-                    'Une fois commencé, ce test sera comptabilisé même si vous l\'abandonnez.',
-                    style: TextStyle(color: Colors.white, fontFamily: 'PixelFont'),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text(
-                        'Annuler',
-                        style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont'),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                    ),
-                    TextButton(
-                      child: Text(
-                        'Commencer',
-                        style: TextStyle(color: Colors.green, fontFamily: 'PixelFont'),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                    ),
-                  ],
-                );
-              },
-            ) ?? false;
-
-            if (shouldStart) {
-              onPressed();
-            }
-          } : null,
+              title: label,
+              content: 'Une fois commencé, ce test sera comptabilisé même si vous l\'abandonnez.',
+              confirmText: 'Commencer',
+              onConfirm: onPressed, // Lancer l'action si confirmé
+              buttonColor: Colors.yellow,
+            );
+          }
+              : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: isEnabled ? Colors.yellow : Colors.yellow.withOpacity(0.3),
             padding: EdgeInsets.symmetric(vertical: 12.0),
@@ -346,6 +318,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> with WidgetsBindi
       ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {

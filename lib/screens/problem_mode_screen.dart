@@ -364,14 +364,14 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
 
     DialogManager.showCustomDialog(
       context: context,
-      title: title,
-      content: message,
-      confirmText: 'Continuer',
-      cancelText: '',
+      title: title,          // Titre du dialogue
+      content: message,      // Message ou contenu du dialogue
+      confirmText: 'Continuer',  // Texte du bouton de confirmation
       onConfirm: () {
         Navigator.of(context).pop();
-      },
+      }, buttonColor: Colors.green,
     );
+
   }
 
   Future<bool> _handleBackPress() async {
@@ -379,61 +379,38 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
 
     _countdownKey.currentState?.pauseTimer();
 
-    bool shouldPop = await showDialog<bool>(
+    bool? shouldPop = await DialogManager.showCustomDialogWithWidget<bool>(
       context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFF564560),
-          title: Text(
-            'Abandonner la partie ?',
-            style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 20),
-          ),
-          content: Text(
-            'Cette partie sera comptée comme perdue et ne pourra pas être rejouée.',
-            style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'Continuer la partie',
-                style: TextStyle(color: Colors.yellow, fontFamily: 'PixelFont', fontSize: 16),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-            ),
-            TextButton(
-              child: Text(
-                'Abandonner',
-                style: TextStyle(color: Colors.red, fontFamily: 'PixelFont', fontSize: 16),
-              ),
-              onPressed: () async {
-                setState(() {
-                  _isLoading = true;
-                  _isGameOver = true;
-                });
+      title: 'Abandonner la partie ?',
+      contentWidget: Text(
+        'Cette partie sera comptée comme perdue et ne pourra pas être rejouée.',
+        style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
+      ),
+      confirmText: 'Abandonner',
+      onConfirm: () async {
+        setState(() {
+          _isLoading = true;
+          _isGameOver = true;
+        });
 
-                await _updateCompetitionData();
+        await _updateCompetitionData();
 
-                setState(() {
-                  _isLoading = false;
-                });
+        setState(() {
+          _isLoading = false;
+        });
 
-                Navigator.of(context).pop(true);
-              },
-            ),
-          ],
-        );
+        Navigator.of(context).pop(true);
       },
-    ) ?? false;
+      buttonColor: Colors.red, // Bouton rouge pour signaler une action critique
+    );
 
-    if (!shouldPop) {
+    if (shouldPop == null || !shouldPop) {
       _countdownKey.currentState?.resumeTimer();
     }
 
-    return shouldPop;
+    return shouldPop ?? false;
   }
+
 
   @override
   Widget build(BuildContext context) {

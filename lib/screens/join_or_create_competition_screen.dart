@@ -7,6 +7,7 @@ import 'package:mathosproject/screens/competition_screen.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/utils/hive_data_manager.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
+import 'package:mathosproject/dialog_manager.dart';
 
 class JoinOrCreateCompetitionScreen extends StatefulWidget {
   final AppUser profile;
@@ -64,17 +65,18 @@ class _JoinOrCreateCompetitionScreenState
         await FirebaseFirestore.instance.collection('competitions').get();
 
         final competitions = await Future.wait(
-            competitionsSnapshot.docs.map((doc) async {
-              final participantSnapshot =
-              await doc.reference.collection('participants').doc(userId).get();
-              if (participantSnapshot.exists) {
-                return {
-                  'id': doc.id,
-                  'name': doc.data()['name'],
-                };
-              }
-              return null;
-            }).toList());
+          competitionsSnapshot.docs.map((doc) async {
+            final participantSnapshot =
+            await doc.reference.collection('participants').doc(userId).get();
+            if (participantSnapshot.exists) {
+              return {
+                'id': doc.id,
+                'name': doc.data()['name'],
+              };
+            }
+            return null;
+          }).toList(),
+        );
 
         setState(() {
           _competitions = competitions.whereType<Map<String, dynamic>>().toList();
@@ -88,16 +90,29 @@ class _JoinOrCreateCompetitionScreenState
             'competitions', 'user_$userId');
 
         setState(() {
-          _competitions = localCompetitions?.map((e) => Map<String, dynamic>.from(e)).toList() ?? [];
+          _competitions =
+              localCompetitions?.map((e) => Map<String, dynamic>.from(e)).toList() ??
+                  [];
           _isLoading = false;
         });
       }
     } catch (e) {
-      print('Erreur lors de la récupération des compétitions: $e');
+      await _showErrorDialog('Erreur lors de la récupération des compétitions : $e');
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _showErrorDialog(String message) async {
+    await DialogManager.showCustomDialog(
+      context: context,
+      title: 'Erreur',
+      content: message,
+      confirmText: 'OK',
+      onConfirm: () {},
+      buttonColor: Colors.red,
+    );
   }
 
   Widget _buildCompetitionButton({
@@ -144,7 +159,8 @@ class _JoinOrCreateCompetitionScreenState
       return Center(
         child: Text(
           'Aucune compétition rejointe',
-          style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
+          style:
+          TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
         ),
       );
     }
@@ -226,7 +242,10 @@ class _JoinOrCreateCompetitionScreenState
                       children: [
                         Text(
                           'Créez ou rejoignez une compétition',
-                          style: TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 22),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'PixelFont',
+                              fontSize: 22),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -244,8 +263,9 @@ class _JoinOrCreateCompetitionScreenState
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CreateCompetitionScreen(
-                                    profile: widget.profile),
+                                builder: (context) =>
+                                    CreateCompetitionScreen(
+                                        profile: widget.profile),
                               ),
                             ).then((_) => _fetchCompetitions());
                           },
@@ -257,8 +277,9 @@ class _JoinOrCreateCompetitionScreenState
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => JoinCompetitionScreen(
-                                    profile: widget.profile),
+                                builder: (context) =>
+                                    JoinCompetitionScreen(
+                                        profile: widget.profile),
                               ),
                             ).then((_) => _fetchCompetitions());
                           },

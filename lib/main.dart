@@ -36,6 +36,16 @@ void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
+    // Configurer la couleur de la barre de navigation Android
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: Color(0xFF564560), // Couleur violette
+        systemNavigationBarIconBrightness: Brightness.light, // Icônes claires
+        statusBarColor: Color(0xFF564560), // Couleur de la barre d'état
+        statusBarIconBrightness: Brightness.light, // Icônes de la barre d'état claires
+      ),
+    );
+
     runApp(
       MaterialApp(
         home: FutureBuilder(

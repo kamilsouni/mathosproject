@@ -232,7 +232,6 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
       title: 'Niveau débloqué!',  // Titre du dialogue
       content: 'Vous avez débloqué le niveau suivant.',  // Contenu du message
       confirmText: 'OK',  // Texte du bouton de confirmation
-      cancelText: '',  // Pas de bouton "Annuler"
       onConfirm: () {
         Navigator.of(context).pop();  // Fermer le dialogue
         Navigator.pushReplacement(
@@ -241,7 +240,7 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
             builder: (context) => ProgressionModeScreen(profile: widget.profile),  // Naviguer vers l'écran de progression
           ),
         );
-      },
+      }, buttonColor: Colors.green,
     );
   }
 
@@ -253,7 +252,6 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
       title: 'Nouvelle Astuce Disponible!',  // Titre du dialogue
       content: 'Une nouvelle astuce est disponible.',  // Contenu du message
       confirmText: 'OK',  // Texte du bouton de confirmation
-      cancelText: '',  // Pas de bouton "Annuler"
       onConfirm: () {
         Navigator.of(context).pop();  // Fermer le dialogue
         Navigator.pushReplacement(
@@ -262,8 +260,9 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
             builder: (context) => RewardModeScreen(profile: widget.profile),  // Naviguer vers l'écran de récompense
           ),
         );
-      },
+      }, buttonColor: Colors.green,
     );
   }
+
 
 }

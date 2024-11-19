@@ -4,7 +4,8 @@ import 'package:mathosproject/screens/mode_selection_screen.dart';
 import 'package:mathosproject/screens/stats_screen.dart';
 import 'package:mathosproject/screens/profile_detail_screen.dart';
 import 'package:mathosproject/screens/settings_screen.dart';
-import 'package:mathosproject/sound_manager.dart';  // Import the SoundManager
+import 'package:mathosproject/sound_manager.dart'; // Import the SoundManager
+
 class CustomBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
   final AppUser profile;
@@ -19,14 +20,11 @@ class CustomBottomNavigationBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,
       decoration: BoxDecoration(
         color: Color(0xFF564560),
         border: Border(
-          top: BorderSide(
-            color: Colors.yellow,
-            width: 3,
-          ),
+          top: BorderSide(color: Colors.yellow, width: 3), // Ligne jaune au-dessus
+          bottom: BorderSide(color: Colors.yellow, width: 3), // Ligne jaune en dessous
         ),
       ),
       child: SafeArea(
