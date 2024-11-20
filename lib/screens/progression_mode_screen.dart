@@ -34,7 +34,6 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
       ),
     );
 
-
     // Initialiser la progression avec les valeurs par défaut
     for (int i = 1; i <= 10; i++) {
       _progress[i] = {
@@ -64,78 +63,97 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: TopAppBar(title: 'Mode Progression', showBackButton: true),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              color: Color(0xFF564560), // Couleur de fond pour un effet rétro
-            ),
+    return WillPopScope(
+      onWillPop: () async {
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            statusBarColor: Color(0xFF564560),
+            statusBarIconBrightness: Brightness.light,
           ),
-          Center(
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: screenWidth * 0.9,
-                ),
-                child: ListView(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    for (int level = 1; level <= 10; level++) ...[
-                      Card(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        color: Colors.white.withOpacity(0.5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                          side: BorderSide(color: Colors.yellow, width: 2),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                'Niveau $level',
-                                style: TextStyle(
-                                    fontFamily: 'PixelFont', // Utiliser une police pixel art
-                                    fontSize: screenWidth * 0.04, // Taille adaptée au style rétro
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.yellow
+        );
+        return true;
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: TopAppBar(
+          title: 'Mode Progression',
+          showBackButton: true,
+          onBackPressed: () {
+            SystemChrome.setSystemUIOverlayStyle(
+              const SystemUiOverlayStyle(
+                statusBarColor: Color(0xFF564560),
+                statusBarIconBrightness: Brightness.light,
+              ),
+            );
+            Navigator.of(context).pop();
+          },
+        ),
+        body: Container(
+          color: Color(0xFF564560),
+          child: SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: screenWidth * 0.9,
+                  ),
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: [
+                      for (int level = 1; level <= 10; level++) ...[
+                        Card(
+                          margin: EdgeInsets.symmetric(vertical: 10),
+                          color: Colors.white.withOpacity(0.5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            side: BorderSide(color: Colors.yellow, width: 2),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Niveau $level',
+                                  style: TextStyle(
+                                      fontFamily: 'PixelFont',
+                                      fontSize: screenWidth * 0.04,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.yellow
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  _buildOperationButton('Addition', level, screenWidth, screenHeight),
-                                  _buildOperationButton('Soustraction', level, screenWidth, screenHeight),
-                                  _buildOperationButton('Multiplication', level, screenWidth, screenHeight),
-                                  _buildOperationButton('Division', level, screenWidth, screenHeight),
-                                  _buildOperationButton('Mixte', level, screenWidth, screenHeight, isMixte: true),
-                                ],
-                              ),
-                            ],
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _buildOperationButton('Addition', level, screenWidth, screenHeight),
+                                    _buildOperationButton('Soustraction', level, screenWidth, screenHeight),
+                                    _buildOperationButton('Multiplication', level, screenWidth, screenHeight),
+                                    _buildOperationButton('Division', level, screenWidth, screenHeight),
+                                    _buildOperationButton('Mixte', level, screenWidth, screenHeight, isMixte: true),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ]
-                  ],
+                      ]
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ],
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(
-        selectedIndex: _selectedIndex,
-        profile: widget.profile,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
+        ),
+        bottomNavigationBar: CustomBottomNavigationBar(
+          selectedIndex: _selectedIndex,
+          profile: widget.profile,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+            });
+          },
+        ),
       ),
     );
   }

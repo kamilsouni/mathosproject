@@ -1,71 +1,111 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 
-class RewardModeScreen extends StatelessWidget {
+class RewardModeScreen extends StatefulWidget {
   final AppUser profile;
 
   RewardModeScreen({required this.profile});
+
+  @override
+  State<RewardModeScreen> createState() => _RewardModeScreenState();
+}
+
+class _RewardModeScreenState extends State<RewardModeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: TopAppBar(title: 'Récompenses et Astuces', showBackButton: true),
-      body: Container(
-        color: Color(0xFF564560), // Fond violet
-        child: SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.all(16),
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    int level = index + 1;
-                    return Card(
-                      margin: EdgeInsets.only(bottom: 16),
-                      color: Colors.white.withOpacity(0.1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(color: Colors.yellow, width: 2),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Niveau $level',
-                              style: TextStyle(
-                                fontFamily: 'PixelFont',
-                                fontSize: screenWidth * 0.06,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.yellow,
-                              ),
-                            ),
-                            SizedBox(height: 16),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                _buildTipButton(context, 'Addition', level, screenWidth, screenHeight),
-                                _buildTipButton(context, 'Soustraction', level, screenWidth, screenHeight),
-                                _buildTipButton(context, 'Multiplication', level, screenWidth, screenHeight),
-                                _buildTipButton(context, 'Division', level, screenWidth, screenHeight),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+    return WillPopScope(
+      onWillPop: () async {
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            statusBarColor: Color(0xFF564560),
+            statusBarIconBrightness: Brightness.light,
+          ),
+        );
+        return true;
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: TopAppBar(
+          title: 'Récompenses et Astuces',
+          showBackButton: true,
+          onBackPressed: () {
+            SystemChrome.setSystemUIOverlayStyle(
+              const SystemUiOverlayStyle(
+                statusBarColor: Color(0xFF564560),
+                statusBarIconBrightness: Brightness.light,
               ),
-            ],
+            );
+            Navigator.of(context).pop();
+          },
+        ),
+        body: Container(
+          color: Color(0xFF564560),
+          child: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(16),
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      int level = index + 1;
+                      return Card(
+                        margin: EdgeInsets.only(bottom: 16),
+                        color: Colors.white.withOpacity(0.1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          side: BorderSide(color: Colors.yellow, width: 2),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Niveau $level',
+                                style: TextStyle(
+                                  fontFamily: 'PixelFont',
+                                  fontSize: screenWidth * 0.06,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.yellow,
+                                ),
+                              ),
+                              SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildTipButton(context, 'Addition', level, screenWidth, screenHeight),
+                                  _buildTipButton(context, 'Soustraction', level, screenWidth, screenHeight),
+                                  _buildTipButton(context, 'Multiplication', level, screenWidth, screenHeight),
+                                  _buildTipButton(context, 'Division', level, screenWidth, screenHeight),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -73,7 +113,7 @@ class RewardModeScreen extends StatelessWidget {
   }
 
   Widget _buildTipButton(BuildContext context, String operation, int level, double screenWidth, double screenHeight) {
-    bool isAccessible = profile.progression[level]?[operation]?['validation'] == 1;
+    bool isAccessible = widget.profile.progression[level]?[operation]?['validation'] == 1;
 
     Color buttonColor = isAccessible ? Colors.yellow.withOpacity(0.7) : Colors.grey;
     String buttonText = _getOperationSymbol(operation);
@@ -130,58 +170,98 @@ class RewardModeScreen extends StatelessWidget {
 
 
 
-class TipDetailScreen extends StatelessWidget {
+
+class TipDetailScreen extends StatefulWidget {
   final int level;
   final String operation;
 
   TipDetailScreen({required this.level, required this.operation});
 
   @override
+  State<TipDetailScreen> createState() => _TipDetailScreenState();
+}
+
+class _TipDetailScreenState extends State<TipDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: TopAppBar(title: 'Astuce', showBackButton: true),
-      body: Container(
-        color: Color(0xFF564560), // Fond violet
-        child: SafeArea(
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minHeight: constraints.maxHeight,
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          '$operation - Niveau $level',
-                          style: TextStyle(
-                            fontFamily: 'VT323',
-                            fontSize: constraints.maxWidth * 0.06,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.yellow,
+    return WillPopScope(
+      onWillPop: () async {
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            statusBarColor: Colors.yellow,
+            statusBarIconBrightness: Brightness.dark,
+          ),
+        );
+        return true;
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: TopAppBar(
+          title: 'Astuce',
+          showBackButton: true,
+          onBackPressed: () {
+            SystemChrome.setSystemUIOverlayStyle(
+              const SystemUiOverlayStyle(
+                statusBarColor: Colors.yellow,
+                statusBarIconBrightness: Brightness.dark,
+              ),
+            );
+            Navigator.of(context).pop();
+          },
+        ),
+        body: Container(
+          color: Color(0xFF564560),
+          child: SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            '${widget.operation} - Niveau ${widget.level}',
+                            style: TextStyle(
+                              fontFamily: 'VT323',
+                              fontSize: constraints.maxWidth * 0.06,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.yellow,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: constraints.maxHeight * 0.02),
-                        Container(
-                          height: constraints.maxHeight * 0.7, // 70% de la hauteur de l'écran
-                          child: _getTipContent(level, operation, constraints),
-                        ),
-                      ],
+                          SizedBox(height: constraints.maxHeight * 0.02),
+                          Container(
+                            height: constraints.maxHeight * 0.7,
+                            child: _getTipContent(widget.level, widget.operation, constraints),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
     );
-  }
+    }
 
   Widget _buildTipContent(String content, BoxConstraints constraints) {
     return Container(

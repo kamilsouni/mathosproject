@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class GameAppBar extends StatefulWidget implements PreferredSizeWidget {
   final int points;
   final int lastChange;
-  final bool isInGame; // Nouveau paramètre pour indiquer si on est en jeu
-  final Function? onBackPressed; // Callback pour gérer le retour
+  final bool isInGame;
+  final bool isGameOver;
+  final Function? onBackPressed;
 
-  GameAppBar({
+  const GameAppBar({
+    Key? key,
     required this.points,
     required this.lastChange,
     this.isInGame = false,
+    this.isGameOver = false,
     this.onBackPressed,
-  });
+  }) : super(key: key);
 
   @override
   _GameAppBarState createState() => _GameAppBarState();
 
   @override
-  Size get preferredSize => Size.fromHeight(75);
+  Size get preferredSize => const Size.fromHeight(75);
 }
 
 class _GameAppBarState extends State<GameAppBar>
@@ -26,7 +30,6 @@ class _GameAppBarState extends State<GameAppBar>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   bool _showChange = false;
-
 
   @override
   void initState() {
@@ -62,6 +65,25 @@ class _GameAppBarState extends State<GameAppBar>
     super.dispose();
   }
 
+  Future<bool> _handleBackPress() async {
+    if (!widget.isInGame || widget.isGameOver) {
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          statusBarColor: Color(0xFF564560),
+          statusBarIconBrightness: Brightness.light,
+        ),
+      );
+      return true;
+    }
+
+    if (widget.onBackPressed != null) {
+      widget.onBackPressed!();
+      return false;
+    }
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -71,76 +93,75 @@ class _GameAppBarState extends State<GameAppBar>
     final pointsFontSize = screenSize.width * 0.04;
     final iconSize = screenSize.width * 0.08;
 
-    return PreferredSize(
-      preferredSize: Size.fromHeight(appBarHeight + statusBarHeight),
-      child: Container(
-        color: Colors.yellow,
-        child: SafeArea(
-          child: Container(
-            height: appBarHeight,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.arrow_left,
-                    color: Colors.black,
-                    size: iconSize,
+    return WillPopScope(
+      onWillPop: _handleBackPress,
+      child: PreferredSize(
+        preferredSize: Size.fromHeight(appBarHeight + statusBarHeight),
+        child: Container(
+          color: Colors.yellow,
+          child: SafeArea(
+            child: Container(
+              height: appBarHeight,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.arrow_left,
+                      color: Colors.black,
+                      size: iconSize,
+                    ),
+                    onPressed: () async {
+                      if (await _handleBackPress()) {
+                        Navigator.of(context).pop();
+                      }
+                    },
                   ),
-                  onPressed: () async {
-                    if (widget.isInGame && widget.onBackPressed != null) {
-                      // Si on est en jeu, utiliser le callback personnalisé
-                      widget.onBackPressed!();
-                    } else {
-                      // Sinon, navigation normale
-                      Navigator.pop(context);
-                    }
-                  },
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (_showChange && widget.lastChange != 0)
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: Text(
-                            '${widget.lastChange > 0 ? "+" : ""}${widget.lastChange}',
-                            style: TextStyle(
-                              fontFamily: 'PixelFont',
-                              fontSize: fontSize,
-                              fontWeight: FontWeight.bold,
-                              color: widget.lastChange > 0
-                                  ? Colors.green
-                                  : Colors.red,
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (_showChange && widget.lastChange != 0)
+                          FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Text(
+                              '${widget.lastChange > 0 ? "+" : ""}${widget.lastChange}',
+                              style: TextStyle(
+                                fontFamily: 'PixelFont',
+                                fontSize: fontSize,
+                                fontWeight: FontWeight.bold,
+                                color: widget.lastChange > 0
+                                    ? Colors.green
+                                    : Colors.red,
+                              ),
                             ),
                           ),
+                        SizedBox(width: screenSize.width * 0.02),
+                        Text(
+                          'Points:',
+                          style: TextStyle(
+                            fontFamily: 'PixelFont',
+                            fontSize: fontSize,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
-                      SizedBox(width: screenSize.width * 0.02),
-                      Text(
-                        'Points:',
-                        style: TextStyle(
-                          fontFamily: 'PixelFont',
-                          fontSize: fontSize,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                        SizedBox(width: screenSize.width * 0.02),
+                        Text(
+                          '${widget.points}',
+                          style: TextStyle(
+                            fontFamily: 'PixelFont',
+                            fontSize: pointsFontSize,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      SizedBox(width: screenSize.width * 0.02),
-                      Text(
-                        '${widget.points}',
-                        style: TextStyle(
-                          fontFamily: 'PixelFont',
-                          fontSize: pointsFontSize,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      SizedBox(width: screenSize.width * 0.02),
-                    ],
+                        SizedBox(width: screenSize.width * 0.02),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
