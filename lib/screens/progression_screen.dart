@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/widgets/RetroCalculator.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
@@ -50,10 +51,20 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   bool _isAnswerCorrect = false;
   bool _isSkipped = false;
 
+  // Variables pour la validation rapide
+  int _consecutiveQuickAnswers = 0; // Nombre de réponses consécutives rapides
+  double _totalQuickTime = 0; // Temps total pour les réponses rapides
+  final int _quickThreshold = 10; // Nombre de réponses rapides nécessaires
 
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     _difficultyLevel = widget.isCompetition || widget.isInitialTest ? 1 : widget.level;
     _currentAnswer = 0;
     _currentQuestion = "";
@@ -95,7 +106,26 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     if (_answerController.text.isNotEmpty) {
       int? userAnswer = int.tryParse(_answerController.text);
       if (userAnswer != null && userAnswer == _currentAnswer) {
-        submitAnswer();
+        _stopwatch.stop(); // Arrête le chronomètre pour la question
+        int responseTime = _stopwatch.elapsedMilliseconds; // Temps en millisecondes
+        double responseTimeInSeconds = responseTime / 1000; // Convertir en secondes
+
+        // Vérification de la rapidité
+        if (responseTimeInSeconds < 2) { // Si la réponse est rapide (< 2 secondes)
+          _consecutiveQuickAnswers++;
+          _totalQuickTime += responseTimeInSeconds;
+        } else {
+          _consecutiveQuickAnswers = 0; // Réinitialiser si la réponse est lente
+          _totalQuickTime = 0;
+        }
+
+        // Validation automatique si la condition est remplie
+        if (_consecutiveQuickAnswers >= _quickThreshold) {
+          _validateQuickly();
+          return; // Arrêter ici, le niveau est validé
+        }
+
+        submitAnswer(); // Continuer le traitement normal
       }
     }
     setState(() {}); // Pour forcer la mise à jour de l'affichage
@@ -113,50 +143,21 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   }
 
   void submitAnswer() {
-    MathTestUtils.submitAnswer(
-      userAnswer: _answerController.text,
-      correctAnswer: _currentAnswer,
-      responseTimes: _responseTimes,
-      stopwatch: _stopwatch,
-      answerHistory: _answerHistory,
-      operationResults: _operationResults,
-      operation: _currentOperation,
-      points: _points,
-      onCorrect: () {
-        setState(() {
-          _correctAnswers++;
-          _pointsChange = 10 * widget.level;
-          _points += _pointsChange;
-          _isAnswerCorrect = true;
-          _isSkipped = false;
-          if (_correctAnswers >= 30) {
-            _showValidationMessage();
-          }
-        });
-      },
-      onIncorrect: () {
-        setState(() {
-          _skippedQuestions++;
-          _pointsChange = -10;
-          _points -= 10;
-          _correctAnswers = _correctAnswers >= 2 ? _correctAnswers - 2 : 0;
-          _isAnswerCorrect = false;
-          _isSkipped = false;
-        });
-      },
-    );
-
-    // Réinitialiser l'état après un court délai
-    Future.delayed(Duration(milliseconds: 300), () {
-      setState(() {
-        _isAnswerCorrect = false;
-        _isSkipped = false;
-        _answerController.clear();
-      });
-      if (_correctAnswers < 30) {
-        generateQuestion();
-      }
+    setState(() {
+      _correctAnswers++;
+      _points += 10 * widget.level;
     });
+
+    // Redémarrer le chronomètre pour la prochaine question
+    _stopwatch.reset();
+    _stopwatch.start();
+
+    // Générer la prochaine question
+    if (_correctAnswers < 30) {
+      generateQuestion();
+    } else {
+      _showValidationMessage(); // Validation classique si toutes les questions sont complétées
+    }
   }
 
   void skipQuestion() {
@@ -177,6 +178,64 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     });
   }
 
+  void _validateQuickly() {
+    setState(() {
+      _correctAnswers = 30; // Considérer que toutes les réponses requises sont validées
+      _stopwatch.stop(); // Arrêter toute mesure de temps
+    });
+
+    // Ajouter les points au profil
+    widget.profile.points += _points;
+    updateProfile(widget.profile);
+
+    // Afficher un message pour informer l'utilisateur
+    DialogManager.showCustomDialog(
+      context: context,
+      title: 'Niveau validé !',
+      content: 'Vous avez validé ce niveau grâce à votre rapidité exceptionnelle.',
+      confirmText: 'OK',
+      onConfirm: () {
+        Navigator.of(context).pop();
+        _validateLevel(); // Passer au niveau suivant
+      },
+      buttonColor: Colors.green,
+    );
+  }
+
+  void _endTest() {
+    if (_correctAnswers < 30) {
+      _showEncouragementMessage();
+    } else {
+      widget.profile.points += _points; // Ajouter les points au profil de l'utilisateur
+      updateProfile(widget.profile).then((_) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProgressionModeScreen(profile: widget.profile),
+          ),
+        );
+      });
+    }
+  }
+
+  void _showEncouragementMessage() {
+    DialogManager.showCustomDialog(
+      context: context,
+      title: 'Essayez encore !',
+      content: 'Vous n\'avez pas encore validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}. Essayez encore !',
+      confirmText: 'OK',
+      onConfirm: () {
+        Navigator.of(context).pop();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProgressionModeScreen(profile: widget.profile),
+          ),
+        );
+      },
+      buttonColor: Color(0xFF564560),
+    );
+  }
 
   Future<void> updateProfile(AppUser profile) async {
     if (await ConnectivityManager().isConnected()) {
@@ -207,77 +266,37 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     widget.profile.points += _points; // Ajouter les points au profil de l'utilisateur
     updateProfile(widget.profile); // Mettre à jour le profil de l'utilisateur
 
-    // Utilisation de showEntryDialog pour le message de validation
     DialogManager.showCustomDialog(
       context: context,
-      title: 'Félicitations!',  // Titre du dialogue
-      content: 'Vous avez validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}.',  // Contenu dynamique
-      confirmText: 'OK',  // Texte du bouton de confirmation
+      title: 'Félicitations!',
+      content: 'Vous avez validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}.',
+      confirmText: 'OK',
       onConfirm: () {
-        Navigator.of(context).pop();  // Fermer le dialogue
-        _validateLevel();  // Valider le niveau après avoir fermé le message de félicitations
-      }, buttonColor: Color(0xFF564560),
+        Navigator.of(context).pop();
+        _validateLevel();
+      },
+      buttonColor: Colors.green,
     );
   }
-
 
   void _showLevelUnlockedMessage() {
-    // Utilisation de showEntryDialog pour afficher le message de niveau débloqué
     DialogManager.showCustomDialog(
       context: context,
-      title: 'Niveau débloqué!',  // Titre du dialogue
-      content: 'Vous avez débloqué le niveau ${widget.level + 1}.',  // Contenu dynamique
-      confirmText: 'OK',  // Texte du bouton de confirmation
+      title: 'Niveau débloqué!',
+      content: 'Vous avez débloqué le niveau ${widget.level + 1}.',
+      confirmText: 'OK',
       onConfirm: () {
-        Navigator.of(context).pop();  // Fermer le dialogue
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProgressionModeScreen(profile: widget.profile),  // Naviguer vers l'écran de progression
-          ),
-        );
-      }, buttonColor: Color(0xFF564560),
-    );
-  }
-
-
-
-  void _endTest() {
-    if (_correctAnswers < 30) {
-      _showEncouragementMessage();
-    } else {
-      widget.profile.points += _points; // Ajouter les points au profil de l'utilisateur
-      updateProfile(widget.profile).then((_) {
+        Navigator.of(context).pop();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => ProgressionModeScreen(profile: widget.profile),
           ),
         );
-      });
-    }
-  }
-
-  void _showEncouragementMessage() {
-    // Utilisation de showEntryDialog pour afficher le message d'encouragement
-    DialogManager.showCustomDialog(
-      context: context,
-      title: 'Essayez encore!',  // Titre du dialogue
-      content: 'Vous n\'avez pas encore validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}. Essayez encore!',  // Contenu dynamique
-      confirmText: 'OK',  // Texte du bouton de confirmation
-      onConfirm: () {
-        Navigator.of(context).pop();  // Fermer le dialogue
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProgressionModeScreen(profile: widget.profile),  // Naviguer vers l'écran de progression
-          ),
-        );
-      }, buttonColor: Color(0xFF564560),
+      },
+      buttonColor: Colors.green,
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -313,11 +332,12 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
                   question: _currentQuestion,
                   answer: _answerController.text,
                   controller: _answerController,
-                  onSubmit: skipQuestion,  // Changez ceci de submitAnswer à skipQuestion
+                  onSubmit: skipQuestion,
                   onDelete: () {
                     if (_answerController.text.isNotEmpty) {
                       setState(() {
-                        _answerController.text = _answerController.text.substring(0, _answerController.text.length - 1);
+                        _answerController.text =
+                            _answerController.text.substring(0, _answerController.text.length - 1);
                       });
                     }
                   },

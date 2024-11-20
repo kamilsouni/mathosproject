@@ -35,6 +35,14 @@ class _ProfileCreationScreenState extends State<ProfileCreationScreen> {
   @override
   void initState() {
     super.initState();
+
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+
     _loadFlags(); // Charger les drapeaux lors de l'initialisation
     _searchController.addListener(_filterFlags); // Ajouter un listener pour la recherche
   }

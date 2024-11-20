@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/problem_mode_screen.dart';
@@ -32,6 +33,12 @@ class _CompetitionScreenState extends State<CompetitionScreen> with WidgetsBindi
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     WidgetsBinding.instance.addObserver(this);
     _loadData();
     _setupConnectivityListener();

@@ -47,6 +47,12 @@ class _ProfileDetailScreenState extends State<ProfileDetailScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     _profile = widget.profile;
     refreshProfile();
     _loadFlags();

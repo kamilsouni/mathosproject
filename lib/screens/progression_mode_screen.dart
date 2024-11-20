@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/models/app_user.dart'; // Import AppUser
 import 'package:mathosproject/screens/progression_screen.dart';
@@ -25,6 +26,15 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
   @override
   void initState() {
     super.initState();
+
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
+
+
     // Initialiser la progression avec les valeurs par défaut
     for (int i = 1; i <= 10; i++) {
       _progress[i] = {

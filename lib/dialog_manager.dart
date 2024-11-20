@@ -110,7 +110,7 @@ class DialogManager {
                     style: TextStyle(
                       color: Colors.yellow,
                       fontFamily: 'PixelFont',
-                      fontSize: screenSize.width * 0.07,
+                      fontSize: screenSize.width * 0.05,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

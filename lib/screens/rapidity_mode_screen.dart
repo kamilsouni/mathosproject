@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/widgets/RetroCalculator.dart';
@@ -48,6 +49,12 @@ class _RapidityModeScreenState extends State<RapidityModeScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     _currentLevel = 1;
     _correctAnswersInRow = 0;
     _points = 0;

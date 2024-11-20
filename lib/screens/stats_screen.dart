@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/mode_selection_screen.dart';
 import 'package:mathosproject/screens/profile_detail_screen.dart';
@@ -56,6 +57,12 @@ class _StatsScreenState extends State<StatsScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     _profile = widget.profile;
     refreshProfile();
   }

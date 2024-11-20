@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
@@ -11,7 +12,9 @@ import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
 import 'package:mathosproject/widgets/pixel_circle.dart';
 import 'package:mathosproject/widgets/pixel_transition.dart';
-import 'dart:math' as math; // Ajoutez cet import en haut du fichier
+import 'dart:math' as math;
+
+import 'package:mathosproject/widgets/top_navigation_bar.dart'; // Ajoutez cet import en haut du fichier
 
 class ModeSelectionScreen extends StatefulWidget {
   final AppUser profile;
@@ -70,6 +73,12 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF564560),
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
     _controllers = List.generate(
       modes.length,
           (index) => AnimationController(

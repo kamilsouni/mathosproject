@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,13 +10,12 @@ import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
 import 'package:mathosproject/sound_manager.dart';
 import 'package:mathosproject/utils/notification_service.dart';
 import 'package:mathosproject/screens/home_screen.dart';
+import 'package:mathosproject/widgets/top_navigation_bar.dart';
 import 'firebase_options.dart';
 import 'screens/competition_screen.dart';
 
-// Fonction d'initialisation optimisée
 Future<void> initializeApp() async {
   try {
-    // Initialiser les services critiques en parallèle
     await Future.wait([
       Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform,
@@ -36,28 +34,31 @@ void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    // Configurer la couleur de la barre de navigation Android
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    // Configuration de base pour la barre de navigation uniquement
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        systemNavigationBarColor: Color(0xFF564560), // Couleur violette
-        systemNavigationBarIconBrightness: Brightness.light, // Icônes claires
-        statusBarColor: Color(0xFF564560), // Couleur de la barre d'état
-        statusBarIconBrightness: Brightness.light, // Icônes de la barre d'état claires
+      const SystemUiOverlayStyle(
+        systemNavigationBarColor: Color(0xFF564560),
+        systemNavigationBarIconBrightness: Brightness.light,
       ),
     );
 
     runApp(
       MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: FutureBuilder(
           future: initializeApp(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return Mathos();
+              return const Mathos();
             }
-            // Écran de chargement stylisé
             return Material(
               child: Container(
-                color: Color(0xFF564560),
+                color: const Color(0xFF564560),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -66,8 +67,8 @@ void main() {
                         'assets/logov2.png',
                         width: 200,
                       ),
-                      SizedBox(height: 20),
-                      CircularProgressIndicator(
+                      const SizedBox(height: 20),
+                      const CircularProgressIndicator(
                         valueColor: AlwaysStoppedAnimation<Color>(Colors.yellow),
                       ),
                     ],
@@ -85,14 +86,18 @@ void main() {
   });
 }
 
+
 class Mathos extends StatelessWidget {
+  const Mathos({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Mathos',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           headlineLarge: TextStyle(
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
@@ -112,9 +117,9 @@ class Mathos extends StatelessWidget {
           ),
         ),
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.grey).copyWith(
-          primary: Color(0xff000000),
-          secondary: Color(0xFF1abc9c),
-          error: Color(0xFFf1c40f),
+          primary: const Color(0xff000000),
+          secondary: const Color(0xFF1abc9c),
+          error: const Color(0xFFf1c40f),
         ),
       ),
       home: HomeScreen(),
@@ -138,11 +143,12 @@ class Mathos extends StatelessWidget {
 class ErrorApp extends StatelessWidget {
   final String error;
 
-  ErrorApp({required this.error});
+  const ErrorApp({Key? key, required this.error}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
           child: Text('Une erreur s\'est produite lors de l\'initialisation: $error'),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle, rootBundle;
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/screens/end_game_analysis_screen.dart';
 import 'package:mathosproject/user_preferences.dart';
@@ -52,6 +52,12 @@ class _ProblemModeScreenState extends State<ProblemModeScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     _currentLevel = 1;
     _correctAnswersInRow = 0;
     _currentQuestion = "";  // Initialisation de la variable

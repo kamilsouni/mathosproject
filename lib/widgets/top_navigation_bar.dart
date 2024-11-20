@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/mode_selection_screen.dart';
 import 'package:mathosproject/screens/profile_detail_screen.dart';
@@ -10,11 +11,15 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showBackButton;
   final Function? onBackPressed;
 
-  TopAppBar({
+  const TopAppBar({
+    Key? key,
     required this.title,
     this.showBackButton = false,
     this.onBackPressed,
-  });
+  }) : super(key: key);
+
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +34,10 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Container(
         color: Colors.yellow,
         child: SafeArea(
-          child: Container(
+          child: SizedBox(
             height: appBarHeight,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 if (showBackButton)
                   IconButton(
@@ -50,16 +56,14 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
                       Widget? currentWidget = context.widget;
                       AppUser? profile;
 
-                      // Récupérer le profil en fonction de l'écran actuel
                       if (currentWidget is StatsScreen) {
-                        profile = (currentWidget).profile;
+                        profile = currentWidget.profile;
                       } else if (currentWidget is ProfileDetailScreen) {
-                        profile = (currentWidget).profile;
+                        profile = currentWidget.profile;
                       } else if (currentWidget is SettingsScreen) {
-                        profile = (currentWidget).profile;
+                        profile = currentWidget.profile;
                       }
 
-                      // Si on a un profil et qu'on est sur un des écrans spéciaux
                       if (profile != null && (
                           currentRoute?.contains('statsscreen') == true ||
                               currentRoute?.contains('profiledetailscreen') == true ||
@@ -68,15 +72,16 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ModeSelectionScreen(profile: profile!),
-                            settings: RouteSettings(name: '/modeselectionscreen'),
+                            settings: const RouteSettings(name: '/modeselectionscreen'),
                           ),
                         );
                       } else {
-                        // Comportement par défaut pour les autres écrans
                         Navigator.maybePop(context);
                       }
                     },
-                  ),
+                  )
+                else
+                  SizedBox(width: iconSize),
                 Expanded(
                   child: Center(
                     child: FittedBox(
@@ -93,8 +98,7 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 ),
-                if (showBackButton)
-                  SizedBox(width: iconSize), // Pour équilibrer l'espace avec le bouton retour
+                SizedBox(width: iconSize),
               ],
             ),
           ),
@@ -102,7 +106,4 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }

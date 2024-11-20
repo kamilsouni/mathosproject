@@ -27,6 +27,7 @@ class _GameAppBarState extends State<GameAppBar>
   late Animation<double> _fadeAnimation;
   bool _showChange = false;
 
+
   @override
   void initState() {
     super.initState();

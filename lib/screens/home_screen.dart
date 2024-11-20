@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:flutter/services.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/mode_selection_screen.dart';
 import 'package:mathosproject/screens/sign_in_up_screen.dart';
@@ -21,6 +22,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF564560),
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
     _fadeIn();
 
     // Initialiser l'animation pour faire clignoter le bouton

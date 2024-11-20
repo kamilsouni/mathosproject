@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/screens/end_game_analysis_screen.dart';
 import 'package:mathosproject/widgets/arcade_console.dart';
@@ -51,6 +52,12 @@ class _EquationsModeScreenState extends State<EquationsModeScreen>
   @override
   void initState() {
     super.initState();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
     _currentLevel = 1;
     _correctAnswersInRow = 0;
     _currentQuestion = "";
