@@ -10,7 +10,6 @@ import 'package:mathosproject/widgets/game_app_bar.dart';
 import 'package:mathosproject/widgets/retro_progress_bar.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
-
 class ProgressionScreen extends StatefulWidget {
   final String mode;
   final AppUser profile;
@@ -33,9 +32,8 @@ class ProgressionScreen extends StatefulWidget {
 }
 
 class _ProgressionScreenState extends State<ProgressionScreen> {
-  late int _difficultyLevel;
-  late int _currentAnswer;
   late String _currentQuestion;
+  late int _currentAnswer;
   late TextEditingController _answerController;
   late FocusNode _focusNode;
   late int _correctAnswers;
@@ -50,11 +48,10 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   late String _currentOperation;
   bool _isAnswerCorrect = false;
   bool _isSkipped = false;
-
   // Variables pour la validation rapide
-  int _consecutiveQuickAnswers = 0; // Nombre de réponses consécutives rapides
-  double _totalQuickTime = 0; // Temps total pour les réponses rapides
-  final int _quickThreshold = 10; // Nombre de réponses rapides nécessaires
+  int _consecutiveQuickAnswers = 0;
+  double _totalQuickTime = 0;
+  final int _quickThreshold = 10;
 
   @override
   void initState() {
@@ -65,7 +62,6 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
         statusBarIconBrightness: Brightness.dark,
       ),
     );
-    _difficultyLevel = widget.isCompetition || widget.isInitialTest ? 1 : widget.level;
     _currentAnswer = 0;
     _currentQuestion = "";
     _answerController = TextEditingController();
@@ -106,29 +102,26 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     if (_answerController.text.isNotEmpty) {
       int? userAnswer = int.tryParse(_answerController.text);
       if (userAnswer != null && userAnswer == _currentAnswer) {
-        _stopwatch.stop(); // Arrête le chronomètre pour la question
-        int responseTime = _stopwatch.elapsedMilliseconds; // Temps en millisecondes
-        double responseTimeInSeconds = responseTime / 1000; // Convertir en secondes
+        _stopwatch.stop();
+        int responseTime = _stopwatch.elapsedMilliseconds;
+        double responseTimeInSeconds = responseTime / 1000;
 
-        // Vérification de la rapidité
-        if (responseTimeInSeconds < 2) { // Si la réponse est rapide (< 2 secondes)
+        if (responseTimeInSeconds < 2) {
           _consecutiveQuickAnswers++;
           _totalQuickTime += responseTimeInSeconds;
         } else {
-          _consecutiveQuickAnswers = 0; // Réinitialiser si la réponse est lente
+          _consecutiveQuickAnswers = 0;
           _totalQuickTime = 0;
         }
 
-        // Validation automatique si la condition est remplie
         if (_consecutiveQuickAnswers >= _quickThreshold) {
           _validateQuickly();
-          return; // Arrêter ici, le niveau est validé
+          return;
         }
-
-        submitAnswer(); // Continuer le traitement normal
+        submitAnswer();
       }
     }
-    setState(() {}); // Pour forcer la mise à jour de l'affichage
+    setState(() {});
   }
 
   void generateQuestion() {
@@ -148,15 +141,13 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
       _points += 10 * widget.level;
     });
 
-    // Redémarrer le chronomètre pour la prochaine question
     _stopwatch.reset();
     _stopwatch.start();
 
-    // Générer la prochaine question
     if (_correctAnswers < 30) {
       generateQuestion();
     } else {
-      _showValidationMessage(); // Validation classique si toutes les questions sont complétées
+      _showValidationMessage();
     }
   }
 
@@ -179,62 +170,13 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   }
 
   void _validateQuickly() {
-    setState(() {
-      _correctAnswers = 30; // Considérer que toutes les réponses requises sont validées
-      _stopwatch.stop(); // Arrêter toute mesure de temps
+    Navigator.of(context).pop({
+      'success': true,
+      'mode': widget.mode,
+      'level': widget.level,
+      'points': _points,
+      'isQuickValidation': true,
     });
-
-    // Ajouter les points au profil
-    widget.profile.points += _points;
-    updateProfile(widget.profile);
-
-    // Afficher un message pour informer l'utilisateur
-    DialogManager.showCustomDialog(
-      context: context,
-      title: 'Niveau validé !',
-      content: 'Vous avez validé ce niveau grâce à votre rapidité exceptionnelle.',
-      confirmText: 'OK',
-      onConfirm: () {
-        Navigator.of(context).pop();
-        _validateLevel(); // Passer au niveau suivant
-      },
-      buttonColor: Colors.green,
-    );
-  }
-
-  void _endTest() {
-    if (_correctAnswers < 30) {
-      _showEncouragementMessage();
-    } else {
-      widget.profile.points += _points; // Ajouter les points au profil de l'utilisateur
-      updateProfile(widget.profile).then((_) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProgressionModeScreen(profile: widget.profile),
-          ),
-        );
-      });
-    }
-  }
-
-  void _showEncouragementMessage() {
-    DialogManager.showCustomDialog(
-      context: context,
-      title: 'Essayez encore !',
-      content: 'Vous n\'avez pas encore validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}. Essayez encore !',
-      confirmText: 'OK',
-      onConfirm: () {
-        Navigator.of(context).pop();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProgressionModeScreen(profile: widget.profile),
-          ),
-        );
-      },
-      buttonColor: Color(0xFF564560),
-    );
   }
 
   Future<void> updateProfile(AppUser profile) async {
@@ -245,110 +187,79 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     }
   }
 
-  void _validateLevel() {
-    widget.profile.validateOperator(widget.level, widget.mode);
+  void _showValidationMessage() {
+    widget.profile.points += _points;
     updateProfile(widget.profile);
 
-    if (widget.profile.progression[widget.level]!.values
-        .every((element) => element['validation'] == 1)) {
-      _showLevelUnlockedMessage();
-    } else {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProgressionModeScreen(profile: widget.profile),
-        ),
-      );
-    }
-  }
-
-  void _showValidationMessage() {
-    widget.profile.points += _points; // Ajouter les points au profil de l'utilisateur
-    updateProfile(widget.profile); // Mettre à jour le profil de l'utilisateur
-
-    DialogManager.showCustomDialog(
-      context: context,
-      title: 'Félicitations!',
-      content: 'Vous avez validé les ${widget.mode.toLowerCase()}s du niveau ${widget.level}.',
-      confirmText: 'OK',
-      onConfirm: () {
-        Navigator.of(context).pop();
-        _validateLevel();
-      },
-      buttonColor: Colors.green,
-    );
-  }
-
-  void _showLevelUnlockedMessage() {
-    DialogManager.showCustomDialog(
-      context: context,
-      title: 'Niveau débloqué!',
-      content: 'Vous avez débloqué le niveau ${widget.level + 1}.',
-      confirmText: 'OK',
-      onConfirm: () {
-        Navigator.of(context).pop();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProgressionModeScreen(profile: widget.profile),
-          ),
-        );
-      },
-      buttonColor: Colors.green,
-    );
+    // Retourner le résultat au parent
+    Navigator.of(context).pop({
+      'success': true,
+      'mode': widget.mode,
+      'level': widget.level,
+      'points': _points,
+      'isQuickValidation': false,
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GameAppBar(points: _points, lastChange: _pointsChange),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              color: Color(0xFF564560), // Fond violet
+    return WillPopScope(
+      onWillPop: () async {
+        return true;
+      },
+      child: Scaffold(
+        appBar: GameAppBar(
+          points: _points,
+          lastChange: _pointsChange,
+        ),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Container(color: Color(0xFF564560)),
             ),
-          ),
-          Column(
-            children: [
-              SizedBox(height: 20),
-              RetroProgressBar(
-                currentValue: _correctAnswers,
-                maxValue: 30,
-                height: 20,
-                fillColor: Colors.green,
-                backgroundColor: Colors.black,
-              ),
-              SizedBox(height: 20),
-              CountdownTimer(
-                duration: 61,
-                onCountdownComplete: _endTest,
-                progressColor: Colors.green,
-                height: 20,
-              ),
-              SizedBox(height: 40),
-              Expanded(
-                child: RetroCalculator(
-                  question: _currentQuestion,
-                  answer: _answerController.text,
-                  controller: _answerController,
-                  onSubmit: skipQuestion,
-                  onDelete: () {
-                    if (_answerController.text.isNotEmpty) {
-                      setState(() {
-                        _answerController.text =
-                            _answerController.text.substring(0, _answerController.text.length - 1);
-                      });
-                    }
-                  },
-                  isCorrectAnswer: _isAnswerCorrect,
-                  isSkipped: _isSkipped,
-                  isProgressMode: true,
+            Column(
+              children: [
+                SizedBox(height: 20),
+                RetroProgressBar(
+                  currentValue: _correctAnswers,
+                  maxValue: 30,
+                  height: 20,
+                  fillColor: Colors.green,
+                  backgroundColor: Colors.black,
                 ),
-              ),
-            ],
-          ),
-        ],
+                SizedBox(height: 20),
+                CountdownTimer(
+                  duration: widget.duration,
+                  onCountdownComplete: () {
+                    Navigator.of(context).pop(null);
+                  },
+                  progressColor: Colors.green,
+                  height: 20,
+                ),
+                SizedBox(height: 40),
+                Expanded(
+                  child: RetroCalculator(
+                    question: _currentQuestion,
+                    answer: _answerController.text,
+                    controller: _answerController,
+                    onSubmit: skipQuestion,
+                    onDelete: () {
+                      if (_answerController.text.isNotEmpty) {
+                        setState(() {
+                          _answerController.text = _answerController.text.substring(
+                              0, _answerController.text.length - 1);
+                        });
+                      }
+                    },
+                    isCorrectAnswer: _isAnswerCorrect,
+                    isSkipped: _isSkipped,
+                    isProgressMode: true,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -14,8 +14,6 @@ import 'package:mathosproject/widgets/pixel_circle.dart';
 import 'package:mathosproject/widgets/pixel_transition.dart';
 import 'dart:math' as math;
 
-import 'package:mathosproject/widgets/top_navigation_bar.dart'; // Ajoutez cet import en haut du fichier
-
 class ModeSelectionScreen extends StatefulWidget {
   final AppUser profile;
 
