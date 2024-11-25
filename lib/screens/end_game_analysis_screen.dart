@@ -307,6 +307,12 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen>
         child:PacManButton(
           text: 'Retour',
           onPressed: () {
+              SystemChrome.setSystemUIOverlayStyle(
+                const SystemUiOverlayStyle(
+                  statusBarColor: Color(0xFF564560),
+                  statusBarIconBrightness: Brightness.light,
+                ),
+              );
             if (widget.isCompetition) {
               Navigator.pushReplacement(
                 context,

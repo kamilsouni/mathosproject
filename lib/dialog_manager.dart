@@ -40,7 +40,7 @@ class DialogManager {
                       style: TextStyle(
                         color: Colors.yellow,
                         fontFamily: 'PixelFont',
-                        fontSize: screenSize.width * 0.05,
+                        fontSize: screenSize.width * 0.045,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

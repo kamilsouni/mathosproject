@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/create_competition_screen.dart';
 import 'package:mathosproject/screens/join_competition_screen.dart';
 import 'package:mathosproject/screens/competition_screen.dart';
+import 'package:mathosproject/screens/mode_selection_screen.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/utils/hive_data_manager.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
@@ -29,6 +31,12 @@ class _JoinOrCreateCompetitionScreenState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _fetchCompetitions();
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.yellow,
+        statusBarIconBrightness: Brightness.dark,
+      ),
+    );
   }
 
   @override
@@ -159,8 +167,12 @@ class _JoinOrCreateCompetitionScreenState
       return Center(
         child: Text(
           'Aucune compétition rejointe',
-          style:
-          TextStyle(color: Colors.white, fontFamily: 'PixelFont', fontSize: 16),
+          textAlign: TextAlign.center, // Alignement du texte
+          style: TextStyle(
+            color: Colors.white,
+            fontFamily: 'PixelFont',
+            fontSize: 16,
+          ),
         ),
       );
     }
@@ -172,7 +184,7 @@ class _JoinOrCreateCompetitionScreenState
           style: TextStyle(
               color: Colors.yellow,
               fontFamily: 'PixelFont',
-              fontSize: 20,
+              fontSize: 16,
               fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
@@ -221,78 +233,104 @@ class _JoinOrCreateCompetitionScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: TopAppBar(title: 'Mode Compétition', showBackButton: true),
-      body: RefreshIndicator(
-        onRefresh: _fetchCompetitions,
-        child: Container(
-          color: Color(0xFF564560),
-          child: SafeArea(
-            child: _isLoading
-                ? Center(child: CircularProgressIndicator(color: Colors.yellow))
-                : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Créez ou rejoignez une compétition',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'PixelFont',
-                              fontSize: 22),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+    return WillPopScope(
+      onWillPop: () async {
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            statusBarColor: Color(0xFF564560),
+            statusBarIconBrightness: Brightness.light,
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ModeSelectionScreen(profile: widget.profile)),
+        );
+        return false;
+      },
+      child: Scaffold(
+        appBar: TopAppBar(
+          title: 'Mode Compétition',
+          showBackButton: true,
+          onBackPressed: () {
+            SystemChrome.setSystemUIOverlayStyle(
+              const SystemUiOverlayStyle(
+                statusBarColor: Color(0xFF564560),
+                statusBarIconBrightness: Brightness.light,
+              ),
+            );
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => ModeSelectionScreen(profile: widget.profile)),
+            );
+          },
+        ),
+        body: RefreshIndicator(
+          onRefresh: _fetchCompetitions,
+          child: Container(
+            color: Color(0xFF564560),
+            child: SafeArea(
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator(color: Colors.yellow))
+                  : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Créez ou rejoignez une compétition:',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'PixelFont',
+                                fontSize: 18),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildCompetitionButton(
-                          title: 'Créer',
-                          icon: Icons.add,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    CreateCompetitionScreen(
-                                        profile: widget.profile),
-                              ),
-                            ).then((_) => _fetchCompetitions());
-                          },
-                        ),
-                        _buildCompetitionButton(
-                          title: 'Rejoindre',
-                          icon: Icons.group_add,
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    JoinCompetitionScreen(
-                                        profile: widget.profile),
-                              ),
-                            ).then((_) => _fetchCompetitions());
-                          },
-                        ),
-                      ],
+                    Expanded(
+                      flex: 3,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildCompetitionButton(
+                            title: 'Créer',
+                            icon: Icons.add,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CreateCompetitionScreen(profile: widget.profile),
+                                ),
+                              ).then((_) => _fetchCompetitions());
+                            },
+                          ),
+                          _buildCompetitionButton(
+                            title: 'Rejoindre',
+                            icon: Icons.group_add,
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => JoinCompetitionScreen(profile: widget.profile),
+                                ),
+                              ).then((_) => _fetchCompetitions());
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Expanded(
-                    flex: 6,
-                    child: _buildJoinedCompetitionsList(),
-                  ),
-                ],
+                    SizedBox(height: 20),
+                    Expanded(
+                      flex: 6,
+                      child: _buildJoinedCompetitionsList(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

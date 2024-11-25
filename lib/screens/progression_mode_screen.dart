@@ -79,7 +79,7 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
         // Dialogue pour l'opérateur validé
         await DialogManager.showCustomDialog(
           context: context,
-          title: 'Félicitations !',
+          title: 'Félicitations!',
           content: 'Vous avez validé les ${operation.toLowerCase()}s du niveau $level.',
           confirmText: 'OK',
           onConfirm: () {

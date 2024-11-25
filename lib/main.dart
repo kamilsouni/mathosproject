@@ -10,7 +10,6 @@ import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
 import 'package:mathosproject/sound_manager.dart';
 import 'package:mathosproject/utils/notification_service.dart';
 import 'package:mathosproject/screens/home_screen.dart';
-import 'package:mathosproject/widgets/top_navigation_bar.dart';
 import 'firebase_options.dart';
 import 'screens/competition_screen.dart';
 
