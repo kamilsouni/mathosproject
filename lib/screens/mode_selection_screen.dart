@@ -14,6 +14,8 @@ import 'package:mathosproject/widgets/pixel_circle.dart';
 import 'package:mathosproject/widgets/pixel_transition.dart';
 import 'dart:math' as math;
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class ModeSelectionScreen extends StatefulWidget {
   final AppUser profile;
 
@@ -71,6 +73,7 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
   @override
   void initState() {
     super.initState();
+
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Color(0xFF564560),
@@ -89,6 +92,14 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
           CurvedAnimation(parent: controller, curve: Curves.easeInOut),
         )
     ).toList();
+
+
+    //le tutoriel après construction de l'écran
+    Future.delayed(Duration(milliseconds: 500), () {
+      _showWelcomeTutorial();
+    });
+
+
   }
 
   @override
@@ -109,6 +120,36 @@ class _ModeSelectionScreenState extends State<ModeSelectionScreen> with TickerPr
       _controllers[index].reverse();
     }
   }
+
+
+  Future<void> _showWelcomeTutorial() async {
+    final prefs = await SharedPreferences.getInstance();
+    String key = 'hide_tutorial_${widget.profile.id}';  // Clé unique par utilisateur
+
+    bool shouldShowTutorial = !(prefs.getBool(key) ?? false);
+
+    if (shouldShowTutorial) {
+      if (!mounted) return;
+
+      await DialogManager.showTutorialDialog(
+        context: context,
+        title: 'Bienvenue dans Mathos!',
+        onConfirm: () async {
+          await prefs.setBool(key, true);
+        },
+        buttonColor: Colors.yellow,
+      );
+    }
+  }
+
+  void _resetAllTutorialPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();  // Efface toutes les préférences
+    print('Toutes les préférences ont été réinitialisées');
+  }
+
+
+
 
   void _selectMode(int index) {
     _showStartConfirmation(context, modes[index]['name'], () {

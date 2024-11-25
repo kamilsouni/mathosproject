@@ -204,14 +204,31 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
-        return true;
-      },
-      child: Scaffold(
-        appBar: GameAppBar(
-          points: _points,
-          lastChange: _pointsChange,
+    onWillPop: () async {
+      SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          statusBarColor: Colors.yellow,
+          statusBarIconBrightness: Brightness.dark,
         ),
+      );
+      Navigator.pop(context);
+      return false;
+    },
+    child: Scaffold(
+      appBar: GameAppBar(
+        points: _points,
+        lastChange: _pointsChange,
+        isInGame: true,
+        onBackPressed: () {
+          SystemChrome.setSystemUIOverlayStyle(
+            const SystemUiOverlayStyle(
+              statusBarColor: Colors.yellow,
+              statusBarIconBrightness: Brightness.dark,
+            ),
+          );
+          Navigator.pop(context);
+        },
+      ),
         body: Stack(
           children: [
             Positioned.fill(
