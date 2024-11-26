@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/models/app_user.dart';
+import 'package:mathosproject/screens/mode_selection_screen.dart';
 import 'package:mathosproject/screens/progression_screen.dart';
 import 'package:mathosproject/screens/reward_mode_screen.dart';
 import 'package:mathosproject/sound_manager.dart';
@@ -93,6 +94,26 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
     }
   }
 
+  void _handleBackPress() {
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Color(0xFF564560),
+        statusBarIconBrightness: Brightness.light,
+      ),
+    );
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ModeSelectionScreen(profile: widget.profile),
+      ),
+    );
+  }
+
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -100,29 +121,14 @@ class _ProgressionModeScreenState extends State<ProgressionModeScreen> {
 
     return WillPopScope(
       onWillPop: () async {
-        SystemChrome.setSystemUIOverlayStyle(
-          const SystemUiOverlayStyle(
-            statusBarColor: Color(0xFF564560),
-            statusBarIconBrightness: Brightness.light,
-          ),
-        );
-        return true;
+        _handleBackPress();
+        return false;
       },
       child: Scaffold(
-        key: _scaffoldKey,
-        extendBodyBehindAppBar: true,
         appBar: TopAppBar(
           title: 'Mode Progression',
           showBackButton: true,
-          onBackPressed: () {
-            SystemChrome.setSystemUIOverlayStyle(
-              const SystemUiOverlayStyle(
-                statusBarColor: Color(0xFF564560),
-                statusBarIconBrightness: Brightness.light,
-              ),
-            );
-            Navigator.of(context).pop();
-          },
+          onBackPressed: _handleBackPress,
         ),
         body: Container(
           color: Color(0xFF564560),

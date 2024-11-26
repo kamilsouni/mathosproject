@@ -188,15 +188,45 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
 
 
 
-  void _validateQuickly() {
-    Navigator.of(context).pop({
-      'success': true,
-      'mode': widget.mode,
-      'level': widget.level,
-      'points': _points,
-      'isQuickValidation': true,
-    });
+  Future<void> _validateQuickly() async {  // Ajout du async
+    if (_isGameOver) return;
+
+    setState(() => _isGameOver = true);
+
+    // Valider l'opérateur
+    widget.profile.validateOperator(widget.level, widget.mode);
+    widget.profile.points += _points;
+
+    // Sauvegarder les données du profil
+    if (await ConnectivityManager().isConnected()) {
+      await UserPreferences.updateProfileInFirestore(widget.profile);
+    } else {
+      await UserPreferences.saveProfileLocally(widget.profile);
+    }
+
+    // Naviguer vers l'écran de fin
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EndGameAnalysisScreen(
+          score: 10, // Score fixe car c'est une validation rapide
+          totalQuestionsNeeded: 10, // Objectif pour validation rapide
+          operationsHistory: _operationsHistory,
+          initialRecord: 0,
+          gameMode: 'progression',
+          isCompetition: false,
+          profile: widget.profile,
+          level: widget.level,
+          isProgressionMode: true,
+          operationType: widget.mode,
+          isQuickValidation: true,
+          hasValidatedOperator: true, // Indique que l'opérateur est validé
+        ),
+      ),
+    );
   }
+
+
 
   Future<void> updateProfile(AppUser profile) async {
     if (await ConnectivityManager().isConnected()) {
@@ -208,29 +238,34 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
 
 
 
-  void _onCountdownComplete() async {
+  Future<void> _onCountdownComplete() async {
     if (_isGameOver) return;
 
     setState(() => _isGameOver = true);
 
     // Valider l'opérateur si 30 bonnes réponses
+    bool hasValidatedOperator = false;
     if (_correctAnswers >= 30) {
       widget.profile.validateOperator(widget.level, widget.mode);
+      hasValidatedOperator = true;
     }
 
     widget.profile.points += _points;
 
+    // Sauvegarder les données du profil
     if (await ConnectivityManager().isConnected()) {
       await UserPreferences.updateProfileInFirestore(widget.profile);
     } else {
       await UserPreferences.saveProfileLocally(widget.profile);
     }
 
+    // Naviguer vers l'écran de fin
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => EndGameAnalysisScreen(
           score: _correctAnswers,
+          totalQuestionsNeeded: 30, // Objectif pour validation normale
           operationsHistory: _operationsHistory,
           initialRecord: 0,
           gameMode: 'progression',
@@ -239,10 +274,14 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
           level: widget.level,
           isProgressionMode: true,
           operationType: widget.mode,
+          isQuickValidation: false,
+          hasValidatedOperator: hasValidatedOperator,
         ),
       ),
     );
   }
+
+
 
   @override
   Widget build(BuildContext context) {
