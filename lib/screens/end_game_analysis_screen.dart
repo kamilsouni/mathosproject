@@ -437,12 +437,19 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
     bool showRetryButton = (!widget.isCompetition) && // Hors compétition
         (!widget.hasValidatedOperator || !widget.isProgressionMode); // Conditions pour rapidité/problème/équation ou progression
 
+    // Calcul de la largeur du bouton "Retour"
+    double operationsBlockWidth = width * 0.8; // Supposons que le bloc des opérations occupe 80% de la largeur
+    double buttonWidth = operationsBlockWidth * 0.8; // Limité à 50% du bloc des opérations
+
     return Container(
       padding: EdgeInsets.all(width * 0.02),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           // Bouton Retour
-          Expanded(
+          SizedBox(
+            width: buttonWidth,
+            height: height * 0.8, // Hauteur du bouton
             child: _buildButton(
               'Retour',
                   () => _handleReturn(),
@@ -450,9 +457,10 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
               height,
             ),
           ),
+          // Espacement entre les boutons
+          if (showRetryButton) SizedBox(width: width * 0.02),
           // Bouton Réessayer
-          if (showRetryButton) ...[
-            SizedBox(width: width * 0.02),
+          if (showRetryButton)
             Expanded(
               child: _buildButton(
                 'Réessayer',
@@ -461,7 +469,6 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
                 height,
               ),
             ),
-          ],
         ],
       ),
     );
@@ -500,7 +507,7 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
     if (widget.hasValidatedOperator) {
       return _isLevelComplete()
           ? '🎉 NIVEAU ${widget.level} TERMINÉ! 🎉'
-          : '🌟 Opérateur ${widget.operationType} validé! 🌟';
+          : '${widget.operationType} validé!';
     }
     return 'Continuez vos efforts !';
   }
