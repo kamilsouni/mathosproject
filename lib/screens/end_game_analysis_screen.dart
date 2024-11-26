@@ -3,26 +3,38 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:mathosproject/models/app_user.dart';
 import 'package:mathosproject/screens/competition_screen.dart';
+import 'package:mathosproject/screens/equations_mode_screen.dart';
+import 'package:mathosproject/screens/mode_selection_screen.dart';
+import 'package:mathosproject/screens/problem_mode_screen.dart';
+import 'package:mathosproject/screens/progression_mode_screen.dart';
+import 'package:mathosproject/screens/rapidity_mode_screen.dart';
 import 'package:mathosproject/widgets/pacmanbutton.dart';
+
+import 'progression_screen.dart';
 
 class EndGameAnalysisScreen extends StatefulWidget {
   final int score;
   final List<Map<String, dynamic>> operationsHistory;
   final int initialRecord;
   final String gameMode;
-  final bool isCompetition; // Nouveau paramètre
-  final String? competitionId; // Optionnel, pour le retour à la bonne compétition
-  final AppUser profile; // Ajout du profile
+  final bool isCompetition;
+  final String? competitionId;
+  final AppUser profile;
+  final int level;
+  final bool isProgressionMode;
+  final String operationType;
 
   EndGameAnalysisScreen({
     required this.score,
     required this.operationsHistory,
     required this.initialRecord,
     required this.gameMode,
-    this.isCompetition = false,
+    required this.isCompetition,
     this.competitionId,
-    required this.profile, // Nouveau paramètre requis
-
+    required this.profile,
+    this.level = 1,
+    this.isProgressionMode = false,
+    this.operationType = '',
   });
 
 
@@ -130,82 +142,6 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen>
     });
   }
 
-  Widget _buildScoreSection() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 24),
-      color: Color(0xFF564560),
-      child: Column(
-        children: [
-          Text(
-            _modeTitle,
-            style: TextStyle(
-              fontFamily: 'PixelFont',
-              fontSize: 20,
-              color: Colors.white, // Changé de _modeColor à Colors.white
-              shadows: [
-                Shadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 4),
-              ],
-            ),
-          ),
-          SizedBox(height: 16),
-          Text(
-            'Score Final',
-            style: TextStyle(
-              fontFamily: 'PixelFont',
-              fontSize: 24,
-              color: Colors.yellow,
-              shadows: [
-                Shadow(color: Colors.black, offset: Offset(2, 2), blurRadius: 4),
-              ],
-            ),
-          ),
-          SizedBox(height: 8),
-          AnimatedBuilder(
-            animation: _scoreAnimation,
-            builder: (context, child) {
-              return Text(
-                '${_scoreAnimation.value}',
-                style: TextStyle(
-                  fontFamily: 'PixelFont',
-                  fontSize: 48,
-                  color: Colors.yellow,
-                  fontWeight: FontWeight.bold,
-                  shadows: [
-                    Shadow(color: Colors.black, offset: Offset(3, 3), blurRadius: 6),
-                  ],
-                ),
-              );
-            },
-          ),
-          AnimatedBuilder(
-            animation: _fadeAnimation,
-            builder: (context, child) {
-              return Opacity(
-                opacity: _fadeAnimation.value,
-                child: Padding(
-                  padding: EdgeInsets.only(top: 16),
-                  child: Text(
-                    _getRecordMessage(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: 'PixelFont',
-                      fontSize: 18,
-                      color: Colors.white,
-                      shadows: [
-                        Shadow(color: Colors.black, offset: Offset(1, 1), blurRadius: 2),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-
 
   Widget _buildOperationsList() {
     return Expanded(
@@ -303,31 +239,224 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen>
       opacity: _showButton ? 1.0 : 0.0,
       duration: Duration(milliseconds: 500),
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 16),
-        child:PacManButton(
-          text: 'Retour',
-          onPressed: () {
-              SystemChrome.setSystemUIOverlayStyle(
-                const SystemUiOverlayStyle(
-                  statusBarColor: Color(0xFF564560),
-                  statusBarIconBrightness: Brightness.light,
+        margin: EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4),
+                child: PacManButton(
+                  text: 'Rejouer',
+                  onPressed: () {
+                    SystemChrome.setSystemUIOverlayStyle(
+                      const SystemUiOverlayStyle(
+                        statusBarColor: Colors.yellow,
+                        statusBarIconBrightness: Brightness.dark,
+                      ),
+                    );
+
+                    if (widget.isProgressionMode) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProgressionScreen(
+                            mode: widget.operationType,
+                            level: widget.level,
+                            profile: widget.profile,
+                            isInitialTest: false,
+                            duration: 60,
+                            isCompetition: false,
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+
+                    Widget nextScreen;
+                    switch (widget.gameMode) {
+                      case 'rapid':
+                        nextScreen = RapidityModeScreen(profile: widget.profile);
+                        break;
+                      case 'problem':
+                        nextScreen = ProblemModeScreen(profile: widget.profile);
+                        break;
+                      case 'equation':
+                        nextScreen = EquationsModeScreen(profile: widget.profile);
+                        break;
+                      default:
+                        nextScreen = ModeSelectionScreen(profile: widget.profile);
+                    }
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => nextScreen),
+                    );
+                  },
                 ),
-              );
-            if (widget.isCompetition) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CompetitionScreen(
-                    profile: widget.profile,
-                    competitionId: widget.competitionId!,
-                  ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4),
+                child: PacManButton(
+                  text: 'Retour',
+                  onPressed: () {
+                    if (widget.isCompetition) {
+                      SystemChrome.setSystemUIOverlayStyle(
+                        const SystemUiOverlayStyle(
+                          statusBarColor: Colors.yellow,
+                          statusBarIconBrightness: Brightness.dark,
+                        ),
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CompetitionScreen(
+                            profile: widget.profile,
+                            competitionId: widget.competitionId!,
+                          ),
+                        ),
+                      );
+                    } else if (widget.isProgressionMode) {
+                      SystemChrome.setSystemUIOverlayStyle(
+                        const SystemUiOverlayStyle(
+                          statusBarColor: Colors.yellow,
+                          statusBarIconBrightness: Brightness.dark,
+                        ),
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProgressionModeScreen(profile: widget.profile),
+                        ),
+                      );
+                    } else {
+                      SystemChrome.setSystemUIOverlayStyle(
+                        const SystemUiOverlayStyle(
+                          statusBarColor: Color(0xFF564560),
+                          statusBarIconBrightness: Brightness.light,
+                        ),
+                      );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ModeSelectionScreen(profile: widget.profile),
+                        ),
+                      );
+                    }
+                  },
                 ),
-              );
-            } else {
-              Navigator.pop(context);
-            }
-          },
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildScoreSection() {
+    double fontSize = MediaQuery.of(context).size.width * 0.045;
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      color: Color(0xFF564560),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            widget.isProgressionMode ? widget.operationType : _modeTitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'PixelFont',
+              fontSize: fontSize * 1.4,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 12),
+          if (widget.isProgressionMode) ...[
+            Text(
+              'Niveau ${widget.level}',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'PixelFont',
+                fontSize: fontSize* 1.4,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              '${widget.score}/30 bonnes réponses',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'PixelFont',
+                fontSize: fontSize * 1.2,
+                color: Colors.yellow,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              widget.score >= 30
+                  ? 'Opérateur validé !'
+                  : 'Il vous manque ${30 - widget.score} bonne(s) réponse(s)',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'PixelFont',
+                fontSize: fontSize * 0.9,
+                color: widget.score >= 30 ? Colors.green : Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ] else ...[
+            Text(
+              'Score Final',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'PixelFont',
+                fontSize: fontSize * 1.2,
+                color: Colors.yellow,
+              ),
+            ),
+            SizedBox(height: 8),
+            AnimatedBuilder(
+              animation: _scoreAnimation,
+              builder: (context, child) {
+                return Text(
+                  '${_scoreAnimation.value}',
+                  style: TextStyle(
+                    fontFamily: 'PixelFont',
+                    fontSize: fontSize * 2,
+                    color: Colors.yellow,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              },
+            ),
+            AnimatedBuilder(
+              animation: _fadeAnimation,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _fadeAnimation.value,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 16),
+                    child: Text(
+                      _getRecordMessage(),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'PixelFont',
+                        fontSize: fontSize * 0.9,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ],
       ),
     );
   }

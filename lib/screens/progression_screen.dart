@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mathosproject/dialog_manager.dart';
+import 'package:mathosproject/screens/end_game_analysis_screen.dart';
 import 'package:mathosproject/widgets/RetroCalculator.dart';
 import 'package:mathosproject/widgets/countdown_timer.dart';
 import 'package:mathosproject/math_test_utils.dart';
 import 'package:mathosproject/models/app_user.dart';
-import 'package:mathosproject/screens/progression_mode_screen.dart';
 import 'package:mathosproject/widgets/game_app_bar.dart';
 import 'package:mathosproject/widgets/retro_progress_bar.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
+
 class ProgressionScreen extends StatefulWidget {
   final String mode;
   final AppUser profile;
@@ -22,9 +22,10 @@ class ProgressionScreen extends StatefulWidget {
     required this.mode,
     required this.profile,
     required this.isInitialTest,
-    required this.isCompetition,
     required this.duration,
     required this.level,
+    this.isCompetition = false,
+
   });
 
   @override
@@ -32,6 +33,7 @@ class ProgressionScreen extends StatefulWidget {
 }
 
 class _ProgressionScreenState extends State<ProgressionScreen> {
+  bool _isGameOver = false;  // Ajoutez ici
   late String _currentQuestion;
   late int _currentAnswer;
   late TextEditingController _answerController;
@@ -52,6 +54,7 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
   int _consecutiveQuickAnswers = 0;
   double _totalQuickTime = 0;
   final int _quickThreshold = 10;
+  List<Map<String, dynamic>> _operationsHistory = [];
 
   @override
   void initState() {
@@ -72,6 +75,7 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     _responseTimes = [];
     _points = 0;
     _pointsChange = 0;
+    _operationsHistory = [];
     _answerHistory = [];
     _isSkipped = false;
     _operationResults = {
@@ -134,11 +138,17 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
       _answerController.clear();
     });
   }
-
   void submitAnswer() {
     setState(() {
       _correctAnswers++;
       _points += 10 * widget.level;
+
+      // Ajout de l'opération à l'historique
+      _operationsHistory.add({
+        'question': _currentQuestion,
+        'answer': _answerController.text,
+        'isCorrect': true,
+      });
     });
 
     _stopwatch.reset();
@@ -147,7 +157,7 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     if (_correctAnswers < 30) {
       generateQuestion();
     } else {
-      _showValidationMessage();
+      _onCountdownComplete();
     }
   }
 
@@ -158,6 +168,13 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
       _skippedQuestions++;
       _pointsChange = -100;
       _points -= 100;
+
+      // Ajout de l'opération sautée à l'historique
+      _operationsHistory.add({
+        'question': _currentQuestion,
+        'answer': 'Passé',
+        'isCorrect': false,
+      });
     });
 
     Future.delayed(Duration(milliseconds: 300), () {
@@ -168,6 +185,8 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
       generateQuestion();
     });
   }
+
+
 
   void _validateQuickly() {
     Navigator.of(context).pop({
@@ -187,18 +206,42 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
     }
   }
 
-  void _showValidationMessage() {
-    widget.profile.points += _points;
-    updateProfile(widget.profile);
 
-    // Retourner le résultat au parent
-    Navigator.of(context).pop({
-      'success': true,
-      'mode': widget.mode,
-      'level': widget.level,
-      'points': _points,
-      'isQuickValidation': false,
-    });
+
+  void _onCountdownComplete() async {
+    if (_isGameOver) return;
+
+    setState(() => _isGameOver = true);
+
+    // Valider l'opérateur si 30 bonnes réponses
+    if (_correctAnswers >= 30) {
+      widget.profile.validateOperator(widget.level, widget.mode);
+    }
+
+    widget.profile.points += _points;
+
+    if (await ConnectivityManager().isConnected()) {
+      await UserPreferences.updateProfileInFirestore(widget.profile);
+    } else {
+      await UserPreferences.saveProfileLocally(widget.profile);
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EndGameAnalysisScreen(
+          score: _correctAnswers,
+          operationsHistory: _operationsHistory,
+          initialRecord: 0,
+          gameMode: 'progression',
+          isCompetition: false,
+          profile: widget.profile,
+          level: widget.level,
+          isProgressionMode: true,
+          operationType: widget.mode,
+        ),
+      ),
+    );
   }
 
   @override
@@ -247,9 +290,7 @@ class _ProgressionScreenState extends State<ProgressionScreen> {
                 SizedBox(height: 20),
                 CountdownTimer(
                   duration: widget.duration,
-                  onCountdownComplete: () {
-                    Navigator.of(context).pop(null);
-                  },
+                  onCountdownComplete: _onCountdownComplete,
                   progressColor: Colors.green,
                   height: 20,
                 ),
