@@ -27,6 +27,10 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
+  # Firebase Authentication and Google Sign-In
+  pod 'Firebase/Auth'
+  pod 'GoogleSignIn'
+
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
