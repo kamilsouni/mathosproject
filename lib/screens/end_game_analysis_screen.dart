@@ -366,12 +366,15 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
   }
 
 
+  // Pour le problème des questions trop petites, ajoutons une logique conditionnelle
+// dans _buildOperationItem :
   Widget _buildOperationItem(Map<String, dynamic> operation, double width, double height) {
     final bool isCorrect = operation['isCorrect'];
+    final bool isProblemMode = widget.gameMode == 'problem';
 
     return Container(
-      height: height,
-      margin: EdgeInsets.only(bottom: height * 0.1), // Espace entre chaque item
+      height: isProblemMode ? height * 2 : height, // Double la hauteur pour le mode problème
+      margin: EdgeInsets.only(bottom: height * 0.1),
       decoration: BoxDecoration(
         color: isCorrect ? Colors.green.withOpacity(0.2) : Colors.red.withOpacity(0.2),
         border: Border.all(
@@ -381,12 +384,21 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
       ),
       child: Row(
         children: [
-          // Question - 60% de la largeur
+          // Question - ajustée pour le mode problème
           Expanded(
             flex: 6,
             child: Padding(
               padding: EdgeInsets.only(left: width * 0.02),
-              child: FittedBox(
+              child: isProblemMode
+                  ? Text(
+                operation['question'],
+                style: TextStyle(
+                  fontFamily: 'PixelFont',
+                  color: Colors.white,
+                  fontSize: 8, // Taille fixe pour les problèmes
+                ),
+              )
+                  : FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -399,7 +411,7 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
               ),
             ),
           ),
-          // Réponse - 25% de la largeur
+          // Réponse et icône - reste inchangé
           Expanded(
             flex: 3,
             child: Container(
@@ -420,7 +432,6 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
               ),
             ),
           ),
-          // Icône - 15% de la largeur
           Expanded(
             flex: 2,
             child: Icon(
@@ -433,13 +444,17 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
     );
   }
 
-  Widget _buildActionButtons(double width, double height) {
-    bool showRetryButton = (!widget.isCompetition) && // Hors compétition
-        (!widget.hasValidatedOperator || !widget.isProgressionMode); // Conditions pour rapidité/problème/équation ou progression
 
-    // Calcul de la largeur du bouton "Retour"
-    double operationsBlockWidth = width * 0.8; // Supposons que le bloc des opérations occupe 80% de la largeur
-    double buttonWidth = operationsBlockWidth * 0.8; // Limité à 50% du bloc des opérations
+
+  Widget _buildActionButtons(double width, double height) {
+    bool showRetryButton = (!widget.isCompetition) &&
+        (!widget.hasValidatedOperator || !widget.isProgressionMode);
+
+    // Calcul de la largeur de chaque bouton
+    double operationsBlockWidth = width;
+    double buttonWidth = operationsBlockWidth * 0.4;
+    // Calcul d'une taille de police adaptative basée sur la largeur du bouton
+    double fontSize = buttonWidth * 0.09; // 15% de la largeur du bouton
 
     return Container(
       padding: EdgeInsets.all(width * 0.02),
@@ -449,30 +464,66 @@ class _EndGameAnalysisScreenState extends State<EndGameAnalysisScreen> {
           // Bouton Retour
           SizedBox(
             width: buttonWidth,
-            height: height * 0.8, // Hauteur du bouton
-            child: _buildButton(
-              'Retour',
-                  () => _handleReturn(),
-              Colors.yellow,
-              height,
+            height: height * 0.8,
+            child: ElevatedButton(
+              onPressed: () => _handleReturn(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.yellow,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.zero,
+                  side: BorderSide(color: Colors.black, width: 2),
+                ),
+              ),
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  'Retour',
+                  style: TextStyle(
+                    fontFamily: 'PixelFont',
+                    fontSize: fontSize,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ),
           // Espacement entre les boutons
-          if (showRetryButton) SizedBox(width: width * 0.02),
+          if (showRetryButton) SizedBox(width: width * 0.05),
           // Bouton Réessayer
           if (showRetryButton)
-            Expanded(
-              child: _buildButton(
-                'Réessayer',
-                    () => _handleRetry(),
-                Colors.green,
-                height,
+            SizedBox(
+              width: buttonWidth,
+              height: height * 0.8,
+              child: ElevatedButton(
+                onPressed: () => _handleRetry(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                    side: BorderSide(color: Colors.black, width: 2),
+                  ),
+                ),
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    'Réessayer',
+                    style: TextStyle(
+                      fontFamily: 'PixelFont',
+                      fontSize: fontSize,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ),
         ],
       ),
     );
   }
+
+
 
 
   Widget _buildButton(String text, VoidCallback onPressed, Color color, double height) {

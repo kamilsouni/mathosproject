@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:mathosproject/dialog_manager.dart';
 import 'package:mathosproject/models/app_user.dart';
+import 'package:mathosproject/screens/join_or_create_competition_screen.dart';
 import 'package:mathosproject/screens/problem_mode_screen.dart';
 import 'package:mathosproject/screens/rapidity_mode_screen.dart';
 import 'package:mathosproject/screens/equations_mode_screen.dart';
@@ -327,6 +328,18 @@ class _CompetitionScreenState extends State<CompetitionScreen> with WidgetsBindi
   }
 
 
+  void _handleBackPress() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => JoinOrCreateCompetitionScreen(profile: widget.profile),
+        settings: const RouteSettings(name: '/joinorcreatcompetitionscreen'),
+      ),
+    );
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     // Trier les participants par points
@@ -336,6 +349,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> with WidgetsBindi
       appBar: TopAppBar(
         title: _competitionData['name'] ?? 'Compétition',
         showBackButton: true,
+        onBackPressed: _handleBackPress,
       ),
       body: RefreshIndicator(
         onRefresh: _loadData,
