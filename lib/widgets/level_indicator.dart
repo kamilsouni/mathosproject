@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mathosproject/sound_manager.dart';
 import 'package:vibration/vibration.dart';
 
 class LevelIndicator extends StatefulWidget {
@@ -52,6 +53,8 @@ class _LevelIndicatorState extends State<LevelIndicator>
   }
 
   void _triggerVibration({required bool weak}) async {
+    if (!SoundManager.isVibrationEnabled()) return;  // Ajout de cette vérification
+
     bool? hasVibrator = await Vibration.hasVibrator();
     if (hasVibrator == true) {
       if (weak) {

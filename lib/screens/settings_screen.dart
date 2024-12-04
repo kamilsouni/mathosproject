@@ -22,6 +22,8 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _soundEffectsEnabled = SoundManager.isSoundEnabled();
   bool _notificationsEnabled = true;
+  bool _vibrationEnabled = SoundManager.isVibrationEnabled();  // Nouvelle variable d'état
+
 
 
   @override
@@ -40,7 +42,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _notificationsEnabled = prefs.getBool('notificationsEnabled') ?? true; // Notifications par défaut activées
+      _notificationsEnabled = prefs.getBool('notificationsEnabled') ?? true;
+      _vibrationEnabled = prefs.getBool('vibrationEnabled') ?? true;  // Chargement du paramètre
+// Notifications par défaut activées
     });
   }
 
@@ -92,6 +96,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       setState(() {
                         _soundEffectsEnabled = value;
                         SoundManager.setSoundEnabled(value);
+                      });
+                    },
+                    screenSize,
+                  ),
+                  _buildToggleSubsection(
+                    'Vibrations',  // Nouveau toggle pour les vibrations
+                    _vibrationEnabled,
+                        (value) {
+                      setState(() {
+                        _vibrationEnabled = value;
+                        SoundManager.setVibrationEnabled(value);
                       });
                     },
                     screenSize,

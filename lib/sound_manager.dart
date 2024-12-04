@@ -8,17 +8,34 @@ class SoundManager {
   static final AudioPlayer _dialogPlayer = AudioPlayer();
   static final AudioPlayer _yesPlayer = AudioPlayer();
   static final AudioPlayer _noPlayer = AudioPlayer();
+  static bool _vibrationEnabled = true;  // Nouvelle variable pour le vibreur
 
   static Future<void> initialize() async {
     try {
       _prefs = await SharedPreferences.getInstance();
       _soundEnabled = _prefs.getBool('soundEnabled') ?? true;
+      _vibrationEnabled = _prefs.getBool('vibrationEnabled') ?? true;  // Initialisation du vibreur
+
       await preLoadAllSounds();
     } catch (e) {
       print('Erreur lors de l\'initialisation du SoundManager: $e');
       _soundEnabled = true;
+      _vibrationEnabled = true;
+
     }
   }
+
+  // Nouvelles méthodes pour le vibreur
+  static void setVibrationEnabled(bool enabled) {
+    _vibrationEnabled = enabled;
+    _prefs.setBool('vibrationEnabled', enabled);
+  }
+
+  static bool isVibrationEnabled() {
+    return _vibrationEnabled;
+  }
+
+
 
   static Future<void> preLoadAllSounds() async {
     await Future.wait([
