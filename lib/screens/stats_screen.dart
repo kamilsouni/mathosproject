@@ -9,6 +9,7 @@ import 'package:mathosproject/screens/settings_screen.dart';
 import 'package:mathosproject/user_preferences.dart';
 import 'package:mathosproject/utils/connectivity_manager.dart';
 import 'package:mathosproject/widgets/bottom_navigation_bar.dart';
+import 'package:mathosproject/widgets/pixel_population_grid.dart';
 import 'package:mathosproject/widgets/top_navigation_bar.dart';
 import 'package:country_flags/country_flags.dart';
 
@@ -237,95 +238,11 @@ class _StatsScreenState extends State<StatsScreen> {
   Widget _buildProgressionChart(Size screenSize, int currentLevel, List<int> levelPercentages) {
     return Container(
       height: screenSize.height * 0.4,
-      child: BarChart(
-        BarChartData(
-          alignment: BarChartAlignment.spaceAround,
-          maxY: 100,
-          minY: 0,
-          gridData: FlGridData(
-            show: true,
-            horizontalInterval: 10,
-            getDrawingHorizontalLine: (value) {
-              return FlLine(
-                color: Colors.white70,
-                strokeWidth: 1,
-              );
-            },
-          ),
-          titlesData: _getBarChartTitles(screenSize),
-          borderData: FlBorderData(
-            show: true,
-            border: Border.all(color: Colors.white70),
-          ),
-          barGroups: _getBarGroups(currentLevel, levelPercentages, screenSize),
-        ),
+      child: PixelPopulationGrid(
+        currentLevel: currentLevel,
+        screenSize: screenSize,
       ),
     );
-  }
-
-  FlTitlesData _getBarChartTitles(Size screenSize) {
-    return FlTitlesData(
-      show: true,
-      bottomTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          reservedSize: screenSize.height * 0.05,
-          getTitlesWidget: (value, meta) {
-            return Padding(
-              padding: EdgeInsets.only(top: screenSize.height * 0.01),
-              child: Transform.rotate(
-                angle: -0.5,
-                child: Text(
-                  'Niveau ${value.toInt() + 1}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'VT323',
-                    fontSize: screenSize.height * 0.015,
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-      leftTitles: AxisTitles(
-        sideTitles: SideTitles(
-          showTitles: true,
-          reservedSize: screenSize.width * 0.1,
-          interval: 20,
-          getTitlesWidget: (value, meta) {
-            return Text(
-              '${value.toInt()}%',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'VT323',
-                fontSize: screenSize.height * 0.015,
-              ),
-            );
-          },
-        ),
-      ),
-      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-    );
-  }
-
-  List<BarChartGroupData> _getBarGroups(int currentLevel, List<int> levelPercentages, Size screenSize) {
-    return levelPercentages.asMap().entries.map((entry) {
-      final index = entry.key;
-      final percentage = entry.value;
-      return BarChartGroupData(
-        x: index,
-        barRods: [
-          BarChartRodData(
-            toY: percentage.toDouble(),
-            color: index == currentLevel ? Colors.yellow : Colors.blue,
-            width: screenSize.width * 0.04,
-            borderRadius: BorderRadius.zero,
-          ),
-        ],
-      );
-    }).toList();
   }
 
   Widget _buildProgressionFooter(Size screenSize, int currentLevel) {
