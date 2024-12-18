@@ -164,7 +164,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   '• Créée avec l\'aide d\'IA pour rendre les maths amusantes\n\n'
                   '• Pendant que les autres apps vous font perdre des neurones, celle-ci en crée!\n\n'
                   '• Si vous trouvez un bug, c\'est probablement une fonctionnalité secrète pour tester votre patience\n\n'
-,
+                  '• N\'hésite pas à nous contactez ici si tu souhaites discuter avec nous: mathos.app@gmail.com'
+
+              ,
               screenSize);
         }, screenSize),
         _buildSubsection('Version', () {
